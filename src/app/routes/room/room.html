@@ -1,4 +1,38 @@
 <section>
-  room: {{ room.room.name }}
-  <div>{{ room.usersInRoom}}</div>
+  <h1>Welcome to: {{ roomCtrl.room.name }}</h1>
+
+  <h2>Others in room</h2>
+  <ul>
+    <li ng-repeat="user in roomCtrl.room.users" ng-if="user._id.$oid != roomCtrl.user._id.$oid">
+      {{ user.name }}
+      <button type="button" name="button" ng-click="roomCtrl.kickPlayer(user)">
+        Kick
+      </button>
+    </li>
+  </ul>
+
+  <h2>Your coins</h2>
+  <div>{{roomCtrl.myCoins}} coins</div>
+
+  <h2>Your assets</h2>
+  <ul>
+    <li ng-repeat="animal in roomCtrl.myBarn">
+      {{ animal.amount }} x {{ animal.assetLink.name }} <br>
+      worth {{ animal.amount * animal.assetLink.sellFor }} coins
+    </li>
+  </ul>
+
+  <h2>Your storage</h2>
+  <ul>
+    <li ng-repeat="item in roomCtrl.myStorage">
+      {{ item.amount }}{{ item.currencyLink.measure }} {{ item.currencyLink.name }} <br>
+      worth {{ item.amount * item.currencyLink.sellFor | number : 2 }} coins
+    </li>
+  </ul>
+
+  <h2>Market</h2>
+
+  <button type="button" name="button" ng-click="roomCtrl.openMarket()">
+    Goto market
+  </button>
 </section>

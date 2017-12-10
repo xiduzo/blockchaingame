@@ -14,7 +14,8 @@
     Global,
     Users,
     ngDialog,
-    toastr
+    toastr,
+    localStorageService
   ) {
 
     var vm = this;
@@ -40,16 +41,21 @@
             toastr.error("Please fill in an username");
             newUser();
           } else {
-            // Users
+            Users.api.post({
+              name: response.name
+            }).then(function(response) {
+              localStorageService.set('user', response);
+            });
           }
-          console.log(response.name);
         }
       });
     }
+
     if(!vm.user._id) {
       newUser();
     }
 
+    // Broadcasts
     $scope.$on('addRoom', function(event, response) {
       vm.rooms.push(response.data);
     });
@@ -59,6 +65,12 @@
         return room._id.$oid == response.data._id.$oid;
       }));
     });
+
+    $scope.$on("roomDelete", function(event, response) {
+      vm.rooms = _.without(vm.rooms, _.find(vm.rooms, function(room) {
+        return room._id.$oid == response.data.room;
+      }));
+    })
 
     // Services
     Rooms.api.getList().then(function(rooms) {
@@ -71,7 +83,8 @@
       Rooms.api.post({
         name: name,
         dateTime: moment(),
-        roomPin: parseInt(moment().format("m") + moment().format("H") + moment().format("SSS"))
+        roomPin: parseInt(moment().format("m") + moment().format("H") + moment().format("SSS")),
+        users: []
       }).then(function(response) {
         vm.roomName = null;
         Rooms.socket("addRoom", response);

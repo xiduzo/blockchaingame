@@ -4,7 +4,8 @@
   angular
     .module('angulargame')
     .factory('Global', function(
-      $log
+      $log,
+      localStorageService
     ) {
       var vm = this;
 
@@ -20,7 +21,9 @@
         }
       }
 
-      $log.log(vm.methods);
+      if(localStorageService.get('user')) {
+        vm.methods.setUser(localStorageService.get('user'));
+      }
 
       return vm.methods;
     });

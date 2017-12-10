@@ -20,7 +20,7 @@
         url: '/room/:roomId',
         templateUrl: 'app/routes/room/room.html',
         controller: 'RoomController',
-        controllerAs: 'room'
+        controllerAs: 'roomCtrl'
       });
 
     $urlRouterProvider.otherwise('/');
