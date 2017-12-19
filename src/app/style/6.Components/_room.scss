@@ -1,0 +1,80 @@
+.c-room {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.c-room__head {
+  height: 25px;
+  border-bottom: 1px solid black;
+  display: flex;
+  align-items: center;
+}
+
+.c-room__window {
+  flex-grow: 1;
+  background: rgb(224, 224, 224);
+}
+
+.c-room__tabs {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  height: 75px;
+  border-top: 1px solid black;
+
+
+  .room__tab {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    list-style: none;
+
+    &.active {
+      background: rgb(175, 112, 86);
+    }
+  }
+}
+
+.c-room__market {
+  .buyItem {
+    background: green;
+  }
+  .sellItem {
+    background: red;
+  }
+
+  .buyItem,
+  .sellItem {
+    width: 40vw;
+    max-width: 100px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .market__animals {
+    padding: 0;
+    margin: 0;
+
+    .market__animal {
+      height: 60px;
+      border-bottom: 1px solid black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      > div {
+        width: 100%;
+        height: 100%;
+
+        .swiper-content {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}

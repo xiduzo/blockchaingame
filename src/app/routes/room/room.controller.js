@@ -18,8 +18,9 @@
     var vm = this;
 
     // Methods
-    vm.kickPlayer = kickPlayer;
-    vm.openMarket = openMarket;
+    vm.kickUser = kickUser;
+    vm.sellAnimal = sellAnimal;
+    vm.buyAnimal = buyAnimal;
 
     // Variables
     vm.user = Global.getUser();
@@ -40,7 +41,9 @@
       }
     ];
 
+    vm.oldCoins = 0;
     vm.myCoins = 10000;
+
     vm.myStorage = [
       {
         "assetType": 1,
@@ -62,7 +65,13 @@
       if(response.data.room == $stateParams.roomId) {
 
         if(response.data.user._id.$oid != vm.user._id.$oid) {
-          vm.room.users.push(response.data.user);
+          // Only add yourself when not in the room
+          // Prevents duplicate users
+          if(!_.find(vm.room.users, function(user) {
+            return user._id.$oid = response.data.user._id.$oid;
+          })) {
+            vm.room.users.push(response.data.user);
+          }
         }
       }
     });
@@ -116,71 +125,85 @@
     });
 
     // Method declarations
-    function kickPlayer(user) {
+    function kickUser(user) {
       Rooms.socket("roomLeave", {
         "user": user,
         "room": $stateParams.roomId
       });
     }
 
-    function openMarket() {
-      ngDialog.open({
-        template: 'app/routes/room/dialogs/market.html',
-        className: 'ngdialog-theme-default',
-        controller: ['assets', 'coins', 'animals', 'products', 'toastr', function(assets, coins, animals, products, toastr) {
+    function buyAnimal(animal) {
+      ngDialog.openConfirm({
+        template: 'app/routes/room/dialogs/buyanimal.html',
+        className: 'c-dialog',
+        disableAnimation: true,
+        overlay: false,
+        showClose: false,
+        closeByEscape: false,
+        controller: ['animal', 'coins', function(animal, coins) {
 
           var vm = this;
-          vm.assets = assets;
+
+          vm.animal = animal;
           vm.coins = coins;
-          vm.animals = animals;
-          vm.products = products;
-
-
-          // Methods
-          vm.buyProduct = buyProduct;
-          vm.buyAnimal = buyAnimal;
-
-          // Method declarations
-          function buyProduct(productToBuy, amountToBuy) {
-            amountToBuy = parseInt(amountToBuy);
-
-            if((productToBuy.buyFor * amountToBuy) > vm.coins) {
-              toastr.error("Can not buy " + productToBuy.name + ', you need ' + ((productToBuy.buyFor * amountToBuy) - vm.coins) + " more coins!");
-            } else {
-              vm.products = _.map(vm.products, function(myProduct) {
-                if(productToBuy.currencyType == myProduct.currencyType) {
-                  vm.coins -= (productToBuy.buyFor * amountToBuy);
-                  myProduct.amount += amountToBuy;
-                }
-                return myProduct;
-              });
-            }
-          }
-
-          function buyAnimal(animalToBuy, amountToBuy) {
-            amountToBuy = parseInt(amountToBuy);
-
-            if((animalToBuy.buyFor * amountToBuy) > vm.coins) {
-              toastr.error("Can not buy " + animalToBuy.name + ', you need ' + ((animalToBuy.buyFor * amountToBuy) - vm.coins) + " more coins!");
-            } else {
-              vm.animals = _.map(vm.animals, function(myAnimal) {
-                if(animalToBuy.assetType == myAnimal.assetType) {
-                  vm.coins -= (animalToBuy.buyFor * amountToBuy);
-                  myAnimal.amount += amountToBuy;
-                }
-                return myAnimal;
-              });
-            }
-          }
         }],
-        controllerAs: 'marketCtrl',
+        controllerAs: 'buyAnimalCtrl',
         resolve: {
-          assets: function() { return vm.assets; },
-          coins: function() { return vm.myCoins; },
-          animals: function() { return vm.myBarn; },
-          products: function() { return vm.myStorage; }
+          animal: function() { return animal; },
+          coins: function() { return vm.myCoins; }
         }
+      })
+      .then(function(response) {
+        if(!response.amountToBuy) { return; }
+
+        response.amountToBuy = parseInt(response.amountToBuy);
+
+        // Update game
+        _.findWhere(vm.myBarn, { assetType: animal.assetType }).amount += response.amountToBuy;
+        vm.oldCoins = vm.myCoins
+        vm.myCoins -= response.amountToBuy * animal.buyFor;
+      })
+      .catch(function(error) {
+        $log.log(error);
       });
+      vm.assets = angular.copy(vm.assets); // Have to do this stupid reset because the swipe lib is ratarded
+    }
+
+    function sellAnimal(animal) {
+      ngDialog.openConfirm({
+        template: 'app/routes/room/dialogs/sellanimal.html',
+        className: 'c-dialog',
+        disableAnimation: true,
+        overlay: false,
+        showClose: false,
+        closeByEscape: false,
+        controller: ['animal', 'animalInBarn', function(animal, animalInBarn) {
+
+          var vm = this;
+
+          vm.animal = animal;
+          vm.animalInBarn = animalInBarn;
+        }],
+        controllerAs: 'sellAnimalCtrl',
+        resolve: {
+          animal: function() { return animal; },
+          animalInBarn: function() { return _.findWhere(vm.myBarn, { assetType: animal.assetType }); }
+        }
+      })
+      .then(function(response) {
+        if(!response.amountToSell) { return; }
+
+        response.amountToSell = parseInt(response.amountToSell);
+
+        // Update the game
+        _.findWhere(vm.myBarn, { assetType: animal.assetType }).amount -= response.amountToSell;
+        vm.oldCoins = vm.myCoins
+        vm.myCoins += response.amountToSell * animal.sellFor;
+      })
+      .catch(function(error) {
+        $log.log(error);
+      });
+      vm.assets = angular.copy(vm.assets); // Have to do this stupid reset because the swipe lib is ratarded
     }
 
 

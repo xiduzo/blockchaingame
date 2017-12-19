@@ -1,0 +1,21 @@
+<section class="c-dialog__container">
+  <div class="c-dialog__content">
+    <h1>
+      {{ buyAnimalCtrl.animal.name }}
+    </h1>
+    <h2>
+      {{ buyAnimalCtrl.animal.buyFor }} coins / each
+    </h2>
+    <h2>
+      {{ buyAnimalCtrl.coins | number : 2 }} coins left in pocket
+    </h2>
+    <div>
+      Buy <input type="text" name="" ng-model="buyAmount" type="number">{{buyAnimalCtrl.animal.name }} for {{ (buyAmount * buyAnimalCtrl.animal.buyFor || 0) | number : 2 }}
+    </div>
+  </div>
+
+  <div class="c-dialog__buttons">
+    <button class="o-button o-button--error ripple" ng-click="closeThisDialog()">Cancel</button>
+    <button class="o-button o-button--success ripple" ng-click="confirm({amountToBuy: buyAmount})">Buy</button>
+  </div>
+</section>

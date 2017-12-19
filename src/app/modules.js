@@ -10,12 +10,19 @@
       'ngMessages',
       'ngAria',
 
+      // Bower
       'restangular',
       'ui.router',
       'toastr',
       'ngWebSocket',
       'ngDialog',
-      'LocalStorageModule'
+      'LocalStorageModule',
+      'whimsicalRipple',
+      'ngSwipeItem',
+
+      // Local modules
+      'tabs',
+      'countTo'
 
     ]);
 

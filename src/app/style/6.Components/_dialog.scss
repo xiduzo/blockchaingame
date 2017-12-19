@@ -1,0 +1,21 @@
+.c-dialog {
+  height: 100vh;
+}
+
+.c-dialog__container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.c-dialog__content {
+  flex-grow: 100;
+}
+
+.c-dialog__buttons {
+  display: flex;
+
+  .o-button {
+    flex-grow: 50;
+  }
+}

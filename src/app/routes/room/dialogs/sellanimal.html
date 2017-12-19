@@ -1,0 +1,21 @@
+<section class="c-dialog__container">
+  <div class="c-dialog__content">
+    <h1>
+      {{ sellAnimalCtrl.animal.name }}
+    </h1>
+    <h2>
+      {{ sellAnimalCtrl.animal.sellFor }} coins / each
+    </h2>
+    <h2>
+      {{ sellAnimalCtrl.animalInBarn.amount }} {{ sellAnimalCtrl.animalInBarn.assetLink.name }} left in barn
+    </h2>
+    <div>
+      Sell <input type="text" name="" ng-model="sellAmount" type="number">{{sellAnimalCtrl.animal.name }} for {{ (sellAmount * sellAnimalCtrl.animal.sellFor || 0) | number : 2 }}
+    </div>
+  </div>
+
+  <div class="c-dialog__buttons">
+    <button class="o-button o-button--error ripple" ng-click="closeThisDialog()">Cancel</button>
+    <button class="o-button o-button--success ripple" ng-click="confirm({amountToSell: sellAmount})">Sell</button>
+  </div>
+</section>

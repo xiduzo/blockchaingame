@@ -13,6 +13,8 @@
   ) {
 
     $rootScope.Global = Global;
+
+
     $log.debug('runBlock end');
   }
 

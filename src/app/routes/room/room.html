@@ -1,38 +1,88 @@
-<section>
-  <h1>Welcome to: {{ roomCtrl.room.name }}</h1>
+<main ng-tabs class="c-room">
 
-  <h2>Others in room</h2>
-  <ul>
-    <li ng-repeat="user in roomCtrl.room.users" ng-if="user._id.$oid != roomCtrl.user._id.$oid">
-      {{ user.name }}
-      <button type="button" name="button" ng-click="roomCtrl.kickPlayer(user)">
-        Kick
-      </button>
+  <section class="c-room__head">
+    <div count-to="{{roomCtrl.myCoins}}" value="{{roomCtrl.oldCoins}}" duration="2"></div>&nbsp;coins
+  </section>
+
+  <section class="c-room__window">
+    <div class="u-hidden" ng-tab-body="extra-classes">
+      Cards
+    </div>
+    <div class="u-hidden" ng-tab-body="extra-classes">
+      vault
+    </div>
+    <div class="u-hidden" ng-tab-body="extra-classes">
+      <ul>
+        <li ng-repeat="item in roomCtrl.myStorage">
+          {{ item.amount }}{{ item.currencyLink.measure }} {{ item.currencyLink.name }} <br>
+          worth {{ item.amount * item.currencyLink.sellFor | number : 2 }} coins
+        </li>
+      </ul>
+    </div>
+    <div class="u-hidden" ng-tab-body="extra-classes">
+      <ul>
+        <li ng-repeat="animal in roomCtrl.myBarn">
+          {{ animal.amount }} x {{ animal.assetLink.name }} <br>
+          worth {{ animal.amount * animal.assetLink.sellFor }} coins
+        </li>
+      </ul>
+    </div>
+    <div class="u-hidden c-room__market" ng-tab-body="extra-classes">
+      <ul class="market__animals">
+        <li class="market__animal" ng-repeat="animal in roomCtrl.assets"
+        ng-swipe-item
+        on-left="roomCtrl.sellAnimal(animal)"
+        on-right="roomCtrl.buyAnimal(animal)"
+        left-template="app/routes/room/partials/buy.html"
+        right-template="app/routes/room/partials/sell.html"
+        threshold="0.2">
+          {{ animal.name }}
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <ul class="c-room__tabs">
+    <li ng-tab-head class="room__tab ripple">
+      Cards
+    </li>
+    <li ng-tab-head class="room__tab ripple">
+      Vault
+    </li>
+    <li ng-tab-head="active" class="room__tab ripple">
+      Storage
+    </li>
+    <li ng-tab-head class="room__tab ripple">
+      Barn
+    </li>
+    <li ng-tab-head class="room__tab ripple">
+      Market
     </li>
   </ul>
+</main>
 
-  <h2>Your coins</h2>
-  <div>{{roomCtrl.myCoins}} coins</div>
+<!-- <section>
+<h1>Welcome to: {{ roomCtrl.room.name }}</h1>
 
-  <h2>Your assets</h2>
-  <ul>
-    <li ng-repeat="animal in roomCtrl.myBarn">
-      {{ animal.amount }} x {{ animal.assetLink.name }} <br>
-      worth {{ animal.amount * animal.assetLink.sellFor }} coins
-    </li>
-  </ul>
+<h2>Others in room</h2>
+<ul>
+<li ng-repeat="user in roomCtrl.room.users" ng-if="user._id.$oid != roomCtrl.user._id.$oid">
+{{ user.name }}
+<button type="button" name="button" ng-click="roomCtrl.kickPlayer(user)">
+Kick
+</button>
+</li>
+</ul>
 
-  <h2>Your storage</h2>
-  <ul>
-    <li ng-repeat="item in roomCtrl.myStorage">
-      {{ item.amount }}{{ item.currencyLink.measure }} {{ item.currencyLink.name }} <br>
-      worth {{ item.amount * item.currencyLink.sellFor | number : 2 }} coins
-    </li>
-  </ul>
+<h2>Your assets</h2>
 
-  <h2>Market</h2>
 
-  <button type="button" name="button" ng-click="roomCtrl.openMarket()">
-    Goto market
-  </button>
-</section>
+<h2>Your storage</h2>
+
+
+<h2>Market</h2>
+
+<button type="button" name="button" ng-click="roomCtrl.openMarket()">
+Goto market
+</button>
+</section> -->
