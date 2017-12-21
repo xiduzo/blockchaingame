@@ -9,6 +9,7 @@
   border-bottom: 1px solid black;
   display: flex;
   align-items: center;
+  justify-content: space-around;
 }
 
 .c-room__window {
@@ -30,6 +31,7 @@
     align-items: center;
     flex-grow: 1;
     list-style: none;
+    transition: all 350ms;
 
     &.active {
       background: rgb(175, 112, 86);

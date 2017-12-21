@@ -10,6 +10,7 @@
     $logProvider,
     toastrConfig,
     RestangularProvider,
+    ngDialogProvider,
     API_URL,
     API_KEY
   ) {
@@ -30,6 +31,14 @@
       preventDuplicates: false,
       preventOpenDuplicates: false,
       target: 'body'
+    });
+
+    ngDialogProvider.setDefaults({
+      className: 'c-dialog',
+      disableAnimation: true,
+      overlay: false,
+      showClose: false,
+      closeByEscape: false
     });
 
 

@@ -4,13 +4,14 @@
       {{ sellAnimalCtrl.animal.name }}
     </h1>
     <h2>
-      {{ sellAnimalCtrl.animal.sellFor }} coins / each
+      {{ sellAnimalCtrl.animal.buyFor * (1-sellAnimalCtrl.animal.sellForPercentage) }} coins / each
     </h2>
     <h2>
       {{ sellAnimalCtrl.animalInBarn.amount }} {{ sellAnimalCtrl.animalInBarn.assetLink.name }} left in barn
     </h2>
     <div>
-      Sell <input type="text" name="" ng-model="sellAmount" type="number">{{sellAnimalCtrl.animal.name }} for {{ (sellAmount * sellAnimalCtrl.animal.sellFor || 0) | number : 2 }}
+      Sell <input type="text" name="" ng-model="sellAmount" type="number">
+      {{sellAnimalCtrl.animal.name }} for {{ (sellAmount * sellAnimalCtrl.animal.buyFor * (1-sellAnimalCtrl.animal.sellForPercentage) || 0) | number : 2 }}
     </div>
   </div>
 
