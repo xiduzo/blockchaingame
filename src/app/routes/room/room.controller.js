@@ -7,6 +7,7 @@
 
   /** @ngInject */
   function RoomController(
+    $state,
     $scope,
     $log,
     $stateParams,
@@ -15,7 +16,9 @@
     Global,
     ngDialog,
     BASE_RECOURCES,
-    PIN_NUMBERS
+    PIN_NUMBERS,
+    ROOM_MEMBERS_NEEDED_TO_PLAY,
+    CARDS
   ) {
 
     var vm = this;
@@ -28,21 +31,32 @@
     vm.addPinNumber = addPinNumber;
     vm.nextRound = nextRound;
     vm.shufflePinNumbers = shufflePinNumbers;
+    vm.makeEmptyArray = makeEmptyArray;
+    vm.buyCard = buyCard;
 
     // Variables
     vm.user = Global.getUser();
+    vm.room = undefined;
+    vm.roomStarted = false;
+    vm.addonsAvailable = false;
+    vm.vaultAvailable = false;
+    vm.cardsAvailable = true;
+    vm.animalsAvailable = false;
 
     vm.assets = BASE_RECOURCES.ASSETS;
     vm.myStorage = BASE_RECOURCES.STORAGE;
     vm.myBarn = BASE_RECOURCES.BARN;
 
     vm.oldCoins = 0; // Need this for fancy counter
-    vm.myCoins = 10000;
+    vm.myCoins = 0;
 
     vm.enteredPin = [];
     vm.availablePinNumbers = _.shuffle(PIN_NUMBERS);
 
     vm.currentRound = 0;
+
+    vm.cards = [_.first(_.shuffle(CARDS)), undefined, undefined];
+    vm.highlightedCard = {};
 
     vm.guardText = "I need a passcode before I can let you into this vault"
 
@@ -95,6 +109,34 @@
       }
     });
 
+    // Wait to start game for users
+    function waitForUsers() {
+      vm.roomStarted = true;
+      vm.myCoins = 10000;
+      return true;
+      ngDialog.openConfirm({
+        template: 'app/routes/room/dialogs/waitforusers.html',
+        controller: ['room', function(room) {
+
+          var vm = this;
+
+          vm.room = room;
+        }],
+        controllerAs: 'waitForUsersCtrl',
+        resolve: {
+          room: function() { return vm.room; }
+        }
+      })
+      .then(function(response) {
+        vm.roomStarted = true;
+        vm.myCoins = 10000;
+      })
+      .catch(function(error) {
+        $state.go('home');
+        $log.log(error);
+      });
+    }
+
     function generateRandomStockMarket(numberOfPoints, center, min, max, cycles) {
       var result = [];
       // var phase = Math.random() * Math.PI;
@@ -138,10 +180,6 @@
                  { length: 365, variance: 110, noise: 6, trend: 0},
                  { length: 700, variance: 8, noise: 0, trend: 200}]);
 
-    var woolAverage = _.reduce(wool, function(memo, num) { return memo + num; }, 0) / wool.length;
-    var milkAverage = _.reduce(milk, function(memo, num) { return memo + num; }, 0) / milk.length;
-    var baconAverage = _.reduce(bacon, function(memo, num) { return memo + num; }, 0) / bacon.length;
-
     var marketData = [wool, milk, bacon];
 
     // new Highcharts.Chart({
@@ -184,6 +222,8 @@
         vm.room.users.push(vm.user);
         vm.room.put();
       }
+
+      waitForUsers();
 
     });
 
@@ -288,9 +328,15 @@
 
     function nextRound() {
       _.each(vm.assets, function(asset) {
-        $log.log(vm.currentRound);
         asset.currency.buyFor = marketData[asset.currency.currencyType-1][vm.currentRound];
-      })
+      });
+
+      _.each(vm.myStorage, function(currency,index) {
+        currency.oldAmount = currency.amount;
+        currency.amount += vm.myBarn[index].amount * (vm.myBarn[index].assetLink.currencyProduction.max * Math.random() + vm.myBarn[index].assetLink.currencyProduction.min);
+      });
+
+      console.log('---');
       vm.currentRound++;
     }
 
@@ -298,6 +344,15 @@
       vm.guardText = "I need a passcode before I can let you into this vault";
       vm.enteredPin = [];
       vm.availablePinNumbers = _.shuffle(PIN_NUMBERS);
+    }
+
+    function makeEmptyArray(length) {
+      return _.range(length);
+    }
+
+    function buyCard(index) {
+      console.log(index);
+      vm.cards[index] = _.first(_.shuffle(CARDS))
     }
 
   }

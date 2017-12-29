@@ -1,0 +1,12 @@
+<section class="c-dialog__container">
+  <div class="c-dialog__content">
+    waiting for other users
+
+    {{ waitForUsersCtrl.room.users.length }} / 4
+  </div>
+
+  <div class="c-dialog__buttons">
+    <button class="o-button o-button--error ripple" ng-click="closeThisDialog()">Quit room</button>
+    <button class="o-button o-button--success ripple" ng-click="confirm()">Start game</button>
+  </div>
+</section>

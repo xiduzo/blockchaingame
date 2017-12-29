@@ -20,8 +20,8 @@
                     refreshInterval = 30;
                     step = 0;
                     scope.timoutId = null;
-                    countTo = parseInt(attrs.countTo) || 0;
-                    scope.value = parseInt(attrs.value, 10) || 0;
+                    countTo = parseFloat(attrs.countTo) || 0;
+                    scope.value = parseFloat(attrs.value, 10) || 0;
                     duration = (parseFloat(attrs.duration) * 1000) || 0;
 
                     steps = Math.ceil(duration / refreshInterval);
@@ -35,10 +35,10 @@
                         step++;
                         if (step >= steps) {
                             $timeout.cancel(scope.timoutId);
-                            num = countTo;
-                            e.textContent = countTo;
+                            num = countTo.toFixed(attrs.decimals || 0);
+                            e.textContent = countTo.toFixed(attrs.decimals || 0);
                         } else {
-                            e.textContent = Math.round(num);
+                            e.textContent = num.toFixed(attrs.decimals || 0);
                             tick();
                         }
                     }, refreshInterval);

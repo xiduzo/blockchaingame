@@ -10,7 +10,7 @@ $c-room-head-icon-size: 26px;
   background: $secondaryColor;
   color: white;
   font-weight: bold;
-  height: 50px;
+  min-height: 50px;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -20,8 +20,11 @@ $c-room-head-icon-size: 26px;
     flex-direction: column;
 
     .player__indicator {
-      color: lighten($accentColor, 20);
-      font-size: 0.4em;
+      color: #FFFAC2;
+      font-size: 0.5em;
+      letter-spacing: 0.1em;
+      font-family: 'Open Sans', sans-serif;
+      font-weight: bold;
     }
 
     .player__name {
@@ -56,7 +59,7 @@ $c-room-head-icon-size: 26px;
 
 .c-room__windows {
   flex-grow: 1;
-  background: rgb(224, 224, 224);
+  background: lighten($primaryColor, 5);
   display: flex;
 
   .c-window {

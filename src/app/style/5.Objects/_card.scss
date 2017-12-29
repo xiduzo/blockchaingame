@@ -1,0 +1,45 @@
+.o-card {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  height: inherit;
+  padding: 8px 0 0 0;
+  border-radius: 8px;
+  background: $primaryColor;
+  color: white;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &--defence {
+    background: $activeColor;
+    background: linear-gradient(125deg, lighten($activeColor,5) 0%,lighten($activeColor,5) 50%,$activeColor 51%,$activeColor 100%);
+  }
+  &--attack {
+    background: $accentColor;
+    background: linear-gradient(125deg, lighten($accentColor,30) 0%,lighten($accentColor,30) 50%,$accentColor 51%,$accentColor 100%);
+  }
+
+  .o-card__title {
+    font-size: 1em;
+    text-align: center;
+    margin: 0;
+  }
+
+  .o-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img {
+      width: 90%;
+    }
+  }
+
+  .o-card__effect {
+    font-size: 2em;
+    text-align: right;
+    padding: 0 8px 8px 0;
+  }
+
+}

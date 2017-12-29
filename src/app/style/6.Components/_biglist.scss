@@ -49,7 +49,7 @@
       .metadata__title {
         margin: 0;
         font-size: 1.35em;
-        color: lighten($accentColor, 40);
+        color: $titleColor;
       }
 
       .metadata__subtitle {

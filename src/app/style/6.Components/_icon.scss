@@ -4,6 +4,11 @@ $c-icon-size: 26px;
   width: $c-icon-size;
   height: $c-icon-size;
 
+  &--small {
+    width: $c-icon-size * 0.7;
+    height: $c-icon-size * 0.7;
+  }
+
   &--medium {
     width: $c-icon-size * 1.7;
     height: $c-icon-size * 1.7;
