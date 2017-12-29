@@ -1,104 +1,234 @@
-<main ng-tabs class="c-room">
+<main ng-tabs class="c-game-room">
 
-  <section class="c-room__head">
-    <div>
-      <span count-to="{{roomCtrl.myCoins}}" value="{{roomCtrl.oldCoins}}" duration="2"></span>&nbsp;coins
+  <header class="c-room__head">
+    <div class="room__player">
+      <span class="player__indicator">
+        Player 1
+      </span>
+      <span class="player__name">
+        {{ roomCtrl.user.name }}
+      </span>
     </div>
-    <div>
-      Round&nbsp;{{roomCtrl.currentRound}}
-    </div>
-  </section>
+    <ul class="room__assets">
+      <li class="room__asset">
+        <img class="c-icon" src="assets/images/money.png" alt="money">
+        <span class="c-amount-indicator c-amount-indicator--secondary" count-to="{{roomCtrl.myCoins}}" value="{{roomCtrl.oldCoins}}" duration="2"></span>
+      </li>
+      <li class="room__asset" ng-repeat="animal in roomCtrl.myBarn">
+        <img class="c-icon" src="assets/images/{{animal.assetLink.image}}" alt="{{animal.assetLink.name}}">
+        <span class="c-amount-indicator c-amount-indicator--secondary" count-to="{{animal.amount}}" value="{{animal.oldAmount}}" duration="2"></span>
+      </li>
+    </ul>
+  </header>
 
-  <section class="c-room__window">
+  <div class="c-room__windows">
 
-    <div class="u-hidden c-room__cards" ng-tab-body="extra-classes">
-      Cards
-      <img src="assets/images/king.png" alt="">
-    </div>
+    <section class="u-hidden c-window c-window--addons" ng-tab-body="extra-classes">
+      Add-ons
+    </section>
 
-    <div class="u-hidden c-room__vault" ng-tab-body="extra-classes">
+    <section class="u-hidden c-window c-window--market" ng-tab-body="extra-classes">
+      <div ng-tabs class="c-markets">
+        <div class="market__currencies u-hidden" ng-tab-body>
+          <ul class="c-big-list">
+            <li class="c-big-list__item swipable" ng-repeat="animal in roomCtrl.assets"
+              ng-swipe-item
+              on-left="roomCtrl.sellCurrency(animal)"
+              on-right="roomCtrl.buyCurrency(animal)"
+              left-template="app/routes/room/partials/buy.html"
+              right-template="app/routes/room/partials/sell.html"
+              threshold="0.2">
+              <div class="c-big-list__icon">
+                <img class="c-icon--large" src="assets/images/{{animal.currency.image}}" alt="{{animal.currency.name}}">
+              </div>
+              <div class="c-big-lig__metadata">
+                <h1 class="metadata__title">
+                  {{ animal.currency.name }}
+                </h1>
+                <h2 class="metadata__subtitle">
+                    {{((animal.currency.buyFor * (1-animal.currency.sellForPercentage)) + animal.currency.buyFor) / 2 | number : 2}}
+                </h2>
+                <div class="metadata__info">
+                  <span>
+                    sell {{ animal.currency.buyFor * (1-animal.currency.sellForPercentage) | number : 2 }}
+                  </span>
+                  /
+                  <span>
+                    buy {{ animal.currency.buyFor | number : 2 }}
+                  </span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="market__animals u-hidden" ng-tab-body>
+          <ul class="c-big-list">
+            <li class="c-big-list__item swipable" ng-repeat="animal in roomCtrl.assets"
+              ng-swipe-item
+              on-left="roomCtrl.sellAnimal(animal)"
+              on-right="roomCtrl.buyAnimal(animal)"
+              left-template="app/routes/room/partials/buy.html"
+              right-template="app/routes/room/partials/sell.html"
+              threshold="0.2">
+              <div class="c-big-list__icon">
+                <img class="c-icon--large" src="assets/images/{{animal.image}}" alt="{{animal.name}}">
+              </div>
+              <div class="c-big-lig__metadata">
+                <h1 class="metadata__title">
+                  {{ animal.name }}
+                </h1>
+                <h2 class="metadata__subtitle">
+                  {{ ((animal.buyFor * (1-animal.sellForPercentage)) + animal.buyFor) / 2 | number : 2}}
+                </h2>
+                <div class="metadata__info">
+                  <span>
+                    sell {{ animal.buyFor * (1-animal.sellForPercentage) | number : 2 }}
+                  </span>
+                  /
+                  <span>
+                    buy {{ animal.buyFor | number : 2 }}
+                  </span>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="c-window__actions">
+          <button ng-tab-head="active" class="o-button o-button--accent ripple">
+            <i class="material-icons">polymer</i>
+            Currencies
+          </button>
+          <button ng-tab-head class="o-button o-button--accent ripple">
+            <i class="material-icons">pets</i>
+            Animals
+          </button>
+        </div>
+      </div>
+
+      <!-- <div id="chart"></div> -->
+
+    </section>
+
+    <section class="u-hidden c-window c-window--storage" ng-tab-body="extra-classes">
+      <div class="c-storage__header">
+        <ul class="c-storage__stats">
+          <li class="c-storage__stat">
+            <span class="c-amount-indicator c-amount-indicator--primary c-amount-indicator--full">
+              fee: 99
+            </span>
+          </li>
+          <li class="c-storage__stat">
+            <img class="c-icon" src="assets/images/guard.png" alt="guard">
+            <span class="c-amount-indicator c-amount-indicator--primary">
+              99
+            </span
+          </li>
+          <li class="c-storage__stat">
+            <img class="c-icon" src="assets/images/guard.png" alt="guard">
+            <span class="c-amount-indicator c-amount-indicator--primary">
+              99
+            </span>
+          </li>
+        </ul>
+        <div class="c-turn">
+          turn {{ roomCtrl.currentRound }}
+          <div class="c-time-left">
+            <i class="material-icons">hourglass_empty</i>
+            99:00
+          </div>
+        </div>
+      </div>
+      <ul class="c-big-list">
+        <li class="c-big-list__item" ng-repeat="item in roomCtrl.myStorage">
+          <div class="c-big-list__icon">
+            <img class="c-icon c-icon--large" src="assets/images/{{item.currencyLink.image}}" alt="{{item.currencyLink.name}}">
+          </div>
+          <div class="c-big-lig__metadata">
+            <h1 class="metadata__title">
+              {{ item.currencyLink.name }}
+            </h1>
+            <h2 class="metadata__subtitle">
+              {{ item.amount }}{{ item.currencyLink.measure }}
+            </h2>
+            <span class="metadata__info">
+              {{ item.amount * item.currencyLink.buyFor * (1-item.currencyLink.sellForPercentage) | number : 2 }} coins
+            </span>
+          </div>
+        </li>
+      </ul>
+      <div class="c-window__actions">
+        <button class="o-button o-button--accent-light ripple">
+          <i class="material-icons">compare_arrows</i>
+          Transfer
+        </button>
+        <button class="o-button o-button--accent ripple" ng-click="roomCtrl.nextRound()">
+          <i class="material-icons">input</i>
+          End turn
+        </button>
+      </div>
+    </section>
+
+    <section class="u-hidden c-window c-window--cards" ng-tab-body="extra-classes">
+      cards
+    </section>
+
+    <section class="u-hidden c-window c-window--vault" ng-tab-body="extra-classes">
+
+      <div class="c-vault__guard">
+        <img class="c-icon c-icon--large" src="assets/images/guard.png" alt="guard">
+        <div class="guard__text">
+          {{ roomCtrl.guardText }}
+        </div>
+      </div>
+
       <ol class="c-vault__pincode">
         <li class="c-vault__pincode__number" ng-model="roomCtrl.enteredPin[x]" ng-repeat="x in [0,1,2,3,4]">
-            {{roomCtrl.enteredPin[x].verbose }}
+          <img class="c-icon c-icon--medium" src="assets/images/{{roomCtrl.enteredPin[x].image }}" alt="{{roomCtrl.enteredPin[x].verbose }}">
         </li>
       </ol>
 
       <ul class="c-vault__pinnumbers">
         <li ng-click="roomCtrl.addPinNumber(pin)" class="c-vault__pinnumber" ng-repeat="pin in roomCtrl.availablePinNumbers">
-          <div class="icon ripple">
-            {{ pin.verbose }}
+          <div class="ripple">
+            <img class="c-icon c-icon--big" src="assets/images/{{pin.image}}" alt="{{pin.verbose}}">
           </div>
         </li>
       </ul>
 
-      <button type="button" name="button" class="o-button o-button--success ripple" ng-click="roomCtrl.enterVault()">Enter vault</button>
-    </div>
-
-    <div class="u-hidden c-room__storage" ng-tab-body="extra-classes">
-      <ul>
-        <li ng-repeat="item in roomCtrl.myStorage">
-          {{ item.amount }}{{ item.currencyLink.measure }} {{ item.currencyLink.name }} <br>
-          worth {{ item.amount * item.currencyLink.buyFor * (1-item.currencyLink.sellForPercentage) | number : 2 }} coins
-        </li>
-      </ul>
-    </div>
-
-    <div class="u-hidden c-room__barn" ng-tab-body="extra-classes">
-      <ul>
-        <li ng-repeat="animal in roomCtrl.myBarn">
-          {{ animal.amount }} x {{ animal.assetLink.name }} <br>
-          worth {{ animal.amount * animal.assetLink.buyFor * (1-animal.assetLink.sellForPercentage) | number : 2 }} coins
-        </li>
-      </ul>
-    </div>
-
-    <div class="u-hidden c-room__market" ng-tab-body="extra-classes">
-      <div ng-tabs>
-        <div ng-tab-head="active" class="o-button ripple">Currencies</div>
-        <div ng-tab-head class="o-button ripple">Animals</div>
-        <ul class="market__currencies u-hidden" ng-tab-body>
-          <li class="market__currency" ng-repeat="animal in roomCtrl.assets">
-            {{ animal.currency.name }} <br>
-            sell: {{ animal.currency.buyFor * (1-animal.currency.sellForPercentage) | number : 2 }} / buy: {{ animal.currency.buyFor | number : 2 }}
-          </li>
-        </ul>
-        <ul class="market__animals u-hidden" ng-tab-body>
-          <li class="market__animal" ng-repeat="animal in roomCtrl.assets"
-            ng-swipe-item
-            on-left="roomCtrl.sellAnimal(animal)"
-            on-right="roomCtrl.buyAnimal(animal)"
-            left-template="app/routes/room/partials/buy.html"
-            right-template="app/routes/room/partials/sell.html"
-            threshold="0.2">
-            {{ animal.name }} <br>
-            sell: {{ animal.buyFor * (1-animal.sellForPercentage) | number : 2 }} / buy: {{ animal.buyFor | number : 2 }}
-          </li>
-        </ul>
+      <div class="c-window__actions">
+        <button class="o-button o-button--error ripple" ng-click="roomCtrl.shufflePinNumbers()">
+          <i class="material-icons">autorenew</i>
+          Reset vault
+        </button>
+        <button class="o-button o-button--success ripple" ng-click="roomCtrl.enterVault()">
+          <i class="material-icons">trending_flat</i>
+          Enter vault
+        </button>
       </div>
 
-      <button type="button" name="button" class="o-button o-button--success ripple" ng-click="roomCtrl.nextRound()">Next round</button>
+    </section>
+  </div>
 
-      <div id="chart"></div>
-
-    </div>
-
-  </section>
-
-  <ul class="c-room__tabs">
-    <li ng-tab-head class="room__tab ripple">
-      Cards
+  <ul class="c-window__tabs">
+    <li ng-tab-head class="window__tab ripple">
+      <i class="material-icons">queue</i>
+      Add-ons
     </li>
-    <li ng-tab-head class="room__tab ripple" ng-click="roomCtrl.shufflePinNumbers()">
-      Vault
+    <li ng-tab-head="active" class="window__tab ripple">
+      <i class="material-icons">store</i>
+      Market
     </li>
-    <li ng-tab-head class="room__tab ripple">
+    <li ng-tab-head class="window__tab ripple">
+      <i class="material-icons">home</i>
       Storage
     </li>
-    <li ng-tab-head class="room__tab ripple">
-      Barn
+    <li ng-tab-head class="window__tab ripple">
+      <i class="material-icons">content_copy</i>
+      Cards
     </li>
-    <li ng-tab-head="active" class="room__tab ripple">
-      Market
+    <li ng-tab-head class="window__tab ripple" ng-click="roomCtrl.shufflePinNumbers()">
+      <i class="material-icons">security</i>
+      Vault
     </li>
   </ul>
 </main>

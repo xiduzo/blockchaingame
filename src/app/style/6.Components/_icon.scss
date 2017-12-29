@@ -1,0 +1,21 @@
+$c-icon-size: 26px;
+
+.c-icon {
+  width: $c-icon-size;
+  height: $c-icon-size;
+
+  &--medium {
+    width: $c-icon-size * 1.7;
+    height: $c-icon-size * 1.7;
+  }
+
+  &--big {
+    width: $c-icon-size * 2.2;
+    height: $c-icon-size * 2.2;
+  }
+
+  &--large {
+    width: $c-icon-size * 4;
+    height: $c-icon-size * 4;
+  }
+}

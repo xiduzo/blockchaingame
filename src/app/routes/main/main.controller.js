@@ -44,7 +44,10 @@
             Users.api.post({
               name: response.name
             }).then(function(response) {
+              console.log(response);
               localStorageService.set('user', response);
+              Global.setUser(response);
+              vm.user = response;
             });
           }
         }

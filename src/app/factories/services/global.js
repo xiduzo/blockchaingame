@@ -17,7 +17,7 @@
           return vm.user;
         },
         setUser: function(user) {
-          vm. user = user;
+          vm.user = user;
         }
       }
 

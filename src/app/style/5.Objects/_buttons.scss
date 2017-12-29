@@ -1,15 +1,50 @@
+$o-button-change-percentge: 15;
+
 .o-button {
   border: none;
-  min-height: 45px;
+  font-family: 'Komika';
+  line-height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:focus {
     outline: none;
   }
 
   &--success {
-    background: green;
+    background: $green;
   }
   &--error {
-    background: red;
+    background: $red;
+  }
+
+  &--active {
+    background: $activeColor;
+    &-light,
+    &.active {
+      background: lighten($activeColor, $o-button-change-percentge);
+    }
+  }
+
+  &--accent {
+    background: $accentColor;
+    &-light,
+    &.active {
+      background: lighten($accentColor, $o-button-change-percentge);
+    }
+  }
+
+  &--success,
+  &--error,
+  &--accent,
+  &--accent-light,
+  &--active,
+  &--active-light {
+    color: white;
+  }
+
+  .material-icons {
+    margin-right: 0.5em;
   }
 }

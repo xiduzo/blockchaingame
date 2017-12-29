@@ -1,0 +1,69 @@
+.c-big-list {
+  background: $primaryColor;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+
+  .c-big-list__item {
+    flex-grow: 1;
+    display: flex;
+
+    &:nth-of-type(even) { background: lighten($primaryColor, 5); }
+
+    &.swipable {
+      > div {
+        width: 100%;
+        .ng-scope { height: 100%; }
+        .swiper-content {
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          > div {
+            display: flex;
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+    }
+
+    .c-big-list__icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 24px;
+    }
+
+    .c-big-lig__metadata {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      flex-grow: 1;
+
+      .metadata__title {
+        margin: 0;
+        font-size: 1.35em;
+        color: lighten($accentColor, 40);
+      }
+
+      .metadata__subtitle {
+        margin: 0;
+        font-size: 2.4em;
+        letter-spacing: 0.05em;
+      }
+
+      .metadata__info {
+        margin-top: 0.5em;
+        font-style: italic;
+        font-family: 'Open Sans', sans-serif;
+      }
+    }
+
+  }
+}

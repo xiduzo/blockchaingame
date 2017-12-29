@@ -10,6 +10,7 @@
     $scope,
     $log,
     $stateParams,
+    $timeout,
     Rooms,
     Global,
     ngDialog,
@@ -42,6 +43,8 @@
     vm.availablePinNumbers = _.shuffle(PIN_NUMBERS);
 
     vm.currentRound = 0;
+
+    vm.guardText = "I need a passcode before I can let you into this vault"
 
     // Broadcasts
     $scope.$on('roomJoin', function(event, response) {
@@ -94,7 +97,7 @@
 
     function generateRandomStockMarket(numberOfPoints, center, min, max, cycles) {
       var result = [];
-      var phase = Math.random() * Math.PI;
+      // var phase = Math.random() * Math.PI;
       var y = center;
 
       function randomPlusMinus() { return (Math.random() * 2) - 1; }
@@ -104,8 +107,8 @@
         cycle.increment = Math.PI / cycle.length;
       });
 
-      _.each(_.range(numberOfPoints), function(point) {
-        _.each(cycles, function(cycle, index) {
+      _.each(_.range(numberOfPoints), function() {
+        _.each(cycles, function(cycle) {
           cycle.phase += cycle.increment * randomPlusMinus();
           y += (Math.sin(cycle.phase) * (cycle.variance / cycle.length) * (randomPlusMinus() * cycle.noise)) + (cycle.trend / cycle.length);
         });
@@ -138,37 +141,36 @@
     var woolAverage = _.reduce(wool, function(memo, num) { return memo + num; }, 0) / wool.length;
     var milkAverage = _.reduce(milk, function(memo, num) { return memo + num; }, 0) / milk.length;
     var baconAverage = _.reduce(bacon, function(memo, num) { return memo + num; }, 0) / bacon.length;
-   console.log(woolAverage, milkAverage, baconAverage);
 
     var marketData = [wool, milk, bacon];
 
-    var chart = new Highcharts.Chart({
-      title: { text: "market" },
-      chart: {
-        renderTo: 'chart',
-        animation: false,
-        zoomType: 'x'
-      },
-
-      tooltip: {
-        yDecimals: 2
-      },
-
-      // yAxis: {
-      //   plotLines: [
-      //     { color: '#2930db', value: woolAverage, width: '1', zIndex: 5 },
-      //     { color: '#969696', value: milkAverage, width: '1', zIndex: 5 },
-      //     { color: '#f51600', value: baconAverage, width: '1', zIndex: 5 },
-      //   ],
-      // },
-
-      series: [
-        { data: wool, name: "wool", color: '#2930db' },
-        { data: milk, name: "milk", color: '#969696' },
-        { data: bacon, name: "bacon", color: '#f51600' },
-      ]
-
-    });
+    // new Highcharts.Chart({
+    //   title: { text: "market" },
+    //   chart: {
+    //     renderTo: 'chart',
+    //     animation: false,
+    //     zoomType: 'x'
+    //   },
+    //
+    //   tooltip: {
+    //     yDecimals: 2
+    //   },
+    //
+    //   yAxis: {
+    //     plotLines: [
+    //       { color: '#2930db', value: woolAverage, width: '1', zIndex: 5 },
+    //       { color: '#969696', value: milkAverage, width: '1', zIndex: 5 },
+    //       { color: '#f51600', value: baconAverage, width: '1', zIndex: 5 }
+    //     ]
+    //   },
+    //
+    //   series: [
+    //     { data: wool, name: "wool", color: '#2930db' },
+    //     { data: milk, name: "milk", color: '#969696' },
+    //     { data: bacon, name: "bacon", color: '#f51600' }
+    //   ]
+    //
+    // });
 
     // Services
     Rooms.api.one($stateParams.roomId).get().then(function(response) {
@@ -215,6 +217,7 @@
         response.amountToBuy = parseInt(response.amountToBuy);
 
         // Update game
+        _.findWhere(vm.myBarn, { assetType: animal.assetType }).oldAmount = _.findWhere(vm.myBarn, { assetType: animal.assetType }).amount;
         _.findWhere(vm.myBarn, { assetType: animal.assetType }).amount += response.amountToBuy;
         vm.oldCoins = vm.myCoins
         vm.myCoins -= response.amountToBuy * animal.buyFor;
@@ -247,6 +250,7 @@
         response.amountToSell = parseInt(response.amountToSell);
 
         // Update the game
+        _.findWhere(vm.myBarn, { assetType: animal.assetType }).oldAmount = _.findWhere(vm.myBarn, { assetType: animal.assetType }).amount;
         _.findWhere(vm.myBarn, { assetType: animal.assetType }).amount -= response.amountToSell;
         vm.oldCoins = vm.myCoins
         vm.myCoins += response.amountToSell * (animal.buyFor * (1 - animal.sellForPercentage));
@@ -258,7 +262,9 @@
     }
 
     function enterVault() {
-      if(vm.enteredPin.length < 5) { return console.log("enter pin first"); }
+      if(vm.enteredPin.length < 5) {
+        return vm.guardText = "I need a pincombination of 5 items before I can check your code."
+      }
 
       var pincode = "";
       var myPinCode = "00552";
@@ -267,9 +273,11 @@
         pincode += pinnumber.number;
       });
 
-      if(pincode !== myPinCode) { return console.log("wrong pin code"); }
+      if(pincode !== myPinCode) {
+        return vm.guardText = "You shall not pass!";
+      }
 
-      console.log("Go into vault");
+      vm.guardText = "Goodday, " + vm.user.name + ", glad to see you back";
     }
 
     function addPinNumber(number) {
@@ -280,14 +288,14 @@
 
     function nextRound() {
       _.each(vm.assets, function(asset) {
-        console.log(vm.currentRound);
+        $log.log(vm.currentRound);
         asset.currency.buyFor = marketData[asset.currency.currencyType-1][vm.currentRound];
-        // getNextPrice(asset.currency);
       })
       vm.currentRound++;
     }
 
     function shufflePinNumbers() {
+      vm.guardText = "I need a passcode before I can let you into this vault";
       vm.enteredPin = [];
       vm.availablePinNumbers = _.shuffle(PIN_NUMBERS);
     }

@@ -10,6 +10,7 @@
     "module": true,
     "inject": true,
     "_": true,
-    "moment": true
+    "moment": true,
+    "Highcharts": true
   }
 }

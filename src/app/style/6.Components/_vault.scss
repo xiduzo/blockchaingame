@@ -1,20 +1,35 @@
-.c-vault {
+.c-window--vault {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
+.c-vault__guard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.75em;
+
+  .guard__text {
+    text-align: center;
+    font-size: 0.75em;
+    padding: 8px 16px 6px 16px;
+  }
 }
 
 .c-vault__pincode {
   display: flex;
   justify-content: space-around;
   padding: 0;
+  margin: 0;
 }
 
 .c-vault__pincode__number {
-  background: rgb(95, 91, 103);
-  width: 50px;
-  height: 50px;
+  background: lighten($primaryColor, 5);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
   display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .c-vault__pinnumbers {
@@ -29,20 +44,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 10vh;
 
-  &:focus {
-    outline: none;
-  }
+  &:not(:last-of-type) { margin-bottom: 0.5em; }
 
-  .icon {
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
-    background: grey;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 6px;
-  }
+  &:focus { outline: none; }
 }

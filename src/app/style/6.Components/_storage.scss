@@ -1,0 +1,50 @@
+.c-window--storage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .c-storage__header {
+    background: lighten($primaryColor, 5);
+    min-height: 10px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    height: 40px;
+    font-size: 0.8em;
+
+    .c-storage__stats {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-grow: 1;
+      padding: 0;
+      .c-storage__stat {
+        list-style: none;
+        display: flex;
+        &:not(:last-of-type) { margin-right: 0.5em; }
+
+        img { z-index: 10; }
+      }
+    }
+
+    .c-turn {
+      background-color: $activeColor;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 8px 0 24px;
+      border-radius: 0 0 0 50px;
+
+      .c-time-left {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .material-icons {
+          font-size: 1em;
+          margin: 4px 4px 0 16px;
+
+        }
+      }
+    }
+  }
+}
