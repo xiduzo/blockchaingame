@@ -20,13 +20,13 @@
     .constant('PIN_NUMBERS', [
       { number: 0, verbose: 'queen', image: 'queen.png'},
       { number: 1, verbose: 'merchant', image: 'merchant_sheep.svg'},
-      { number: 2, verbose: 'coin', image: 'money.png'},
-      { number: 3, verbose: 'cow', image: 'cow.png'},
-      { number: 4, verbose: 'pig', image: 'pig.png'},
-      { number: 5, verbose: 'sheep', image: 'sheep.png'},
-      { number: 6, verbose: 'milk', image: 'milk.png'},
+      { number: 2, verbose: 'coin', image: 'money.svg'},
+      { number: 3, verbose: 'cow', image: 'cow.svg'},
+      { number: 4, verbose: 'pig', image: 'pig.svg'},
+      { number: 5, verbose: 'sheep', image: 'sheep.svg'},
+      { number: 6, verbose: 'milk', image: 'milk.svg'},
       { number: 7, verbose: 'bacon', image: 'bacon.svg'},
-      { number: 8, verbose: 'wool', image: 'wool.png'}
+      { number: 8, verbose: 'wool', image: 'wool.svg'}
     ])
     .constant('CARDS', [
       {
@@ -35,7 +35,7 @@
         "effect": 2,
         "activeTime": 0,
         "text": "When used, this card will allow you to attack a random player's storage, with 4 power.",
-        "image": "guard.png"
+        "image": "guard.svg"
       },
       {
         "type": 2,
@@ -43,7 +43,7 @@
         "effect": 4,
         "activeTime": 90,
         "text": "You'll hire a guard who will add 4 extra security to your storage for 60 seconds",
-        "image": "guard.png"
+        "image": "guard.svg"
       },
       {
         "type": 2,
@@ -62,12 +62,12 @@
             "plural": "Sheep",
             "buyFor": 100,
             "sellForPercentage": 0.15,
-            "image": "sheep.png",
+            "image": "sheep.svg",
             "active": false,
             "merchant": "merchant_sheep.svg",
             "currencyProduction": { "min": 2, "max": 5},
             "currency": {
-              "image": "wool.png",
+              "image": "wool.svg",
               "currencyType": 1,
               "name": "Wool",
               "plural": "Wool",
@@ -83,12 +83,12 @@
             "plural": "Cows",
             "buyFor": 150,
             "sellForPercentage": 0.20,
-            "image": "cow.png",
+            "image": "cow.svg",
             "active": false,
             "merchant": "merchant_cow.svg",
             "currencyProduction": { "min": 2, "max": 5},
             "currency": {
-              "image": "milk.png",
+              "image": "milk.svg",
               "currencyType": 2,
               "name": "Milk",
               "plural": "Milk",
@@ -105,7 +105,7 @@
             "plural": "Pigs",
             "buyFor": 225,
             "sellForPercentage": 0.25,
-            "image": "pig.png",
+            "image": "pig.svg",
             "active": false,
             "merchant": "merchant_pig.svg",
             "currencyProduction": { "min": 2, "max": 5},

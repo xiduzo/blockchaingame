@@ -16,7 +16,7 @@
     </div>
     <ul class="room__assets">
       <li class="room__asset">
-        <img class="c-icon" src="assets/images/money.png" alt="money">
+        <img class="c-icon" src="assets/images/money.svg" alt="money">
         <span class="c-amount-indicator c-amount-indicator--secondary" count-to="{{roomCtrl.myCoins}}" value="{{roomCtrl.oldCoins}}" duration="2" decimals="2"></span>
       </li>
       <li class="room__asset" ng-repeat="animal in roomCtrl.myBarn" ng-if="animal.active">
@@ -134,7 +134,7 @@
             </span>
           </li>
           <li class="c-storage__stat">
-            <img class="c-icon" src="assets/images/guard.png" alt="guard">
+            <img class="c-icon" src="assets/images/guard.svg" alt="guard">
             <span class="c-amount-indicator c-amount-indicator--primary">
               {{ roomCtrl.wallet.security }}
             </span
@@ -183,7 +183,7 @@
           </h1>
           <div class="o-card__icon">
             <img ng-if="card.image" src="assets/images/{{card.image}}" alt="">
-            <img ng-if="!card.image" src="assets/images/money.png" alt="">
+            <img ng-if="!card.image" src="assets/images/money.svg" alt="">
           </div>
           <div class="o-card__effect">
             +{{ card.effect || "600" }}
@@ -205,7 +205,7 @@
           </h1>
           <div class="o-card__icon">
             <img ng-if="roomCtrl.highlightedCard.image" src="assets/images/{{roomCtrl.highlightedCard.image}}" alt="">
-            <img ng-if="!roomCtrl.highlightedCard.image" src="assets/images/money.png" alt="">
+            <img ng-if="!roomCtrl.highlightedCard.image" src="assets/images/money.svg" alt="">
           </div>
           <div class="o-card__effect">
             +{{ roomCtrl.highlightedCard.effect || "2" }}
