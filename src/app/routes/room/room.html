@@ -130,20 +130,14 @@
         <ul class="c-storage__stats">
           <li class="c-storage__stat">
             <span class="c-amount-indicator c-amount-indicator--primary c-amount-indicator--full">
-              fee: 99
+              fee: {{ roomCtrl.wallet.transaction_fee }} <span class="small">c</span>
             </span>
           </li>
           <li class="c-storage__stat">
             <img class="c-icon" src="assets/images/guard.png" alt="guard">
             <span class="c-amount-indicator c-amount-indicator--primary">
-              99
+              {{ roomCtrl.wallet.security }}
             </span
-          </li>
-          <li class="c-storage__stat">
-            <img class="c-icon" src="assets/images/guard.png" alt="guard">
-            <span class="c-amount-indicator c-amount-indicator--primary">
-              99
-            </span>
           </li>
         </ul>
       </div>

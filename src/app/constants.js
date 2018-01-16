@@ -11,8 +11,12 @@
     .constant('API_URL', 'https://api.mlab.com/api/1/databases/blockchainz/collections/')
     .constant('API_KEY', 'BC6Nv1iEK_ZTzlp6IvIxF7jHRMEMREzz')
     .constant('SOCKETHOST', 'floating-meadow-66461.herokuapp.com/')
-    .constant('ROOM_MEMBERS_NEEDED_TO_PLAY', 2)
+    .constant('ROOM_MEMBERS_NEEDED_TO_PLAY', 1)
     .constant('PIN_NUMBERS_TO_ENTER', 6)
+    .constant('BASE_WALLET', {
+      transaction_fee: 50,
+      security: 10
+    })
     .constant('PIN_NUMBERS', [
       { number: 0, verbose: 'queen', image: 'queen.png'},
       { number: 1, verbose: 'merchant', image: 'merchant_sheep.svg'},

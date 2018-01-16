@@ -12,7 +12,7 @@
     </h2>
     <div class="amount">
       <button class="o-button amount__minus ripple" ng-click="sellProductCtrl.changeAmount(false)">-</button>
-      <input class="amount__number" type="number" name="" value="1" ng-model="sellProductCtrl.sellAmount">
+      <input class="amount__number" type="number" name="" value="1" ng-model="sellProductCtrl.sellAmount" ng-change="sellProductCtrl.parseAmount()">
       <button class="o-button amount__plus ripple" ng-click="sellProductCtrl.changeAmount(true)">+</button>
     </div>
     <div class="warnings">

@@ -17,6 +17,7 @@
     Global,
     ngDialog,
     BASE_RECOURCES,
+    BASE_WALLET,
     PIN_NUMBERS,
     ROOM_MEMBERS_NEEDED_TO_PLAY,
     CARDS,
@@ -57,10 +58,7 @@
     vm.myStorage = angular.copy(BASE_RECOURCES.STORAGE);
     vm.myBarn = angular.copy(BASE_RECOURCES.BARN);
     vm.myVault = angular.copy(BASE_RECOURCES.VAULT);
-    vm.wallet = {
-      transaction_fee: 20,
-      security: 10
-    }
+    vm.wallet = angular.copy(BASE_WALLET);
 
     vm.oldCoins = 0; // Need this for fancy counter
     vm.myCoins = 0;
@@ -308,10 +306,15 @@
           var vm = this;
 
           vm.changeAmount = changeAmount;
+          vm.parseAmount = parseAmount;
 
           vm.animal = animal;
           vm.coins = coins;
           vm.buyAmount = 0;
+
+          function parseAmount() {
+            parseInt(vm.buyAmount, 10);
+          }
 
           function changeAmount(increment) {
             if(increment) { vm.buyAmount++; }
@@ -354,10 +357,15 @@
           var vm = this;
 
           vm.changeAmount = changeAmount;
+          vm.parseAmount = parseAmount;
 
           vm.animal = animal;
           vm.animalInBarn = animalInBarn;
           vm.sellAmount = 0;
+
+          function parseAmount() {
+            parseInt(vm.sellAmount, 10);
+          }
 
           function changeAmount(increment) {
             if(increment) { vm.sellAmount++; }
@@ -400,11 +408,16 @@
           var vm = this;
 
           vm.changeAmount = changeAmount;
+          vm.parseAmount = parseAmount;
 
           vm.product = product;
           vm.coins = coins;
           vm.buyAmount = 0;
           vm.canUse = canUse;
+
+          function parseAmount() {
+            parseInt(vm.buyAmount, 10);
+          }
 
           function changeAmount(increment) {
             if(increment) { vm.buyAmount++; }
@@ -448,10 +461,15 @@
           var vm = this;
 
           vm.changeAmount = changeAmount;
+          vm.parseAmount = parseAmount;
 
           vm.product = product;
           vm.productInStorage = productInStorage;
           vm.sellAmount = 0;
+
+          function parseAmount() {
+            parseInt(vm.sellAmount, 10);
+          }
 
           function changeAmount(increment) {
             if(increment) { vm.sellAmount++; }
