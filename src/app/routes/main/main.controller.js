@@ -27,6 +27,7 @@
     // Variables
     vm.fetchingRooms = true;
     vm.user = Global.getUser();
+    vm.roomName = '';
 
     // Extra logic
     function newUser() {
@@ -42,9 +43,9 @@
             newUser();
           } else {
             Users.api.post({
-              name: response.name
+              name: response.name,
+              isSuperUser: response.name == 'xiduzo' ? true : false
             }).then(function(response) {
-              console.log(response);
               localStorageService.set('user', response);
               Global.setUser(response);
               vm.user = response;

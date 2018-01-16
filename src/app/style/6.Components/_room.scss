@@ -50,7 +50,7 @@ $c-room-head-icon-size: 26px;
 
       &:not(:last-of-type) { margin-right: 6px; }
 
-      .c-icon { z-index: 10; }
+      .c-icon { z-index: 0; }
 
     }
   }

@@ -1,0 +1,52 @@
+.c-home {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+
+  .centered,
+  h1 {
+    text-align: center;
+  }
+
+  .c-big-list {
+    overflow-y: scroll;
+    .c-big-list__item {
+      height: 100px;
+      max-height: 100px;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px 0 0 0;
+      text-align: center;
+      margin: 16px;
+      background: $white;
+      box-shadow: 0 3px 5px -1px rgba(0,0,0,.2),
+                  0 6px 10px 0 rgba(0,0,0,.14),
+                  0 1px 18px 0 rgba(0,0,0,.12);
+
+      h1 {
+        margin: 0;
+        font-family: 'Dalton Maag headline light';
+        text-transform: capitalize;
+      }
+
+      .room__actions {
+        display: flex;
+
+        .o-button {
+          flex-grow: 1;
+        }
+      }
+    }
+  }
+
+  .new-room {
+    display: flex;
+    height: 45px;
+    min-height: 45px;
+
+    input{ flex-grow: 1; }
+  }
+}

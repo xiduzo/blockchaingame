@@ -82,6 +82,16 @@
       }
     }
   }
+
+  &--no-close-button {
+    .ngdialog-content {
+      .c-dialog__container {
+        .c-dialog__content {
+          margin: 16px 16px 0 16px;
+        }
+      }
+    }
+  }
 }
 
 .c-dialog__content--market {

@@ -11,7 +11,7 @@
     .constant('API_URL', 'https://api.mlab.com/api/1/databases/blockchainz/collections/')
     .constant('API_KEY', 'BC6Nv1iEK_ZTzlp6IvIxF7jHRMEMREzz')
     .constant('SOCKETHOST', 'floating-meadow-66461.herokuapp.com/')
-    .constant('ROOM_MEMBERS_NEEDED_TO_PLAY', 1)
+    .constant('ROOM_MEMBERS_NEEDED_TO_PLAY', 2)
     .constant('PIN_NUMBERS_TO_ENTER', 6)
     .constant('PIN_NUMBERS', [
       { number: 0, verbose: 'queen', image: 'queen.png'},
@@ -22,7 +22,7 @@
       { number: 5, verbose: 'sheep', image: 'sheep.png'},
       { number: 6, verbose: 'milk', image: 'milk.png'},
       { number: 7, verbose: 'bacon', image: 'bacon.svg'},
-      { number: 8, verbose: 'wool', image: 'wool.png'},
+      { number: 8, verbose: 'wool', image: 'wool.png'}
     ])
     .constant('CARDS', [
       {

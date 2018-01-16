@@ -1,20 +1,34 @@
-<div ng-if="main.fetchingRooms">
-  Getting rooms
-</div>
-<ul ng-if="!main.fetchingRooms" class="row">
-  <li ng-repeat="room in main.rooms" class="col-xs-4">
-    {{ room.name }}
-    {{ room.roomPin }}
-    <button type="button" name="button" ng-click="main.removeRoom(room)">
-      remove room
-    </button>
-    <button type="button" name="button" ui-sref="room({roomId: room._id.$oid})">
-      goto room
-    </button>
-  </li>
-</ul>
-<input type="text" ng-model="main.roomName">
-<button ng-click="main.newRoom(main.roomName)">new room</button>
-<h1 ng-if="main.user">
-  Welcome back {{ main.user.name }}
-</h1>
+<section class="c-home">
+  <h1 ng-if="main.user.name">
+    Welcome back <br> {{ main.user.name }}
+  </h1>
+  <ul class="c-big-list">
+    <li ng-if="main.fetchingRooms">
+      <div class="centered">
+        Getting rooms...
+      </div>
+    </li>
+    <li ng-if="!main.fetchingRooms && main.rooms.length < 1">
+      <div class="centered">
+        No rooms found
+      </div>
+    </li>
+    <li ng-repeat="room in main.rooms" class="c-big-list__item">
+      <h1>
+        {{ room.name }}
+      </h1>
+      <div class="room__actions">
+        <button ng-if="main.user.isSuperUser" class="o-button o-button--error ripple" ng-click="main.removeRoom(room)">
+          remove room
+        </button>
+        <button class="o-button o-button--success ripple" ui-sref="room({roomId: room._id.$oid})">
+          goto room
+        </button>
+      </div>
+    </li>
+  </ul>
+  <div class="new-room" ng-if="main.user.isSuperUser">
+    <input type="text" ng-model="main.roomName">
+    <button class="o-button o-button--success" ng-click="main.newRoom(main.roomName)" ng-disabled="main.roomName.length < 5">Create room</button>
+  </div>
+</section>

@@ -8,10 +8,10 @@
   <header class="c-room__head">
     <div class="room__player">
       <span class="player__indicator">
-        Player 1
+        Player
       </span>
       <span class="player__name">
-        {{ roomCtrl.user.name }}
+        {{ roomCtrl.user.name | limitTo : 9 }}
       </span>
     </div>
     <ul class="room__assets">

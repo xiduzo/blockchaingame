@@ -9,6 +9,7 @@ $o-button-change-percentge: 25;
   align-items: center;
   background: none;
   min-width: 50px;
+  transition: all 350ms;
 
   &[disabled] { background: lighten($black, $o-button-change-percentge); }
 

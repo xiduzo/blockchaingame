@@ -42,7 +42,7 @@
     vm.roomStarted = true;
     vm.addonsAvailable = false;
 
-    vm.timeThisRound = 60 * 1;
+    vm.timeThisRound = 60 * 10;
     vm.currentTick = 0;
     vm.timesToUpdateMarket = angular.copy(vm.timeThisRound);
 
@@ -63,14 +63,10 @@
     }
 
     vm.oldCoins = 0; // Need this for fancy counter
-    vm.myCoins = 10000;
+    vm.myCoins = 0;
 
     vm.cards = [_.first(_.shuffle(CARDS)), undefined, undefined];
     vm.highlightedCard = {};
-
-    vm.introduce_sheep = Math.round((Math.round(Math.random() * 5 + 5) / 100) * vm.timeThisRound);
-    vm.introduce_cows = Math.round((Math.round(Math.random() * 10 + 15) / 100) * vm.timeThisRound);
-    vm.introduce_pig = Math.round((Math.round(Math.random() * 20 + 40) / 100) * vm.timeThisRound);
 
     // Broadcasts
     $scope.$on('roomJoin', function(event, response) {
@@ -80,7 +76,7 @@
           // Only add yourself when not in the room
           // Prevents duplicate users
           if(!_.find(vm.room.users, function(user) {
-            return user._id.$oid = response.data.user._id.$oid;
+            return user._id.$oid == response.data.user._id.$oid;
           })) {
             vm.room.users.push(response.data.user);
           }
@@ -91,13 +87,27 @@
     $scope.$on("roomLeave", function(event, response) {
       if(response.data.room == $stateParams.roomId) {
         vm.room.users = _.without(vm.room.users, _.find(vm.room.users, function(user) {
-          return user._id.$oid = response.data.user._id.$oid;
+          return user._id.$oid == response.data.user._id.$oid;
         }));
 
         // Update
         vm.room.put();
       }
     });
+
+    $scope.$on("roomStarted", function(event, response) {
+      if(response.data.room == $stateParams.roomId) {
+        console.log(response.data.roomSettings);
+        vm.room.markets = response.data.roomSettings.markets;
+        vm.introduce_sheep = response.data.roomSettings.introduce_sheep;
+        vm.introduce_cows = response.data.roomSettings.introduce_cows;
+        vm.introduce_pig = response.data.roomSettings.introduce_pig;
+        ngDialog.closeAll();
+        vm.myCoins = 10000;
+        vm.roomStarted = true;
+        countDownTimer();
+      }
+    })
 
     // Extra logic
     Rooms.socket("roomJoin", {
@@ -126,8 +136,6 @@
         vm.timeThisRound--;
         vm.currentTick++;
 
-        console.log(vm.introduce_sheep,vm.introduce_cows,vm.introduce_pig);
-
         if(vm.currentTick % 10 === 0) { updateCurrencies(); }
 
         if(vm.currentTick % 30 === 0) { getCurrenciesFromMiners(); }
@@ -150,33 +158,59 @@
       }, 1000);
     }
 
-    countDownTimer();
-
     // Wait to start game for users
     function waitForUsers() {
-      vm.roomStarted = true;
-      vm.myCoins = 10000;
-      return true;
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/waitforusers.html',
-        controller: ['room', function(room) {
+        showClose: false,
+        closeByDocument: false,
+        className: 'c-dialog c-dialog--no-close-button',
+        controller: ['room', 'createdRoom', function(room, createdRoom) {
 
           var vm = this;
 
           vm.room = room;
+          vm.roomMembersNeededToPlay = ROOM_MEMBERS_NEEDED_TO_PLAY;
+          vm.createdRoom = createdRoom;
+
         }],
         controllerAs: 'waitForUsersCtrl',
         resolve: {
-          room: function() { return vm.room; }
+          room: function() { return vm.room; },
+          createdRoom: function() { return _.first(vm.room.users)._id.$oid == vm.user._id.$oid ? true : false; }
         }
       })
       .then(function(response) {
-        vm.roomStarted = true;
-        vm.myCoins = 10000;
+        if(response && response.closedByButton) { return $state.go('home'); }
+
+        var wool = generateRandomStockMarket(vm.timesToUpdateMarket, 20, 10, 100,
+                    [{ length: 7, variance: 50, noise: 1, trend: 0},
+                     { length: 365, variance: 30, noise: 2, trend: 5},
+                     { length: 700, variance: 2, noise: 0, trend: 50}]);
+
+        var milk = generateRandomStockMarket(vm.timesToUpdateMarket, 80, 40, 400,
+                    [{ length: 7, variance: 90, noise: 2, trend: 0},
+                     { length: 365, variance: 60, noise: 3, trend: 0},
+                     { length: 700, variance: 4, noise: 0, trend: 100}]);
+
+        var bacon = generateRandomStockMarket(vm.timesToUpdateMarket, 320, 160, 1600,
+                    [{ length: 7, variance: 170, noise: 4, trend: 0},
+                     { length: 365, variance: 110, noise: 6, trend: 0},
+                     { length: 700, variance: 8, noise: 0, trend: 200}]);
+
+        Rooms.socket("roomStarted", {
+          "room": $stateParams.roomId,
+          "roomSettings": {
+            markets: [wool, milk, bacon],
+            introduce_sheep: Math.round((Math.round(Math.random() * 5 + 5) / 100) * vm.timeThisRound),
+            introduce_cows: Math.round((Math.round(Math.random() * 10 + 15) / 100) * vm.timeThisRound),
+            introduce_pig: Math.round((Math.round(Math.random() * 20 + 40) / 100) * vm.timeThisRound)
+
+          }
+        });
       })
       .catch(function(error) {
-        $state.go('home');
-        $log.log(error);
+        $log.error(error);
       });
     }
 
@@ -207,51 +241,6 @@
       return result;
     }
 
-    var wool = generateRandomStockMarket(vm.timesToUpdateMarket, 20, 10, 100,
-                [{ length: 7, variance: 50, noise: 1, trend: 0},
-                 { length: 365, variance: 30, noise: 2, trend: 5},
-                 { length: 700, variance: 2, noise: 0, trend: 50}]);
-
-    var milk = generateRandomStockMarket(vm.timesToUpdateMarket, 80, 40, 400,
-                [{ length: 7, variance: 90, noise: 2, trend: 0},
-                 { length: 365, variance: 60, noise: 3, trend: 0},
-                 { length: 700, variance: 4, noise: 0, trend: 100}]);
-
-    var bacon = generateRandomStockMarket(vm.timesToUpdateMarket, 320, 160, 1600,
-                [{ length: 7, variance: 170, noise: 4, trend: 0},
-                 { length: 365, variance: 110, noise: 6, trend: 0},
-                 { length: 700, variance: 8, noise: 0, trend: 200}]);
-
-    var marketData = [wool, milk, bacon];
-
-    // new Highcharts.Chart({
-    //   title: { text: "market" },
-    //   chart: {
-    //     renderTo: 'chart',
-    //     animation: false,
-    //     zoomType: 'x'
-    //   },
-    //
-    //   tooltip: {
-    //     yDecimals: 2
-    //   },
-    //
-    //   yAxis: {
-    //     plotLines: [
-    //       { color: '#2930db', value: woolAverage, width: '1', zIndex: 5 },
-    //       { color: '#969696', value: milkAverage, width: '1', zIndex: 5 },
-    //       { color: '#f51600', value: baconAverage, width: '1', zIndex: 5 }
-    //     ]
-    //   },
-    //
-    //   series: [
-    //     { data: wool, name: "wool", color: '#2930db' },
-    //     { data: milk, name: "milk", color: '#969696' },
-    //     { data: bacon, name: "bacon", color: '#f51600' }
-    //   ]
-    //
-    // });
-
     // Services
     Rooms.api.one($stateParams.roomId).get().then(function(response) {
       vm.room = response;
@@ -259,7 +248,7 @@
       // Only add yourself when not in the room
       // Prevents duplicate users
       if(!_.find(vm.room.users, function(user) {
-        return user._id.$oid = vm.user._id.$oid;
+        return user._id.$oid == vm.user._id.$oid;
       })) {
         vm.room.users.push(vm.user);
         vm.room.put();
@@ -270,8 +259,8 @@
     });
 
     function introduceAnimal(animal) {
-      var animal = _.findWhere(vm.myBarn, {assetType: animal});
-      console.log(animal);
+      ngDialog.closeAll();
+      animal = _.findWhere(vm.myBarn, {assetType: animal});
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/merchant.html',
         closeByDocument: false,
@@ -286,11 +275,11 @@
           animal: function() { return animal; }
         }
       })
-      .then(function(response) {
+      .then(function() {
         vm.animalsAvailable = true;
         activeAnimal(animal);
       })
-      .catch(function(error) {
+      .catch(function() {
         vm.animalsAvailable = true;
         activeAnimal(animal);
       });
@@ -537,7 +526,7 @@
           }
 
         }],
-        controllerAs: 'enterVaultCtrl',
+        controllerAs: 'enterVaultCtrl'
       })
       .then(function(response) {
         _.each(response.pincode, function(pinnumber) {
@@ -625,7 +614,7 @@
 
     function updateCurrencies() {
       _.each(vm.assets, function(asset) {
-        asset.currency.buyFor = marketData[asset.currency.currencyType-1][vm.currentTick];
+        asset.currency.buyFor = vm.room.markets[asset.currency.currencyType-1][vm.currentTick];
       });
 
       _.each(vm.myStorage, function(asset, index) {
@@ -648,10 +637,6 @@
 
     function makeEmptyArray(length) {
       return _.range(length);
-    }
-
-    function buyCard(index) {
-
     }
 
     function buyOrSelectCard(card, index) {

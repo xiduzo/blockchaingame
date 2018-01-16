@@ -55,7 +55,7 @@
 
         element.bind('click', function () {
           scope.tabs.index = index;
-          scope.$$phase || scope.$apply();
+          scope.$apply();
         });
 
         scope.$watch('tabs.index', function () {
