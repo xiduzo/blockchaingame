@@ -43,7 +43,7 @@
     vm.roomStarted = true;
     vm.addonsAvailable = false;
 
-    vm.timeThisRound = 60 * 3;
+    vm.timeThisRound = 60 * 10;
     vm.currentTick = 0;
     vm.timesToUpdateMarket = angular.copy(vm.timeThisRound);
 
@@ -311,7 +311,6 @@
           vm.animal = animal;
           vm.coins = coins;
           vm.buyAmount = 0;
-          console.log(animal);
           vm.canUse = _.findWhere(storage, { currencyType: animal.currency.currencyType}).canUse;
 
           function parseAmount() {
