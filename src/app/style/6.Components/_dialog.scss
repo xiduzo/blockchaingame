@@ -2,6 +2,8 @@
   display: flex;
   align-items: center;
 
+  .ngdialog-overlay { z-index: -1; }
+
   .ngdialog-content {
     width: 90vw;
     margin: 0 auto;
@@ -15,6 +17,26 @@
 
       .c-dialog__content {
         margin: -16px 16px 0 16px;
+
+        .c-dialog__icon {
+          display: flex;
+          justify-content: center;
+          margin: 0 auto .5em auto;
+        }
+
+        .title {
+          color: $titleColor;
+          font-family: 'Dalton Maag headline light';
+          text-align: center;
+          font-size: 1.5em;
+        }
+
+        .text {
+          font-family: 'Dalton Maag text light';
+          text-align: center;
+          color: lighten($black, 15);
+          margin: 1em 0;
+        }
 
         h1,
         h2 {
@@ -41,6 +63,25 @@
     }
 
   }
+
+  &--black {
+
+    .ngdialog-content {
+      background: lighten($black, 15);
+
+      .c-dialog__container {
+        .c-dialog__content {
+          .title {
+            color: $white;
+          }
+        }
+      }
+
+      .ngdialog-close {
+        color: $white;
+      }
+    }
+  }
 }
 
 .c-dialog__content--market {
@@ -49,13 +90,6 @@
     display: flex;
     justify-content: center;
     margin: 0 auto .5em auto;
-  }
-
-  .title {
-    color: $titleColor;
-    font-family: 'Dalton Maag headline light';
-    text-align: center;
-    font-size: 1.5em;
   }
 
   .price {
@@ -108,6 +142,10 @@
     font-size: 0.8em;
     margin: 0.5em 0;
   }
+}
+
+.c-dialog__content--vault {
+
 }
 
 .small {

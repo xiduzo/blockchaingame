@@ -2,12 +2,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  > section {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
 }
 
 .c-vault__header {
@@ -17,14 +11,21 @@
   align-items: center;
   height: 40px;
   font-size: 0.8em;
-  background: $black;
+  background: lighten($black, 20);
+
 
   .title {
-    color: $titleColor;
     margin: 0;
     font-family: 'Dalton Maag headline bold';
     font-size: 1.55em;
-    padding: 6px 0 6px 16px;
+    padding: 6px 8px 6px 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .material-icons {
+      margin-right: 8px;
+    }
   }
 
   .c-vault__stats {
@@ -57,7 +58,7 @@
 
 .c-vault__pincode {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   padding: 0;
   margin: 0;
 }
@@ -65,9 +66,14 @@
 .c-vault__pincode__number {
   background: $primaryColor;
   border-radius: 50%;
-  width: 44px;
-  height: 44px;
+  width: 28px;
+  height: 28px;
   display: flex;
+  margin: 2em 0.33em;
+
+  img {
+    width: inherit;
+  }
 
 }
 
@@ -79,7 +85,7 @@
 }
 
 .c-vault__pinnumber {
-  width: 33vw;
+  width: 33%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -89,7 +95,6 @@
   &:focus { outline: none; }
 
   > div {
-    background: darken($primaryColor, 15);
     border-radius: 50%;
     padding: 6px;
     display: flex;

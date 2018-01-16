@@ -10,16 +10,13 @@ $o-button-change-percentge: 25;
   background: none;
   min-width: 50px;
 
-  &:focus {
-    outline: none;
-  }
+  &[disabled] { background: lighten($black, $o-button-change-percentge); }
 
-  &--success {
-    background: $green;
-  }
-  &--error {
-    background: $red;
-  }
+  &:focus { outline: none; }
+
+  &--success { background: $green; }
+
+  &--error { background: $red; }
 
   &--active {
     background: lighten($activeColor, $o-button-change-percentge);
@@ -31,9 +28,7 @@ $o-button-change-percentge: 25;
 
   &--accent {
     background: $accentColor;
-    &[disabled] {
-      background: lighten($accentColor, $o-button-change-percentge);
-    }
+
   }
 
   &--success,

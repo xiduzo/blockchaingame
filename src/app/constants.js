@@ -12,9 +12,10 @@
     .constant('API_KEY', 'BC6Nv1iEK_ZTzlp6IvIxF7jHRMEMREzz')
     .constant('SOCKETHOST', 'floating-meadow-66461.herokuapp.com/')
     .constant('ROOM_MEMBERS_NEEDED_TO_PLAY', 1)
+    .constant('PIN_NUMBERS_TO_ENTER', 6)
     .constant('PIN_NUMBERS', [
       { number: 0, verbose: 'queen', image: 'queen.png'},
-      { number: 1, verbose: 'merchant', image: 'merchant.png'},
+      { number: 1, verbose: 'merchant', image: 'merchant_sheep.svg'},
       { number: 2, verbose: 'coin', image: 'money.png'},
       { number: 3, verbose: 'cow', image: 'cow.png'},
       { number: 4, verbose: 'pig', image: 'pig.png'},
@@ -22,7 +23,6 @@
       { number: 6, verbose: 'milk', image: 'milk.png'},
       { number: 7, verbose: 'bacon', image: 'bacon.svg'},
       { number: 8, verbose: 'wool', image: 'wool.png'},
-      { number: 9, verbose: 'guard', image: 'guard.png'}
     ])
     .constant('CARDS', [
       {
@@ -60,6 +60,7 @@
             "sellForPercentage": 0.15,
             "image": "sheep.png",
             "active": false,
+            "merchant": "merchant_sheep.svg",
             "currencyProduction": { "min": 2, "max": 5},
             "currency": {
               "image": "wool.png",
@@ -80,6 +81,7 @@
             "sellForPercentage": 0.20,
             "image": "cow.png",
             "active": false,
+            "merchant": "merchant_cow.svg",
             "currencyProduction": { "min": 2, "max": 5},
             "currency": {
               "image": "milk.png",
@@ -101,6 +103,7 @@
             "sellForPercentage": 0.25,
             "image": "pig.png",
             "active": false,
+            "merchant": "merchant_pig.svg",
             "currencyProduction": { "min": 2, "max": 5},
             "currency": {
               "image": "bacon.svg",
@@ -118,9 +121,9 @@
         return {
           ASSETS: ASSETS,
           STORAGE: [
-            { "assetType": 1, "currencyType": 1, "amount": 50, "oldAmount": 50, "active": true, "currencyLink": _.findWhere(ASSETS, {assetType: 1}).currency },
-            { "assetType": 2, "currencyType": 2, "amount": 0, "oldAmount": 0, "active": false, "currencyLink": _.findWhere(ASSETS, {assetType: 2}).currency },
-            { "assetType": 3, "currencyType": 3, "amount": 0, "oldAmount": 0, "active": false, "currencyLink": _.findWhere(ASSETS, {assetType: 3}).currency }
+            { "assetType": 1, "currencyType": 1, "amount": 50, "oldAmount": 50, "active": true, "canUse": true, "currencyLink": _.findWhere(ASSETS, {assetType: 1}).currency },
+            { "assetType": 2, "currencyType": 2, "amount": 0, "oldAmount": 0, "active": false, "canUse": false, "currencyLink": _.findWhere(ASSETS, {assetType: 2}).currency },
+            { "assetType": 3, "currencyType": 3, "amount": 0, "oldAmount": 0, "active": false, "canUse": false, "currencyLink": _.findWhere(ASSETS, {assetType: 3}).currency }
           ],
           VAULT: [
             { "assetType": 1, "currencyType": 1, "amount": 0, "oldAmount": 0, "active": true, "currencyLink": _.findWhere(ASSETS, {assetType: 1}).currency },

@@ -12,13 +12,15 @@
     $log,
     $stateParams,
     $timeout,
+    toastr,
     Rooms,
     Global,
     ngDialog,
     BASE_RECOURCES,
     PIN_NUMBERS,
     ROOM_MEMBERS_NEEDED_TO_PLAY,
-    CARDS
+    CARDS,
+    PIN_NUMBERS_TO_ENTER
   ) {
 
     var vm = this;
@@ -30,7 +32,6 @@
     vm.sellProduct = sellProduct;
     vm.buyProduct = buyProduct;
     vm.enterVault = enterVault;
-    vm.addPinNumber = addPinNumber;
     vm.shufflePinNumbers = shufflePinNumbers;
     vm.makeEmptyArray = makeEmptyArray;
     vm.buyOrSelectCard = buyOrSelectCard;
@@ -40,13 +41,17 @@
     vm.room = undefined;
     vm.roomStarted = true;
     vm.addonsAvailable = false;
-    vm.vaultAvailable = true;
-    vm.enteredVault = false;
-    vm.cardsAvailable = false;
-    vm.animalsAvailable = false;
-    vm.timeThisRound = 60 * 45;
+
+    vm.timeThisRound = 60 * 1;
     vm.currentTick = 0;
     vm.timesToUpdateMarket = angular.copy(vm.timeThisRound);
+
+    vm.vaultAvailable = false;
+    vm.enteredVault = false;
+    vm.myPincode = '';
+
+    vm.cardsAvailable = false;
+    vm.animalsAvailable = false;
 
     vm.assets = angular.copy(BASE_RECOURCES.ASSETS);
     vm.myStorage = angular.copy(BASE_RECOURCES.STORAGE);
@@ -60,13 +65,12 @@
     vm.oldCoins = 0; // Need this for fancy counter
     vm.myCoins = 10000;
 
-    vm.enteredPin = [];
-    vm.availablePinNumbers = _.shuffle(PIN_NUMBERS);
-
     vm.cards = [_.first(_.shuffle(CARDS)), undefined, undefined];
     vm.highlightedCard = {};
 
-    vm.guardText = "I need a passcode before I can let you into this vault"
+    vm.introduce_sheep = Math.round((Math.round(Math.random() * 5 + 5) / 100) * vm.timeThisRound);
+    vm.introduce_cows = Math.round((Math.round(Math.random() * 10 + 15) / 100) * vm.timeThisRound);
+    vm.introduce_pig = Math.round((Math.round(Math.random() * 20 + 40) / 100) * vm.timeThisRound);
 
     // Broadcasts
     $scope.$on('roomJoin', function(event, response) {
@@ -122,17 +126,27 @@
         vm.timeThisRound--;
         vm.currentTick++;
 
-        if(vm.currentTick % 5 === 0) {
-          updateCurrencies();
+        console.log(vm.introduce_sheep,vm.introduce_cows,vm.introduce_pig);
+
+        if(vm.currentTick % 10 === 0) { updateCurrencies(); }
+
+        if(vm.currentTick % 30 === 0) { getCurrenciesFromMiners(); }
+
+
+        // Introduce items in the game
+        switch (vm.currentTick) {
+          case vm.introduce_sheep:
+            introduceAnimal(1);
+            break;
+          case vm.introduce_cows:
+            introduceAnimal(2);
+            break;
+          case vm.introduce_pig:
+            introduceAnimal(3);
+            break;
         }
 
-        if(vm.currentTick % 20 === 0) {
-          getCurrenciesFromMiners();
-        }
-
-        if(vm.timeThisRound > 0) {
-          countDownTimer();
-        }
+        if(vm.timeThisRound > 0) { countDownTimer(); }
       }, 1000);
     }
 
@@ -209,7 +223,6 @@
                  { length: 700, variance: 8, noise: 0, trend: 200}]);
 
     var marketData = [wool, milk, bacon];
-    console.log(marketData);
 
     // new Highcharts.Chart({
     //   title: { text: "market" },
@@ -255,6 +268,40 @@
       waitForUsers();
 
     });
+
+    function introduceAnimal(animal) {
+      var animal = _.findWhere(vm.myBarn, {assetType: animal});
+      console.log(animal);
+      ngDialog.openConfirm({
+        template: 'app/routes/room/dialogs/merchant.html',
+        closeByDocument: false,
+        controller: ['animal', function(animal) {
+
+          var vm = this;
+
+          vm.animal = animal;
+        }],
+        controllerAs: 'introduceAnimalCtrl',
+        resolve: {
+          animal: function() { return animal; }
+        }
+      })
+      .then(function(response) {
+        vm.animalsAvailable = true;
+        activeAnimal(animal);
+      })
+      .catch(function(error) {
+        vm.animalsAvailable = true;
+        activeAnimal(animal);
+      });
+    }
+
+    function activeAnimal(animal) {
+      _.findWhere(vm.assets, {assetType: animal.assetType}).active = true;
+      _.findWhere(vm.assets, {assetType: animal.assetType}).currency.active = true;
+      _.findWhere(vm.myBarn, {assetType: animal.assetType}).active = true;
+      _.findWhere(vm.myStorage, {assetType: animal.assetType}).active = true;
+    }
 
     // Method declarations
     function kickUser(user) {
@@ -359,7 +406,7 @@
     function buyProduct(product) {
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/buyproduct.html',
-        controller: ['product', 'coins', function(product, coins) {
+        controller: ['product', 'coins', 'canUse', function(product, coins, canUse) {
 
           var vm = this;
 
@@ -368,6 +415,7 @@
           vm.product = product;
           vm.coins = coins;
           vm.buyAmount = 0;
+          vm.canUse = canUse;
 
           function changeAmount(increment) {
             if(increment) { vm.buyAmount++; }
@@ -380,7 +428,8 @@
         controllerAs: 'buyProductCtrl',
         resolve: {
           product: function() { return product; },
-          coins: function() { return vm.myCoins; }
+          coins: function() { return vm.myCoins; },
+          canUse: function() { return _.findWhere(vm.myStorage, { currencyType: product.currencyType }).canUse; }
         }
       })
       .then(function(response) {
@@ -448,30 +497,130 @@
       vm.assets = angular.copy(vm.assets); // Have to do this stupid reset because the swipe lib is ratarded
     }
 
-    function enterVault() {
-      if(vm.enteredPin.length < 5) {
-        return vm.guardText = "I need a pincombination of 5 items before I can check your code."
-      }
+    function generatePinCode() {
+      ngDialog.openConfirm({
+        template: 'app/routes/room/dialogs/pincode.html',
+        className: 'c-dialog c-dialog--black',
+        controller: ['$scope', function($scope) {
 
-      var pincode = "";
-      var myPinCode = "00552";
+          var vm = this;
 
-      _.each(vm.enteredPin, function(pinnumber) {
-        pincode += pinnumber.number;
+          vm.undoPinNumber = undoPinNumber;
+          vm.addPinNumber = addPinNumber;
+          vm.pinNumbersAvailable = _.range(PIN_NUMBERS_TO_ENTER);
+
+          vm.pinNumbers = [];
+          vm.title = "Create a pincode";
+          vm.enteredPin = [];
+
+          generatePinNumbers();
+
+          function generatePinNumbers() {
+            vm.pinNumbers = [];
+            _.each([1,2,3], function() {
+              vm.pinNumbers.push(_.first( _.shuffle(_.without(PIN_NUMBERS, _.last(vm.enteredPin)))))
+            });
+          }
+
+          function undoPinNumber() {
+            if(vm.enteredPin.length === 0) { return; }
+
+            vm.enteredPin.pop();
+            generatePinNumbers();
+          }
+
+          function addPinNumber(number) {
+            if(vm.enteredPin.length === PIN_NUMBERS_TO_ENTER) { return; }
+
+            vm.enteredPin.push(number);
+            generatePinNumbers();
+          }
+
+        }],
+        controllerAs: 'enterVaultCtrl',
+      })
+      .then(function(response) {
+        _.each(response.pincode, function(pinnumber) {
+          vm.myPincode += pinnumber.number;
+        });
+        vm.enterVault();
+      })
+      .catch(function(error) {
+        $log.log(error);
       });
-
-      if(pincode !== myPinCode) {
-        return vm.guardText = "You shall not pass!";
-      }
-
-      vm.guardText = "Goodday, " + vm.user.name + ", glad to see you back";
-      vm.enteredVault = true;
     }
 
-    function addPinNumber(number) {
-      if(vm.enteredPin.length === 5) { return; }
+    function enterVault() {
+      vm.enteredVault = false;
+      if(vm.myPincode.length === 0) { return generatePinCode(); }
 
-      vm.enteredPin.push(number);
+      ngDialog.openConfirm({
+        template: 'app/routes/room/dialogs/pincode.html',
+        className: 'c-dialog c-dialog--black',
+        controller: ['pinNumbers', function(pinNumbers) {
+
+          var vm = this;
+
+          vm.undoPinNumber = undoPinNumber;
+          vm.addPinNumber = addPinNumber;
+          vm.pinNumbersAvailable = _.range(PIN_NUMBERS_TO_ENTER);
+
+          vm.pinNumbers = pinNumbers;
+          vm.title = "Vault pin";
+
+          vm.enteredPin = [];
+
+          function undoPinNumber() {
+            if(vm.enteredPin.length === 0) { return; }
+
+            vm.enteredPin.pop();
+          }
+
+          function addPinNumber(number) {
+            if(vm.enteredPin.length === PIN_NUMBERS_TO_ENTER) { return; }
+
+            vm.enteredPin.push(number);
+          }
+
+        }],
+        controllerAs: 'enterVaultCtrl',
+        resolve: {
+          pinNumbers: function() { return _.shuffle(PIN_NUMBERS); }
+        }
+      })
+      .then(function(response) {
+        if(response.pincode.length < PIN_NUMBERS_TO_ENTER) { return toastr.error("I need a pincombination of " + PIN_NUMBERS_TO_ENTER + " items"); }
+
+        var pincode = "";
+
+        _.each(response.pincode, function(pinnumber) {
+          pincode += pinnumber.number;
+        });
+
+        if(pincode != vm.myPincode) { return toastr.error("You shall not pass!"); }
+
+        vm.enteredVault = true;
+      })
+      .catch(function(error) {
+        $log.log(error);
+      });
+      // if(vm.enteredPin.length < 5) {
+      //   return vm.guardText = "I need a pincombination of 5 items before I can check your code."
+      // }
+      //
+      // var pincode = "";
+      // var myPinCode = "005522";
+      //
+      // _.each(vm.enteredPin, function(pinnumber) {
+      //   pincode += pinnumber.number;
+      // });
+      //
+      // if(pincode !== myPinCode) {
+      //   return vm.guardText = "You shall not pass!";
+      // }
+      //
+      // vm.guardText = "Goodday, " + vm.user.name + ", glad to see you back";
+      // vm.enteredVault = true;
     }
 
     function updateCurrencies() {
@@ -492,7 +641,6 @@
     }
 
     function shufflePinNumbers() {
-      vm.enteredVault = false;
       vm.guardText = "I need a passcode before I can let you into this vault";
       vm.enteredPin = [];
       vm.availablePinNumbers = _.shuffle(PIN_NUMBERS);

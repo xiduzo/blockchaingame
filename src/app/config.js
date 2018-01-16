@@ -36,8 +36,8 @@
     ngDialogProvider.setDefaults({
       className: 'c-dialog',
       // showClose: false,
-      overlay: false,
-      closeByDocument: false
+      overlay: true,
+      closeByDocument: true
       // disableAnimation: true,
       // closeByEscape: false
     });

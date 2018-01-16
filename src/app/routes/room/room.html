@@ -148,7 +148,7 @@
         </ul>
       </div>
       <ul class="c-big-list">
-        <li class="c-big-list__item" ng-repeat="item in roomCtrl.myStorage" ng-if="item.active">
+        <li class="c-big-list__item" ng-repeat="item in roomCtrl.myStorage" ng-if="item.active" ng-disabled="!item.canUse">
           <div class="c-big-list__icon">
             <img class="c-icon c-icon--large" src="assets/images/{{item.currencyLink.image}}" alt="{{item.currencyLink.name}}">
           </div>
@@ -230,79 +230,43 @@
     </section>
 
     <section class="u-hidden c-window c-window--vault" ng-tab-body="extra-classes" ng-if="roomCtrl.vaultAvailable">
-      <section ng-if="!roomCtrl.enteredVault">
-        <div class="c-vault__guard">
-          <img class="c-icon c-icon--large" src="assets/images/guard.png" alt="guard">
-          <div class="guard__text">
-            {{ roomCtrl.guardText }}
+      <div class="c-vault__header">
+        <h1 class="title">
+          <i class="material-icons">security</i>
+          Vault
+        </h1>
+        <ul class="c-vault__stats">
+          <li class="c-vault__stat">
+            <span class="c-amount-indicator c-amount-indicator--primary c-amount-indicator--full">
+              fee: 99
+            </span>
+          </li>
+        </ul>
+      </div>
+      <ul class="c-big-list c-big-list--dark">
+        <li class="c-big-list__item" ng-repeat="item in roomCtrl.myStorage" ng-if="item.active && roomCtrl.enteredVault">
+          <div class="c-big-list__icon">
+            <img class="c-icon c-icon--large" src="assets/images/{{item.currencyLink.image}}" alt="{{item.currencyLink.name}}">
           </div>
-        </div>
-
-        <ol class="c-vault__pincode">
-          <li class="c-vault__pincode__number" ng-model="roomCtrl.enteredPin[x]" ng-repeat="x in [0,1,2,3,4]">
-            <img class="c-icon c-icon--medium" src="assets/images/{{roomCtrl.enteredPin[x].image }}" alt="{{roomCtrl.enteredPin[x].verbose }}">
-          </li>
-        </ol>
-
-        <ul class="c-vault__pinnumbers">
-          <li ng-click="roomCtrl.addPinNumber(pin)" class="c-vault__pinnumber" ng-repeat="pin in roomCtrl.availablePinNumbers">
-            <div class="ripple">
-              <img class="c-icon c-icon--medium" src="assets/images/{{pin.image}}" alt="{{pin.verbose}}">
+          <div class="c-big-lig__metadata">
+            <h1 class="metadata__title">
+              {{ item.currencyLink.name }}
+            </h1>
+            <h2 class="metadata__subtitle">
+              <span count-to="{{ item.amount }}" value="{{ item.oldAmount }}" duration="1" decimals="2"></span>{{ item.currencyLink.measure }}
+            </h2>
+            <div class="metadata__info">
+              = {{ item.amount * item.currencyLink.buyFor * (1-item.currencyLink.sellForPercentage) | number : 2 }} coins
             </div>
-          </li>
-        </ul>
-
-        <div class="c-window__actions">
-          <button class="o-button o-button--error ripple" ng-click="roomCtrl.shufflePinNumbers()">
-            <i class="material-icons">autorenew</i>
-            Reset vault
-          </button>
-          <button class="o-button o-button--success ripple" ng-click="roomCtrl.enterVault()">
-            <i class="material-icons">trending_flat</i>
-            Enter vault
-          </button>
-        </div>
-      </section>
-
-      <section ng-if="roomCtrl.enteredVault">
-        <div class="c-vault__header">
-          <h1 class="title">
-            Storage
-          </h1>
-          <ul class="c-vault__stats">
-            <li class="c-vault__stat">
-              <span class="c-amount-indicator c-amount-indicator--primary c-amount-indicator--full">
-                fee: 99
-              </span>
-            </li>
-          </ul>
-        </div>
-        <ul class="c-big-list c-big-list--dark">
-          <li class="c-big-list__item" ng-repeat="item in roomCtrl.myStorage" ng-if="item.active">
-            <div class="c-big-list__icon">
-              <img class="c-icon c-icon--large" src="assets/images/{{item.currencyLink.image}}" alt="{{item.currencyLink.name}}">
-            </div>
-            <div class="c-big-lig__metadata">
-              <h1 class="metadata__title">
-                {{ item.currencyLink.name }}
-              </h1>
-              <h2 class="metadata__subtitle">
-                <span count-to="{{ item.amount }}" value="{{ item.oldAmount }}" duration="1" decimals="2"></span>{{ item.currencyLink.measure }}
-              </h2>
-              <div class="metadata__info">
-                = {{ item.amount * item.currencyLink.buyFor * (1-item.currencyLink.sellForPercentage) | number : 2 }} coins
-              </div>
-            </div>
-          </li>
-        </ul>
-        <div class="c-window__actions">
-          <button class="o-button o-button--accent ripple" ng-if="roomCtrl.vaultAvailable">
-            <i class="material-icons">compare_arrows</i>
-            Transfer
-          </button>
-        </div>
-      </section>
-
+          </div>
+        </li>
+      </ul>
+      <div class="c-window__actions">
+        <button class="o-button o-button--accent ripple" ng-if="roomCtrl.vaultAvailable && roomCtrl.enteredVault">
+          <i class="material-icons">compare_arrows</i>
+          Transfer
+        </button>
+      </div>
     </section>
   </div>
 
@@ -323,7 +287,7 @@
       <i class="material-icons">content_copy</i>
       Cards
     </li>
-    <li ng-tab-head class="window__tab ripple" ng-click="roomCtrl.shufflePinNumbers()" ng-if="roomCtrl.vaultAvailable">
+    <li ng-tab-head class="window__tab ripple" ng-click="roomCtrl.enterVault()" ng-if="roomCtrl.vaultAvailable">
       <i class="material-icons">security</i>
       Vault
     </li>

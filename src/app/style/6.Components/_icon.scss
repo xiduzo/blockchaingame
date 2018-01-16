@@ -23,4 +23,9 @@ $c-icon-size: 26px;
     width: $c-icon-size * 4;
     height: $c-icon-size * 4;
   }
+
+  &--huge {
+    width: $c-icon-size * 6;
+    height: $c-icon-size * 6;
+  }
 }

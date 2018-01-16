@@ -19,6 +19,9 @@
       <span ng-if="buyProductCtrl.coins < (buyProductCtrl.buyAmount * buyProductCtrl.product.buyFor || 0)">
         You do not have enough coins
       </span>
+      <span ng-if="!buyProductCtrl.canUse">
+        Your storage does not support this product
+      </span>
     </div>
     <div class="transaction_fee">
       + transaction fee: 123,54 c
@@ -26,7 +29,7 @@
   </div>
 
   <div class="c-dialog__buttons">
-    <button class="o-button o-button--accent ripple" ng-click="confirm({amountToBuy: buyProductCtrl.buyAmount})" ng-disabled="buyProductCtrl.coins < (buyProductCtrl.buyAmount * buyProductCtrl.product.buyFor || 0)">
+    <button class="o-button o-button--accent ripple" ng-click="confirm({amountToBuy: buyProductCtrl.buyAmount})" ng-disabled="!buyProductCtrl.canUse || buyProductCtrl.coins < (buyProductCtrl.buyAmount * buyProductCtrl.product.buyFor || 0)">
       <i class="material-icons">offline_pin</i>
       Buy ({{ (buyProductCtrl.buyAmount * buyProductCtrl.product.buyFor || 0) | number : 2 }}<span class="small">c</span>)
     </button>

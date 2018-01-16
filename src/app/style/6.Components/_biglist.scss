@@ -14,6 +14,8 @@
 
     &:nth-of-type(even) { background: lighten($primaryColor, 5); }
 
+    &[disabled] { opacity: 0.1; }
+
     &.swipable {
       > div {
         width: 100%;

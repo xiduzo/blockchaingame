@@ -1,0 +1,31 @@
+<section class="c-dialog__container">
+  <div class="c-dialog__content c-dialog__content--vault">
+    <h1 class="title">
+      {{ enterVaultCtrl.title }}
+    </h1>
+      <ol class="c-vault__pincode">
+        <li class="c-vault__pincode__number" ng-model="enterVaultCtrl.enteredPin[x]" ng-repeat="x in enterVaultCtrl.pinNumbersAvailable">
+          <img src="assets/images/{{enterVaultCtrl.enteredPin[x].image }}" alt="{{enterVaultCtrl.enteredPin[x].verbose }}">
+        </li>
+      </ol>
+
+      <ul class="c-vault__pinnumbers">
+        <li ng-click="enterVaultCtrl.addPinNumber(pin)" class="c-vault__pinnumber" ng-repeat="pin in enterVaultCtrl.pinNumbers track by $index">
+          <div class="ripple">
+            <img class="c-icon c-icon--big" src="assets/images/{{pin.image}}" alt="{{pin.verbose}}">
+          </div>
+        </li>
+      </ul>
+  </div>
+
+  <div class="c-dialog__buttons">
+    <button class="o-button o-button--accent ripple" ng-click="enterVaultCtrl.undoPinNumber()" ng-disabled="enterVaultCtrl.enteredPin.length === 0">
+      <i class="material-icons">undo</i>
+      Undo
+    </button>
+    <button class="o-button o-button--success ripple" ng-click="confirm({pincode: enterVaultCtrl.enteredPin})" ng-disabled="enterVaultCtrl.enteredPin.length < 6">
+      <i class="material-icons">security</i>
+      Enter
+    </button>
+  </div>
+</section>
