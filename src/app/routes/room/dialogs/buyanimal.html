@@ -4,7 +4,7 @@
       <img class="c-icon--large" src="assets/images/{{ buyAnimalCtrl.animal.image }}" alt="">
     </div>
     <h1 class="title">
-      Buy {{ buyAnimalCtrl.animal.name }}
+      Buy {{ buyAnimalCtrl.animal.plural }}
     </h1>
     <h2 class="price">
       {{ buyAnimalCtrl.animal.buyFor | number : 2 }} <span class="small">c</span>
@@ -18,6 +18,9 @@
     <div class="warnings">
       <span ng-if="buyAnimalCtrl.coins < (buyAnimalCtrl.buyAmount * buyAnimalCtrl.animal.buyFor || 0)">
         You do not have enough coins
+      </span>
+      <span ng-if="!buyAnimalCtrl.canUse">
+        Your {{ buyAnimalCtrl.animal.plural }} will not generate any {{ buyAnimalCtrl.animal.currency.name }} untill you upgrade your storage
       </span>
     </div>
     <div class="transaction_fee">

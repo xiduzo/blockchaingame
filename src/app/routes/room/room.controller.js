@@ -43,7 +43,7 @@
     vm.roomStarted = true;
     vm.addonsAvailable = false;
 
-    vm.timeThisRound = 60 * 10;
+    vm.timeThisRound = 60 * 3;
     vm.currentTick = 0;
     vm.timesToUpdateMarket = angular.copy(vm.timeThisRound);
 
@@ -301,7 +301,7 @@
     function buyAnimal(animal) {
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/buyanimal.html',
-        controller: ['animal', 'coins', function(animal, coins) {
+        controller: ['animal', 'coins', 'storage', function(animal, coins, storage) {
 
           var vm = this;
 
@@ -311,6 +311,8 @@
           vm.animal = animal;
           vm.coins = coins;
           vm.buyAmount = 0;
+          console.log(animal);
+          vm.canUse = _.findWhere(storage, { currencyType: animal.currency.currencyType}).canUse;
 
           function parseAmount() {
             parseInt(vm.buyAmount, 10);
@@ -327,7 +329,8 @@
         controllerAs: 'buyAnimalCtrl',
         resolve: {
           animal: function() { return animal; },
-          coins: function() { return vm.myCoins; }
+          coins: function() { return vm.myCoins; },
+          storage: function() { return vm.myStorage; }
         }
       })
       .then(function(response) {
