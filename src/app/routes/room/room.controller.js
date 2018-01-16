@@ -641,7 +641,10 @@
     }
 
     function getCurrenciesFromMiners() {
+      // TODO:
+      // Only get currencies if your wallet support
       _.each(vm.myStorage, function(currency, index) {
+        if(!currency.canUse) { return; } // Do not update anything if your wallet does not support the currency
         currency.oldAmount = currency.amount;
         currency.amount += vm.myBarn[index].amount * (vm.myBarn[index].assetLink.currencyProduction.max * Math.random() + vm.myBarn[index].assetLink.currencyProduction.min);
       });
