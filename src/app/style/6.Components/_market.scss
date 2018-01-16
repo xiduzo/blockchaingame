@@ -1,4 +1,14 @@
 .c-window--market {
+  display: flex;
+  flex-direction: column;
+
+  .c-market__header {
+    color: $titleColor;
+    font-family: 'Dalton Maag headline bold';
+    font-size: 1.55em;
+    padding: 6px 0 6px 16px;
+  }
+
   .sellItem,
   .buyItem {
     width: 40vw;
@@ -13,10 +23,20 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    flex: 1;
   }
 
   .market__currencies,
   .market__animals {
     flex-grow: 1;
+  }
+
+  .c-big-list {
+    .metadata__subtitle {
+      &:after {
+        content: 'c';
+        font-size: 0.7em;
+      }
+    }
   }
 }

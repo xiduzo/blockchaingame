@@ -1,12 +1,12 @@
 .c-turn {
-  background-color: $activeColor;
+  background-color: lighten($black, 15);
   display: flex;
   justify-content: flex-end;
   align-items: center;
   padding: 0 8px 0 16px;
   border-radius: 0 0 0 50px;
   color: white;
-  width: 35vw;
+  width: 18vw;
   position: absolute;
   right: 0;
   line-height: 40px;
@@ -16,11 +16,14 @@
 
   .c-time-left {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    .material-icons {
+    width: 15vw;
+    max-width: 15vw;
+    font-family: 'Dalton Maag headline bold';
+      .material-icons {
       font-size: 1em;
-      margin: 4px 4px 0 16px;
+      margin: 2px 4px 0 0;
 
     }
   }

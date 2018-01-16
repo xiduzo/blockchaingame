@@ -1,12 +1,14 @@
-$o-button-change-percentge: 15;
+$o-button-change-percentge: 25;
 
 .o-button {
   border: none;
-  font-family: 'Komika';
+  font-family: 'Dalton Maag headline';
   line-height: 45px;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: none;
+  min-width: 50px;
 
   &:focus {
     outline: none;
@@ -20,17 +22,16 @@ $o-button-change-percentge: 15;
   }
 
   &--active {
-    background: $activeColor;
+    background: lighten($activeColor, $o-button-change-percentge);
     &-light,
     &.active {
-      background: lighten($activeColor, $o-button-change-percentge);
+      background: $activeColor;
     }
   }
 
   &--accent {
     background: $accentColor;
-    &-light,
-    &.active {
+    &[disabled] {
       background: lighten($accentColor, $o-button-change-percentge);
     }
   }
@@ -38,7 +39,6 @@ $o-button-change-percentge: 15;
   &--success,
   &--error,
   &--accent,
-  &--accent-light,
   &--active,
   &--active-light {
     color: white;
@@ -46,5 +46,14 @@ $o-button-change-percentge: 15;
 
   .material-icons {
     margin-right: 0.5em;
+  }
+
+  &--rounded {
+    &-left {
+      border-radius: 50px 0 0 0;
+    }
+    &-right {
+      border-radius: 0 50px 0 0;
+    }
   }
 }

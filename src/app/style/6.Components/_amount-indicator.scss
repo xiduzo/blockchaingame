@@ -4,12 +4,13 @@
   border-radius: 0 50px 50px 0;
   height: 26px;
   line-height: 23px;
+  font-family: 'Dalton Maag headline bold';
 
   &--secondary {
-    background: darken($secondaryColor, 5);
+    background: lighten($black, 20);
   }
   &--primary {
-    background: darken($primaryColor, 15);
+    background: lighten($black, 15);
   }
 
   &--full {

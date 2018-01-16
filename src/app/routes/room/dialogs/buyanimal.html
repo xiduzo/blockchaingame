@@ -1,21 +1,35 @@
 <section class="c-dialog__container">
-  <div class="c-dialog__content">
-    <h1>
-      {{ buyAnimalCtrl.animal.name }}
+  <div class="c-dialog__content c-dialog__content--market">
+    <div class="animal__icon">
+      <img class="c-icon--large" src="assets/images/{{ buyAnimalCtrl.animal.image }}" alt="">
+    </div>
+    <h1 class="title">
+      Buy {{ buyAnimalCtrl.animal.name }}
     </h1>
-    <h2>
-      {{ buyAnimalCtrl.animal.buyFor }} coins / each
+    <h2 class="price">
+      {{ buyAnimalCtrl.animal.buyFor | number : 2 }} <span class="small">c</span>
+      <span class="per">/ each</span>
     </h2>
-    <h2>
-      {{ buyAnimalCtrl.coins | number : 2 }} coins left in pocket
-    </h2>
-    <div>
-      Buy <input type="text" name="" ng-model="buyAmount" type="number">{{buyAnimalCtrl.animal.name }} for {{ (buyAmount * buyAnimalCtrl.animal.buyFor || 0) | number : 2 }}
+    <div class="amount">
+      <button class="o-button amount__minus ripple" ng-click="buyAnimalCtrl.changeAmount(false)">-</button>
+      <input class="amount__number" type="number" name="" value="1" ng-model="buyAnimalCtrl.buyAmount">
+      <button class="o-button amount__plus ripple" ng-click="buyAnimalCtrl.changeAmount(true)">+</button>
+    </div>
+    <div class="warnings">
+      <span ng-if="buyAnimalCtrl.coins < (buyAnimalCtrl.buyAmount * buyAnimalCtrl.animal.buyFor || 0)">
+        You do not have enough coins
+      </span>
+    </div>
+    <div class="transaction_fee">
+      + transaction fee: 123,54 c
     </div>
   </div>
 
   <div class="c-dialog__buttons">
-    <button class="o-button o-button--error ripple" ng-click="closeThisDialog()">Cancel</button>
-    <button class="o-button o-button--success ripple" ng-click="confirm({amountToBuy: buyAmount})">Buy</button>
+    <!-- <button class="o-button o-button--error ripple" ng-click="closeThisDialog()">Cancel</button> -->
+    <button class="o-button o-button--accent ripple" ng-click="confirm({amountToBuy: buyAnimalCtrl.buyAmount})" ng-disabled="buyAnimalCtrl.coins < (buyAnimalCtrl.buyAmount * buyAnimalCtrl.animal.buyFor || 0)">
+      <i class="material-icons">offline_pin</i>
+      Buy ({{ (buyAnimalCtrl.buyAmount * buyAnimalCtrl.animal.buyFor || 0) | number : 2 }}<span class="small">c</span>)
+    </button>
   </div>
 </section>

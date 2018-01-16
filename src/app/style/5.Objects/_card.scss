@@ -5,8 +5,8 @@
   height: inherit;
   padding: 8px 0 0 0;
   border-radius: 8px;
-  background: $primaryColor;
-  color: white;
+  background: darken($primaryColor, 10);
+  color: $black;
 
   &:focus {
     outline: 0;
@@ -21,6 +21,11 @@
     background: linear-gradient(125deg, lighten($accentColor,30) 0%,lighten($accentColor,30) 50%,$accentColor 51%,$accentColor 100%);
   }
 
+  &--defence,
+  &--attack {
+    color: $white;
+  }
+
   .o-card__title {
     font-size: 1em;
     text-align: center;
@@ -33,6 +38,7 @@
     justify-content: center;
     img {
       width: 90%;
+      border-radius: 50px;
     }
   }
 

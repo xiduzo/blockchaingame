@@ -7,8 +7,8 @@ $c-room-head-icon-size: 26px;
 }
 
 .c-room__head {
-  background: $secondaryColor;
-  color: white;
+  background: $black;
+  color: $white;
   font-weight: bold;
   min-height: 50px;
   display: flex;
@@ -20,7 +20,7 @@ $c-room-head-icon-size: 26px;
     flex-direction: column;
 
     .player__indicator {
-      color: #FFFAC2;
+      color: $white;
       font-size: 0.5em;
       letter-spacing: 0.1em;
       font-family: 'Open Sans', sans-serif;
@@ -28,9 +28,8 @@ $c-room-head-icon-size: 26px;
     }
 
     .player__name {
-      color: $accentColor;
+      color: $white;
       font-weight: bold;
-      font-style: italic;
       text-transform: uppercase;
     }
   }
@@ -59,13 +58,14 @@ $c-room-head-icon-size: 26px;
 
 .c-room__windows {
   flex-grow: 1;
-  background: lighten($primaryColor, 5);
+  background: lighten($primaryColor, 10);
   display: flex;
 
   .c-window {
     width: 100%;
 
     .c-window__actions {
+      background-color: $primaryColor;
       display: flex;
       width: 100%;
       > button {
@@ -89,9 +89,9 @@ $c-room-head-icon-size: 26px;
     flex-grow: 1;
     list-style: none;
     transition: all 350ms;
-    background: $secondaryColor;
+    background: $black;
     color: white;
-    font-size: 0.7em;
+    font-size: 0.6em;
 
     .material-icons { margin-bottom: 0.1em; }
 

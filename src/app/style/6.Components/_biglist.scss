@@ -3,7 +3,7 @@
   padding: 0;
   margin: 0;
   width: 100%;
-  color: white;
+  color: $black;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
@@ -36,7 +36,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 0 24px;
+      margin: 0 16px;
     }
 
     .c-big-lig__metadata {
@@ -50,20 +50,40 @@
         margin: 0;
         font-size: 1.35em;
         color: $titleColor;
+        font-family: 'Dalton Maag headline light';
       }
 
       .metadata__subtitle {
         margin: 0;
         font-size: 2.4em;
-        letter-spacing: 0.05em;
+        font-family: 'Dalton Maag headline bold';
       }
 
       .metadata__info {
-        margin-top: 0.5em;
-        font-style: italic;
-        font-family: 'Open Sans', sans-serif;
+        font-family: 'Dalton Maag text light';
+        font-size: 0.75em;
+
+        strong {
+          color: lighten($black, 15);
+        }
       }
     }
+  }
 
+  &--dark {
+    background: $black;
+    color: $white;
+
+    .c-big-list__item {
+      &:nth-of-type(even) { background: lighten($black, 15); }
+
+      .c-big-lig__metadata {
+        .metadata__info {
+          strong {
+            color: darken($white, 15);
+          }
+        }
+      }
+    }
   }
 }

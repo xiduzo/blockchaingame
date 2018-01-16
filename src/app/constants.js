@@ -20,7 +20,7 @@
       { number: 4, verbose: 'pig', image: 'pig.png'},
       { number: 5, verbose: 'sheep', image: 'sheep.png'},
       { number: 6, verbose: 'milk', image: 'milk.png'},
-      { number: 7, verbose: 'bacon', image: 'bacon.png'},
+      { number: 7, verbose: 'bacon', image: 'bacon.svg'},
       { number: 8, verbose: 'wool', image: 'wool.png'},
       { number: 9, verbose: 'guard', image: 'guard.png'}
     ])
@@ -29,6 +29,7 @@
         "type": 1,
         "verbose": "Attack",
         "effect": 2,
+        "activeTime": 0,
         "text": "When used, this card will allow you to attack a random player's storage, with 4 power.",
         "image": "guard.png"
       },
@@ -36,8 +37,17 @@
         "type": 2,
         "verbose": "Security",
         "effect": 4,
-        "text": "When used, this card will add 2 extra points for your storage's security.",
+        "activeTime": 90,
+        "text": "You'll hire a guard who will add 4 extra security to your storage for 60 seconds",
         "image": "guard.png"
+      },
+      {
+        "type": 2,
+        "verbose": "Security",
+        "effect": 10,
+        "activeTime": 60,
+        "text": "Grandmother will watch over your storage for 60 seconds and will add 10 extra security to your storage",
+        "image": "grandma.svg"
       }
     ])
     .constant('BASE_RECOURCES', (function() {
@@ -45,6 +55,7 @@
           {
             "assetType": 1,
             "name": "Sheep",
+            "plural": "Sheep",
             "buyFor": 100,
             "sellForPercentage": 0.15,
             "image": "sheep.png",
@@ -54,6 +65,7 @@
               "image": "wool.png",
               "currencyType": 1,
               "name": "Wool",
+              "plural": "Wool",
               "measure": "kg",
               "active": true,
               "buyFor": 20,
@@ -63,6 +75,7 @@
           {
             "assetType": 2,
             "name": "Cow",
+            "plural": "Cows",
             "buyFor": 150,
             "sellForPercentage": 0.20,
             "image": "cow.png",
@@ -72,6 +85,7 @@
               "image": "milk.png",
               "currencyType": 2,
               "name": "Milk",
+              "plural": "Milk",
               "measure": "lt",
               "active": false,
               "buyFor": 50,
@@ -82,15 +96,17 @@
           {
             "assetType": 3,
             "name": "Pig",
+            "plural": "Pigs",
             "buyFor": 225,
             "sellForPercentage": 0.25,
             "image": "pig.png",
             "active": false,
             "currencyProduction": { "min": 2, "max": 5},
             "currency": {
-              "image": "bacon.png",
+              "image": "bacon.svg",
               "currencyType": 3,
               "name": "Bacon",
+              "plural": "Bacon",
               "measure": "kg",
               "active": false,
               "buyFor": 115,
@@ -102,12 +118,17 @@
         return {
           ASSETS: ASSETS,
           STORAGE: [
-            { "assetType": 1, "currencyType": 1, "amount": 30.18, "oldAmount": 0, "active": true, "currencyLink": _.findWhere(ASSETS, {assetType: 1}).currency },
-            { "assetType": 2, "currencyType": 2, "amount": 5.18, "oldAmount": 0, "active": false, "currencyLink": _.findWhere(ASSETS, {assetType: 2}).currency },
-            { "assetType": 3, "currencyType": 3, "amount": 1.18, "oldAmount": 0, "active": false, "currencyLink": _.findWhere(ASSETS, {assetType: 3}).currency }
+            { "assetType": 1, "currencyType": 1, "amount": 50, "oldAmount": 50, "active": true, "currencyLink": _.findWhere(ASSETS, {assetType: 1}).currency },
+            { "assetType": 2, "currencyType": 2, "amount": 0, "oldAmount": 0, "active": false, "currencyLink": _.findWhere(ASSETS, {assetType: 2}).currency },
+            { "assetType": 3, "currencyType": 3, "amount": 0, "oldAmount": 0, "active": false, "currencyLink": _.findWhere(ASSETS, {assetType: 3}).currency }
+          ],
+          VAULT: [
+            { "assetType": 1, "currencyType": 1, "amount": 0, "oldAmount": 0, "active": true, "currencyLink": _.findWhere(ASSETS, {assetType: 1}).currency },
+            { "assetType": 2, "currencyType": 2, "amount": 0, "oldAmount": 0, "active": false, "currencyLink": _.findWhere(ASSETS, {assetType: 2}).currency },
+            { "assetType": 3, "currencyType": 3, "amount": 0, "oldAmount": 0, "active": false, "currencyLink": _.findWhere(ASSETS, {assetType: 3}).currency }
           ],
           BARN: [
-            { "assetType": 1, "amount": 0, "oldAmount": 0, "active": true, "assetLink": _.findWhere(ASSETS, {assetType: 1}) },
+            { "assetType": 1, "amount": 0, "oldAmount": 0, "active": false, "assetLink": _.findWhere(ASSETS, {assetType: 1}) },
             { "assetType": 2, "amount": 0, "oldAmount": 0, "active": false, "assetLink": _.findWhere(ASSETS, {assetType: 2}) },
             { "assetType": 3, "amount": 0, "oldAmount": 0, "active": false, "assetLink": _.findWhere(ASSETS, {assetType: 3}) }
           ]

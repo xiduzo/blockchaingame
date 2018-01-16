@@ -1,0 +1,35 @@
+<section class="c-dialog__container">
+  <div class="c-dialog__content c-dialog__content--market">
+    <div class="product__icon">
+      <img class="c-icon--large" src="assets/images/{{ sellProductCtrl.product.image }}" alt="">
+    </div>
+    <h1 class="title">
+      Sell {{ sellProductCtrl.product.name }}
+    </h1>
+    <h2 class="price">
+      {{ sellProductCtrl.product.buyFor * (1-sellProductCtrl.product.sellForPercentage) | number : 2 }} <span class="small">c</span>
+      <span class="per">/ each</span>
+    </h2>
+    <div class="amount">
+      <button class="o-button amount__minus ripple" ng-click="sellProductCtrl.changeAmount(false)">-</button>
+      <input class="amount__number" type="number" name="" value="1" ng-model="sellProductCtrl.sellAmount">
+      <button class="o-button amount__plus ripple" ng-click="sellProductCtrl.changeAmount(true)">+</button>
+    </div>
+    <div class="warnings">
+      <span ng-if="sellProductCtrl.sellAmount > sellProductCtrl.productInStorage.amount">
+        You do not have enough {{ sellProductCtrl.product.plural }}
+      </span>
+    </div>
+    <div class="transaction_fee">
+      + transaction fee: 123,54 c
+    </div>
+  </div>
+
+  <div class="c-dialog__buttons">
+    <!-- <button class="o-button o-button--error ripple" ng-click="closeThisDialog()">Cancel</button> -->
+    <button class="o-button o-button--accent ripple" ng-click="confirm({amountToSell: sellProductCtrl.sellAmount})" ng-disabled="sellProductCtrl.sellAmount > sellProductCtrl.productInStorage.amount">
+      <i class="material-icons">offline_pin</i>
+      Sell ({{ (sellProductCtrl.sellAmount * (sellProductCtrl.product.buyFor * (1-sellProductCtrl.product.sellForPercentage)) || 0) | number : 2 }}<span class="small">c</span>)
+    </button>
+  </div>
+</section>

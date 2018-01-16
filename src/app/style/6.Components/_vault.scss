@@ -2,6 +2,44 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  > section {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}
+
+.c-vault__header {
+  color: $white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  font-size: 0.8em;
+  background: $black;
+
+  .title {
+    color: $titleColor;
+    margin: 0;
+    font-family: 'Dalton Maag headline bold';
+    font-size: 1.55em;
+    padding: 6px 0 6px 16px;
+  }
+
+  .c-vault__stats {
+    display: flex;
+    align-items: center;
+    padding: 0 0 0 8px;
+    flex-grow: 1;
+    .c-vault__stat {
+      list-style: none;
+      display: flex;
+      &:not(:last-of-type) { margin-right: 0.5em; }
+
+      img { z-index: 10; }
+    }
+  }
 }
 
 .c-vault__guard {
@@ -25,11 +63,12 @@
 }
 
 .c-vault__pincode__number {
-  background: lighten($primaryColor, 5);
+  background: $primaryColor;
   border-radius: 50%;
   width: 44px;
   height: 44px;
   display: flex;
+
 }
 
 .c-vault__pinnumbers {
@@ -48,4 +87,13 @@
   &:not(:last-of-type) { margin-bottom: 0.5em; }
 
   &:focus { outline: none; }
+
+  > div {
+    background: darken($primaryColor, 15);
+    border-radius: 50%;
+    padding: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }

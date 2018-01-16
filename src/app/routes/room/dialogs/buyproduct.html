@@ -1,0 +1,34 @@
+<section class="c-dialog__container">
+  <div class="c-dialog__content c-dialog__content--market">
+    <div class="product__icon">
+      <img class="c-icon--large" src="assets/images/{{ buyProductCtrl.product.image }}" alt="">
+    </div>
+    <h1 class="title">
+      Buy {{ buyProductCtrl.product.name }}
+    </h1>
+    <h2 class="price">
+      {{ buyProductCtrl.product.buyFor | number : 2 }} <span class="small">c</span>
+      <span class="per">/ each</span>
+    </h2>
+    <div class="amount">
+      <button class="o-button amount__minus ripple" ng-click="buyProductCtrl.changeAmount(false)">-</button>
+      <input class="amount__number" type="number" name="" value="1" ng-model="buyProductCtrl.buyAmount">
+      <button class="o-button amount__plus ripple" ng-click="buyProductCtrl.changeAmount(true)">+</button>
+    </div>
+    <div class="warnings">
+      <span ng-if="buyProductCtrl.coins < (buyProductCtrl.buyAmount * buyProductCtrl.product.buyFor || 0)">
+        You do not have enough coins
+      </span>
+    </div>
+    <div class="transaction_fee">
+      + transaction fee: 123,54 c
+    </div>
+  </div>
+
+  <div class="c-dialog__buttons">
+    <button class="o-button o-button--accent ripple" ng-click="confirm({amountToBuy: buyProductCtrl.buyAmount})" ng-disabled="buyProductCtrl.coins < (buyProductCtrl.buyAmount * buyProductCtrl.product.buyFor || 0)">
+      <i class="material-icons">offline_pin</i>
+      Buy ({{ (buyProductCtrl.buyAmount * buyProductCtrl.product.buyFor || 0) | number : 2 }}<span class="small">c</span>)
+    </button>
+  </div>
+</section>
