@@ -65,10 +65,10 @@
                 </h2>
                 <div class="metadata__info">
                   <span>
-                    <strong>Buy:</strong> {{ animal.currency.buyFor | number : 2 }} c/{{animal.currency.measure }}
+                    <strong>Buy:</strong> {{ animal.currency.buyFor | number : 2 }} &#162;/{{animal.currency.measure }}
                   </span>
                   <span>
-                    <strong>Sell:</strong> {{ animal.currency.buyFor * (1-animal.currency.sellForPercentage) | number : 2 }} c/{{animal.currency.measure }}
+                    <strong>Sell:</strong> {{ animal.currency.buyFor * (1-animal.currency.sellForPercentage) | number : 2 }} &#162;/{{animal.currency.measure }}
                   </span>
                 </div>
               </div>
@@ -97,10 +97,10 @@
                 </h2>
                 <div class="metadata__info">
                   <span>
-                    <strong>Buy:</strong> {{ animal.buyFor | number : 2 }} c/each
+                    <strong>Buy:</strong> {{ animal.buyFor | number : 2 }} &#162;/each
                   </span>
                   <span>
-                    <strong>Sell:</strong> {{ animal.buyFor * (1-animal.sellForPercentage) | number : 2 }} c/each
+                    <strong>Sell:</strong> {{ animal.buyFor * (1-animal.sellForPercentage) | number : 2 }} &#162;/each
                   </span>
                 </div>
               </div>
@@ -130,7 +130,7 @@
         <ul class="c-storage__stats">
           <li class="c-storage__stat">
             <span class="c-amount-indicator c-amount-indicator--primary c-amount-indicator--full">
-              fee: {{ roomCtrl.wallet.transaction_fee }} <span class="small">c</span>
+              fee: {{ roomCtrl.wallet.transaction_fee }} <span class="small">&#162;</span>
             </span>
           </li>
           <li class="c-storage__stat">
@@ -154,7 +154,7 @@
               <span count-to="{{ item.amount }}" value="{{ item.oldAmount }}" duration="1" decimals="2"></span>{{ item.currencyLink.measure }}
             </h2>
             <div class="metadata__info">
-              = {{ item.amount * item.currencyLink.buyFor * (1-item.currencyLink.sellForPercentage) | number : 2 }} coins
+              = {{ item.amount * item.currencyLink.buyFor * (1-item.currencyLink.sellForPercentage) | number : 2 }} &#162;
             </div>
           </div>
         </li>

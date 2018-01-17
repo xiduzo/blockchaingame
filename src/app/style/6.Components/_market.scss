@@ -34,7 +34,7 @@
   .c-big-list {
     .metadata__subtitle {
       &:after {
-        content: 'c';
+        content: '\00a2';
         font-size: 0.7em;
       }
     }

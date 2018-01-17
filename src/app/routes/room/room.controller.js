@@ -134,7 +134,7 @@
         vm.timeThisRound--;
         vm.currentTick++;
 
-        if(vm.currentTick % 10 === 0) { updateCurrencies(); }
+        if(vm.currentTick % 15 === 0) { updateCurrencies(); }
 
         if(vm.currentTick % 30 === 0) { getCurrenciesFromMiners(); }
 

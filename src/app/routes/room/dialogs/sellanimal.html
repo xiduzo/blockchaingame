@@ -7,7 +7,7 @@
       Sell {{ sellAnimalCtrl.animal.name }}
     </h1>
     <h2 class="price">
-      {{ sellAnimalCtrl.animal.buyFor * (1-sellAnimalCtrl.animal.sellForPercentage) | number : 2 }} <span class="small">c</span>
+      {{ sellAnimalCtrl.animal.buyFor * (1-sellAnimalCtrl.animal.sellForPercentage) | number : 2 }} <span class="small">&#162;</span>
       <span class="per">/ each</span>
     </h2>
     <div class="amount">
@@ -29,7 +29,7 @@
     <!-- <button class="o-button o-button--error ripple" ng-click="closeThisDialog()">Cancel</button> -->
     <button class="o-button o-button--accent ripple" ng-click="confirm({amountToSell: sellAnimalCtrl.sellAmount})" ng-disabled="sellAnimalCtrl.sellAmount > sellAnimalCtrl.animalInBarn.amount">
       <i class="material-icons">offline_pin</i>
-      Sell ({{ (sellAnimalCtrl.sellAmount * (sellAnimalCtrl.animal.buyFor * (1-sellAnimalCtrl.animal.sellForPercentage)) || 0) | number : 2 }}<span class="small">c</span>)
+      Sell ({{ (sellAnimalCtrl.sellAmount * (sellAnimalCtrl.animal.buyFor * (1-sellAnimalCtrl.animal.sellForPercentage)) || 0) | number : 2 }}<span class="small">&#162;</span>)
     </button>
   </div>
 </section>
