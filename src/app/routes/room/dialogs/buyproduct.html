@@ -8,7 +8,7 @@
     </h1>
     <h2 class="price">
       {{ buyProductCtrl.product.buyFor | number : 2 }} <span class="small">&#162;</span>
-      <span class="per">/ each</span>
+      <span class="per">/ {{ buyProductCtrl.product.measure }}</span>
     </h2>
     <div class="amount">
       <button class="o-button amount__minus ripple" ng-click="buyProductCtrl.changeAmount(false)">-</button>

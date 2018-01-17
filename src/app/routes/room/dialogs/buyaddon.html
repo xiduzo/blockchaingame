@@ -1,0 +1,25 @@
+<section class="c-dialog__container">
+  <div class="c-dialog__content c-dialog__content--market">
+    <div class="animal__icon">
+      <img class="c-icon--large" src="assets/images/{{ buyAddonCtrl.addon.image }}" alt="">
+    </div>
+    <h1 class="title">
+      {{ buyAddonCtrl.addon.text }}
+    </h1>
+    <h2 class="price">
+      {{ buyAddonCtrl.addon.buyFor }} <span class="small">&#162;</span>
+    </h2>
+    <div class="warnings">
+      <span ng-if="buyAddonCtrl.coins < buyAddonCtrl.addon.buyFor">
+        You do not have enough coins
+      </span>
+    </div>
+  </div>
+
+  <div class="c-dialog__buttons">
+    <button class="o-button o-button--accent ripple" ng-click="confirm({buyAddon: true, addon: buyAddonCtrl.addon, addonType: buyAddonCtrl.addonType})" ng-disabled="bbuyAddonCtrl.coins < buyAddonCtrl.addon.buyFor">
+      <i class="material-icons">offline_pin</i>
+      Buy
+    </button>
+  </div>
+</section>

@@ -2,15 +2,16 @@
   display: flex;
   align-items: center;
 
-  .ngdialog-overlay { z-index: -1; }
+  .ngdialog-overlay { z-index: 0; }
 
   .ngdialog-content {
-    width: 90vw;
+    width: 80vw;
     margin: 0 auto;
     border-radius: 15px 15px 0 0;
     display: flex;
     flex-direction: column-reverse;
     align-items: flex-end;
+    z-index: 5;
 
     .c-dialog__container {
       width: 100%;
@@ -59,7 +60,7 @@
       border: none;
       background: none;
       font-size: 1.75em;
-      color: lighten($black, 15);
+      color: lighten($black, 35);
     }
 
   }

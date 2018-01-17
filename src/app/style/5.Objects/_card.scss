@@ -16,11 +16,18 @@
     background: $activeColor;
     background: linear-gradient(125deg, lighten($activeColor,5) 0%,lighten($activeColor,5) 50%,$activeColor 51%,$activeColor 100%);
   }
+  &--transaction,
   &--attack {
     background: $accentColor;
     background: linear-gradient(125deg, lighten($accentColor,30) 0%,lighten($accentColor,30) 50%,$accentColor 51%,$accentColor 100%);
   }
+  &--animal {
+    background: $turquoise;
+    background: linear-gradient(125deg, $turquoise 0%, $turquoise 50%, darken($turquoise, 5) 51%,darken($turquoise, 5) 100%);
+  }
 
+  &--transaction,
+  &--animal,
   &--defence,
   &--attack {
     color: $white;

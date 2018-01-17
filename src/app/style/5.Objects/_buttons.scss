@@ -10,6 +10,7 @@ $o-button-change-percentge: 25;
   background: none;
   min-width: 50px;
   transition: all 350ms;
+  font-weight: bold;
 
   &[disabled] { background: lighten($black, $o-button-change-percentge); }
 
@@ -18,6 +19,8 @@ $o-button-change-percentge: 25;
   &--success { background: $green; }
 
   &--error { background: $red; }
+
+  &--turquoise { background: $turquoise; }
 
   &--active {
     background: lighten($activeColor, $o-button-change-percentge);
@@ -32,6 +35,7 @@ $o-button-change-percentge: 25;
 
   }
 
+  &--turquoise,
   &--success,
   &--error,
   &--accent,

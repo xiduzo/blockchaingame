@@ -15,18 +15,107 @@
     .constant('PIN_NUMBERS_TO_ENTER', 6)
     .constant('BASE_WALLET', {
       transaction_fee: 50,
-      security: 10
+      transaction_fee_decrease: 0,
+      security: 10,
+      security_increase: 0
     })
     .constant('PIN_NUMBERS', [
       { number: 0, verbose: 'queen', image: 'queen.png'},
-      { number: 1, verbose: 'merchant', image: 'merchant_sheep.svg'},
-      { number: 2, verbose: 'coin', image: 'money.svg'},
-      { number: 3, verbose: 'cow', image: 'cow.svg'},
-      { number: 4, verbose: 'pig', image: 'pig.svg'},
-      { number: 5, verbose: 'sheep', image: 'sheep.svg'},
-      { number: 6, verbose: 'milk', image: 'milk.svg'},
-      { number: 7, verbose: 'bacon', image: 'bacon.svg'},
-      { number: 8, verbose: 'wool', image: 'wool.svg'}
+      { number: 1, verbose: 'merchant', image: 'merchant_sheep.png'},
+      { number: 2, verbose: 'coin', image: 'money.png'},
+      { number: 3, verbose: 'cow', image: 'cow.png'},
+      { number: 4, verbose: 'pig', image: 'pig.png'},
+      { number: 5, verbose: 'sheep', image: 'sheep.png'},
+      { number: 6, verbose: 'milk', image: 'milk.png'},
+      { number: 7, verbose: 'bacon', image: 'bacon.png'},
+      { number: 8, verbose: 'wool', image: 'wool.png'}
+    ])
+    .constant('ADDONS', [
+      {
+        "name": "transactions",
+        "image": "transaction_fee_clean.png",
+        "addonType": 1,
+        "addons": [
+          {
+            "effect": 5,
+            "image": "transaction_fee_5.png",
+            "text": "Reduce transaction fee by 5%",
+            "owned": false,
+            "available": true,
+            "buyFor": 500
+          },
+          {
+            "effect": 10,
+            "image": "transaction_fee_10.png",
+            "text": "Reduce transaction fee by 10%",
+            "owned": false,
+            "available": false,
+            "buyFor": 500
+          },
+          {
+            "effect": 15,
+            "image": "transaction_fee_15.png",
+            "text": "Reduce transaction fee by 15%",
+            "owned": false,
+            "available": false,
+            "buyFor": 500
+          },
+        ]
+      },
+      {
+        "name": "security",
+        "image": "guard_clean.png",
+        "addonType": 2,
+        "addons": [
+          {
+            "effect": 1,
+            "image": "eye.png",
+            "text": "Increase security rating by 1",
+            "owned": false,
+            "available": true,
+            "buyFor": 500
+          },
+          {
+            "effect": 5,
+            "image": "guard.png",
+            "text": "Increase security rating by 5",
+            "owned": false,
+            "available": false,
+            "buyFor": 500
+          },
+          {
+            "effect": 10,
+            "image": "grandma.png",
+            "text": "Increase security rating by 10",
+            "owned": false,
+            "available": false,
+            "buyFor": 500
+          },
+        ]
+      },
+      {
+        "name": "storage",
+        "image": "animals_clean.png",
+        "addonType": 3,
+        "addons": [
+          {
+            "animalType": 2,
+            "image": "cow.png",
+            "text": "Build a cow sheld to buy and sell milk",
+            "owned": false,
+            "available": true,
+            "buyFor": 500
+          },
+          {
+            "animalType": 3,
+            "image": "pig.png",
+            "text": "Build a pig pen to buy and sell bacon",
+            "owned": false,
+            "available": false,
+            "buyFor": 500
+          }
+        ]
+      }
     ])
     .constant('CARDS', [
       {
@@ -35,7 +124,7 @@
         "effect": 2,
         "activeTime": 0,
         "text": "When used, this card will allow you to attack a random player's storage, with 4 power.",
-        "image": "guard.svg"
+        "image": "guard.png"
       },
       {
         "type": 2,
@@ -43,7 +132,7 @@
         "effect": 4,
         "activeTime": 90,
         "text": "You'll hire a guard who will add 4 extra security to your storage for 60 seconds",
-        "image": "guard.svg"
+        "image": "guard.png"
       },
       {
         "type": 2,
@@ -51,7 +140,7 @@
         "effect": 10,
         "activeTime": 60,
         "text": "Grandmother will watch over your storage for 60 seconds and will add 10 extra security to your storage",
-        "image": "grandma.svg"
+        "image": "grandma.png"
       }
     ])
     .constant('BASE_RECOURCES', (function() {
@@ -62,18 +151,22 @@
             "plural": "Sheep",
             "buyFor": 1000,
             "sellForPercentage": 0.15,
-            "image": "sheep.svg",
+            "image": "sheep.png",
+            "image_clean": "sheep_clean.png",
             "active": false,
-            "merchant": "merchant_sheep.svg",
+            "merchant": "merchant_sheep.png",
             "currencyProduction": { "min": 2, "max": 5},
             "currency": {
-              "image": "wool.svg",
+              "image": "wool.png",
+              "image_clean": "wool_clean.png",
               "currencyType": 1,
               "name": "Wool",
               "plural": "Wool",
               "measure": "kg",
               "active": true,
               "buyFor": 20,
+              "previousBuyFor": 20,
+              "history": [20],
               "sellForPercentage": 0.04
             }
           },
@@ -83,20 +176,23 @@
             "plural": "Cows",
             "buyFor": 1500,
             "sellForPercentage": 0.20,
-            "image": "cow.svg",
+            "image": "cow.png",
+            "image_clean": "cow_clean.png",
             "active": false,
-            "merchant": "merchant_cow.svg",
+            "merchant": "merchant_cow.png",
             "currencyProduction": { "min": 1, "max": 4},
             "currency": {
-              "image": "milk.svg",
+              "image": "milk.png",
+              "image_clean": "milk_clean.png",
               "currencyType": 2,
               "name": "Milk",
               "plural": "Milk",
               "measure": "lt",
               "active": false,
-              "buyFor": 50,
-              "sellForPercentage": 0.06,
-              "volatility": 10
+              "buyFor": 80,
+              "previousBuyFor": 80,
+              "history": [80],
+              "sellForPercentage": 0.06
             }
           },
           {
@@ -105,18 +201,22 @@
             "plural": "Pigs",
             "buyFor": 2250,
             "sellForPercentage": 0.25,
-            "image": "pig.svg",
+            "image": "pig.png",
+            "image_clean": "pig_clean.png",
             "active": false,
-            "merchant": "merchant_pig.svg",
-            "currencyProduction": { "min": 1, "max": 3},
+            "merchant": "merchant_pig.png",
+            "currencyProduction": { "min": 0, "max": 3},
             "currency": {
-              "image": "bacon.svg",
+              "image": "bacon.png",
+              "image_clean": "bacon_clean.png",
               "currencyType": 3,
               "name": "Bacon",
               "plural": "Bacon",
               "measure": "kg",
               "active": false,
-              "buyFor": 115,
+              "buyFor": 160,
+              "previousBuyFor": 160,
+              "history": [160],
               "sellForPercentage": 0.08
             }
           }

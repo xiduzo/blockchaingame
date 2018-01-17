@@ -1,9 +1,4 @@
-<main ng-if="roomCtrl.roomStarted" ng-tabs class="c-game-room">
-
-  <main ng-if="!roomCtrl.roomStarted">
-    room hasnt started yet
-    {{roomCtrl.roomStarted}}
-  </main>
+<main ng-tabs class="c-game-room">
 
   <header class="c-room__head">
     <div class="room__player">
@@ -16,11 +11,11 @@
     </div>
     <ul class="room__assets">
       <li class="room__asset">
-        <img class="c-icon" src="assets/images/money.svg" alt="money">
-        <span class="c-amount-indicator c-amount-indicator--secondary" count-to="{{roomCtrl.myCoins}}" value="{{roomCtrl.oldCoins}}" duration="2" decimals="2"></span>
+        <img class="c-icon" src="assets/images/money_clean.png" alt="money">
+        <span class="c-amount-indicator c-amount-indicator--secondary" count-to="{{roomCtrl.myCoins}}" value="{{roomCtrl.oldCoins}}" duration="2" decimals="1"></span>
       </li>
       <li class="room__asset" ng-repeat="animal in roomCtrl.myBarn" ng-if="animal.active">
-        <img class="c-icon" src="assets/images/{{animal.assetLink.image}}" alt="{{animal.assetLink.name}}">
+        <img class="c-icon" src="assets/images/{{animal.assetLink.image_clean}}" alt="{{animal.assetLink.name}}">
         <span class="c-amount-indicator c-amount-indicator--secondary" count-to="{{animal.amount}}" value="{{animal.oldAmount}}" duration="2"></span>
       </li>
     </ul>
@@ -35,11 +30,47 @@
 
   <div class="c-room__windows">
     <section class="u-hidden c-window c-window--addons" ng-tab-body="extra-classes" ng-if="roomCtrl.addonsAvailable">
-      Add-ons
+      <div class="c-window__header">
+        Add-ons
+      </div>
+      <div class="c-window__subheader">
+        Add-ons you buy last throughout the game. Choose wisely!
+      </div>
+      <section class="c-addons">
+        <div class="c-addons__tree" ng-repeat="addonTree in roomCtrl.addons">
+          <div class="o-card" ng-class="{
+            'o-card--transaction': addonTree.addonType == 1,
+            'o-card--defence': addonTree.addonType == 2,
+            'o-card--animal': addonTree.addonType == 3,
+          }">
+            <h1 class="o-card__title">
+              {{ addonTree.name }}
+            </h1>
+            <div class="o-card__icon">
+              <img src="assets/images/{{addonTree.image}}" alt="">
+            </div>
+          </div>
+          <section class="addons">
+            <div class="addon" ng-repeat="addon in addonTree.addons" ng-click="roomCtrl.buyAddon(addon, addonTree, $index)" ng-disabled="!addon.available">
+              <img class="c-icon--bigger" src="assets/images/{{addon.image}}" alt="">
+              <div class="cost" ng-if="!addon.owned">
+                {{ addon.buyFor }}
+              </div>
+              <div class="owned" ng-if="addon.owned">
+                <i class="material-icons">check</i>
+                own
+              </div>
+              <span class="text">
+                {{ addon.text }}
+              </span>
+            </div>
+          </section>
+        </div>
+      </section>
     </section>
 
     <section class="u-hidden c-window c-window--market" ng-tab-body="extra-classes">
-      <div class="c-market__header">
+      <div class="c-window__header">
         Markets
       </div>
       <div ng-tabs class="c-markets">
@@ -47,6 +78,7 @@
           <ul class="c-big-list">
             <li class="c-big-list__item swipable" ng-repeat="animal in roomCtrl.assets"
               ng-if="animal.currency.active"
+              ng-init="showGraph = false"
               ng-swipe-item
               on-left="roomCtrl.sellProduct(animal.currency)"
               on-right="roomCtrl.buyProduct(animal.currency)"
@@ -61,17 +93,24 @@
                   {{ animal.currency.name }}
                 </h1>
                 <h2 class="metadata__subtitle">
-                    {{((animal.currency.buyFor * (1-animal.currency.sellForPercentage)) + animal.currency.buyFor) / 2 | number : 2}}
+                  {{((animal.currency.buyFor * (1-animal.currency.sellForPercentage)) + animal.currency.buyFor) / 2 | number : 2 }}
                 </h2>
                 <div class="metadata__info">
-                  <span>
-                    <strong>Buy:</strong> {{ animal.currency.buyFor | number : 2 }} &#162;/{{animal.currency.measure }}
-                  </span>
-                  <span>
-                    <strong>Sell:</strong> {{ animal.currency.buyFor * (1-animal.currency.sellForPercentage) | number : 2 }} &#162;/{{animal.currency.measure }}
-                  </span>
+                  <div class="trend trend--higher" ng-if="animal.currency.buyFor > animal.currency.previousBuyFor">
+                    <i class="material-icons">trending_up</i>
+                    +{{ animal.currency.buyFor - animal.currency.previousBuyFor }}
+                  </div>
+                  <div class="trend trend--lower" ng-if="animal.currency.buyFor < animal.currency.previousBuyFor">
+                    <i class="material-icons">trending_down</i>
+                    -{{ animal.currency.previousBuyFor - animal.currency.buyFor }}
+                  </div>
+                  <div class="trend trend--same" ng-if="animal.currency.buyFor == animal.currency.previousBuyFor">
+                    <i class="material-icons">trending_flat</i>
+                    -
+                  </div>
                 </div>
               </div>
+              <div class="graph" id="graph--{{animal.currency.name}}"></div>
             </li>
           </ul>
         </div>
@@ -93,14 +132,14 @@
                   {{ animal.name }}
                 </h1>
                 <h2 class="metadata__subtitle">
-                  {{ ((animal.buyFor * (1-animal.sellForPercentage)) + animal.buyFor) / 2 | number : 2}}
+                  {{ ((animal.buyFor * (1-animal.sellForPercentage)) + animal.buyFor) / 2 | number : 0 }}
                 </h2>
                 <div class="metadata__info">
                   <span>
-                    <strong>Buy:</strong> {{ animal.buyFor | number : 2 }} &#162;/each
+                    <strong>Buy:</strong> {{ animal.buyFor | number : 0 }} &#162;/each
                   </span>
                   <span>
-                    <strong>Sell:</strong> {{ animal.buyFor * (1-animal.sellForPercentage) | number : 2 }} &#162;/each
+                    <strong>Sell:</strong> {{ animal.buyFor * (1-animal.sellForPercentage) | number: 0 }} &#162;/each
                   </span>
                 </div>
               </div>
@@ -121,8 +160,6 @@
         </div>
       </div>
 
-      <!-- <div id="chart"></div> -->
-
     </section>
 
     <section class="u-hidden c-window c-window--storage" ng-tab-body="extra-classes">
@@ -130,11 +167,13 @@
         <ul class="c-storage__stats">
           <li class="c-storage__stat">
             <span class="c-amount-indicator c-amount-indicator--primary c-amount-indicator--full">
-              fee: {{ roomCtrl.wallet.transaction_fee }} <span class="small">&#162;</span>
+              fee: {{ roomCtrl.wallet.transaction_fee * ((100 - roomCtrl.wallet.transaction_fee_decrease)/100) }}
+              <span class="small">&#162;</span>
+              <span ng-if="roomCtrl.wallet.transaction_fee_decrease > 0">(-{{roomCtrl.wallet.transaction_fee_decrease}}%)</span>
             </span>
           </li>
           <li class="c-storage__stat">
-            <img class="c-icon" src="assets/images/guard.svg" alt="guard">
+            <img class="c-icon c-icon--rounded" src="assets/images/guard_clean.png" alt="guard">
             <span class="c-amount-indicator c-amount-indicator--primary">
               {{ roomCtrl.wallet.security }}
             </span
@@ -144,14 +183,14 @@
       <ul class="c-big-list">
         <li class="c-big-list__item" ng-repeat="item in roomCtrl.myStorage" ng-if="item.active" ng-disabled="!item.canUse">
           <div class="c-big-list__icon">
-            <img class="c-icon c-icon--large" src="assets/images/{{item.currencyLink.image}}" alt="{{item.currencyLink.name}}">
+            <img class="c-icon c-icon--large" src="assets/images/{{item.currencyLink.image_clean}}" alt="{{item.currencyLink.name}}">
           </div>
           <div class="c-big-lig__metadata">
             <h1 class="metadata__title">
               {{ item.currencyLink.name }}
             </h1>
             <h2 class="metadata__subtitle">
-              <span count-to="{{ item.amount }}" value="{{ item.oldAmount }}" duration="1" decimals="2"></span>{{ item.currencyLink.measure }}
+              <span count-to="{{ item.amount }}" value="{{ item.oldAmount }}" duration="1" decimals="1"></span>{{ item.currencyLink.measure }}
             </h2>
             <div class="metadata__info">
               = {{ item.amount * item.currencyLink.buyFor * (1-item.currencyLink.sellForPercentage) | number : 2 }} &#162;
@@ -183,7 +222,7 @@
           </h1>
           <div class="o-card__icon">
             <img ng-if="card.image" src="assets/images/{{card.image}}" alt="">
-            <img ng-if="!card.image" src="assets/images/money.svg" alt="">
+            <img ng-if="!card.image" src="assets/images/money.png" alt="">
           </div>
           <div class="o-card__effect">
             +{{ card.effect || "600" }}
@@ -205,7 +244,7 @@
           </h1>
           <div class="o-card__icon">
             <img ng-if="roomCtrl.highlightedCard.image" src="assets/images/{{roomCtrl.highlightedCard.image}}" alt="">
-            <img ng-if="!roomCtrl.highlightedCard.image" src="assets/images/money.svg" alt="">
+            <img ng-if="!roomCtrl.highlightedCard.image" src="assets/images/money.png" alt="">
           </div>
           <div class="o-card__effect">
             +{{ roomCtrl.highlightedCard.effect || "2" }}
@@ -265,7 +304,7 @@
   </div>
 
   <ul class="c-window__tabs">
-    <li ng-tab-head class="window__tab ripple" ng-if="roomCtrl.addonsAvailable">
+    <li ng-tab-head="active" class="window__tab ripple" ng-if="roomCtrl.addonsAvailable">
       <i class="material-icons">queue</i>
       Add-ons
     </li>
@@ -273,7 +312,7 @@
       <i class="material-icons">store</i>
       Market
     </li>
-    <li ng-tab-head="active" class="window__tab ripple">
+    <li ng-tab-head class="window__tab ripple">
       <i class="material-icons">home</i>
       Storage
     </li>

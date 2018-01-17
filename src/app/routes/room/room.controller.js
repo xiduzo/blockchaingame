@@ -21,7 +21,8 @@
     PIN_NUMBERS,
     ROOM_MEMBERS_NEEDED_TO_PLAY,
     CARDS,
-    PIN_NUMBERS_TO_ENTER
+    PIN_NUMBERS_TO_ENTER,
+    ADDONS
   ) {
 
     var vm = this;
@@ -36,15 +37,18 @@
     vm.shufflePinNumbers = shufflePinNumbers;
     vm.makeEmptyArray = makeEmptyArray;
     vm.buyOrSelectCard = buyOrSelectCard;
+    vm.buyAddon = buyAddon;
 
     // Variables
     vm.user = Global.getUser();
     vm.room = undefined;
-    vm.roomStarted = true;
-    vm.addonsAvailable = false;
+    vm.addonsAvailable = true;
+    vm.stopAllTimers = false;
+    vm.charts = [];
 
     vm.timeThisRound = 60 * 10;
     vm.currentTick = 0;
+    vm.updateCurrenciesTick = 0;
     vm.timesToUpdateMarket = angular.copy(vm.timeThisRound);
 
     vm.vaultAvailable = false;
@@ -59,6 +63,7 @@
     vm.myBarn = angular.copy(BASE_RECOURCES.BARN);
     vm.myVault = angular.copy(BASE_RECOURCES.VAULT);
     vm.wallet = angular.copy(BASE_WALLET);
+    vm.addons = angular.copy(ADDONS);
 
     vm.oldCoins = 0; // Need this for fancy counter
     vm.myCoins = 0;
@@ -95,15 +100,11 @@
 
     $scope.$on("roomStarted", function(event, response) {
       if(response.data.room == $stateParams.roomId) {
-        console.log(response.data.roomSettings);
-        vm.room.markets = response.data.roomSettings.markets;
-        vm.introduce_sheep = response.data.roomSettings.introduce_sheep;
-        vm.introduce_cows = response.data.roomSettings.introduce_cows;
-        vm.introduce_pig = response.data.roomSettings.introduce_pig;
+        vm.room.settings = response.data.roomSettings;
         ngDialog.closeAll();
         vm.myCoins = 10000;
-        vm.roomStarted = true;
         countDownTimer();
+        updateCurrenciesTimer();
       }
     })
 
@@ -113,7 +114,8 @@
       "room": $stateParams.roomId
     });
 
-    $scope.$on("$destroy", function(){
+    $scope.$on("$destroy", function() {
+      vm.stopAllTimers = true;
       // Remove the room when the player is the last on in the room
       if(vm.room.users.length === 1) {
         Rooms.api.one(vm.room._id.$oid).remove().then(function() {
@@ -130,30 +132,40 @@
     });
 
     function countDownTimer() {
+      if(vm.stopAllTimers) { return; }
       $timeout(function() {
         vm.timeThisRound--;
         vm.currentTick++;
 
-        if(vm.currentTick % 15 === 0) { updateCurrencies(); }
-
         if(vm.currentTick % 30 === 0) { getCurrenciesFromMiners(); }
-
-
         // Introduce items in the game
         switch (vm.currentTick) {
-          case vm.introduce_sheep:
+          case vm.room.settings.introduce_sheep:
             introduceAnimal(1);
             break;
-          case vm.introduce_cows:
+          case vm.room.settings.introduce_cows:
             introduceAnimal(2);
             break;
-          case vm.introduce_pig:
+          case vm.room.settings.introduce_pig:
             introduceAnimal(3);
             break;
         }
 
-        if(vm.timeThisRound > 0) { countDownTimer(); }
+        if(vm.timeThisRound > 0) {
+          countDownTimer();
+        } else {
+          vm.stopAllTimers = true;
+        }
       }, 1000);
+    }
+
+    function updateCurrenciesTimer() {
+      if(vm.stopAllTimers) { return; }
+      $timeout(function() {
+        vm.updateCurrenciesTick++;
+        updateCurrencies();
+        updateCurrenciesTimer();
+      }, 1000 * (vm.room.settings.currency_update_ticks[vm.updateCurrenciesTick] > vm.timeThisRound ? vm.timeThisRound : vm.room.settings.currency_update_ticks[vm.updateCurrenciesTick]));
     }
 
     // Wait to start game for users
@@ -202,8 +214,10 @@
             markets: [wool, milk, bacon],
             introduce_sheep: Math.round((Math.round(Math.random() * 5 + 5) / 100) * vm.timeThisRound),
             introduce_cows: Math.round((Math.round(Math.random() * 10 + 15) / 100) * vm.timeThisRound),
-            introduce_pig: Math.round((Math.round(Math.random() * 20 + 40) / 100) * vm.timeThisRound)
-
+            introduce_pig: Math.round((Math.round(Math.random() * 20 + 40) / 100) * vm.timeThisRound),
+            currency_update_ticks: _.map(_.range(vm.timeThisRound), function(num) {
+              return Math.round(Math.random() * 10 + 10);
+            })
           }
         });
       })
@@ -288,6 +302,40 @@
       _.findWhere(vm.assets, {assetType: animal.assetType}).currency.active = true;
       _.findWhere(vm.myBarn, {assetType: animal.assetType}).active = true;
       _.findWhere(vm.myStorage, {assetType: animal.assetType}).active = true;
+
+      $timeout(function() {
+        var chart = Highcharts.chart('graph--'+animal.assetLink.currency.name, {
+          title: { text: '' },
+          chart: {
+            type: "spline",
+            backgroundColor: Highcharts.Color('#222222').setOpacity(0).get()
+          },
+
+          yAxis: { visible: false },
+          xAxis: { visible: false },
+          legend: { enabled: false },
+          credits: { enabled: false },
+
+          plotOptions: {
+            spline: {
+              marker: {
+                radius: 0
+              }
+            }
+          },
+
+          series: [
+            {
+              name: animal.assetLink.currency.name,
+              data: _.findWhere(vm.assets, {assetType: animal.assetType }).currency.history,
+              color: "#E5E5E5",
+            }
+          ]
+        });
+        vm.charts.push(chart);
+
+        _.each(vm.charts, function(chart) { chart.reflow(); });
+      }, 100);
     }
 
     // Method declarations
@@ -633,8 +681,14 @@
     }
 
     function updateCurrencies() {
-      _.each(vm.assets, function(asset) {
-        asset.currency.buyFor = vm.room.markets[asset.currency.currencyType-1][vm.currentTick];
+      _.each(vm.assets, function(asset, index) {
+        asset.currency.previousBuyFor = asset.currency.buyFor;
+        asset.currency.buyFor = vm.room.settings.markets[asset.currency.currencyType-1][vm.currentTick];
+        asset.currency.history.push(asset.currency.buyFor);
+
+        if(asset.currency.active && vm.charts[index]) {
+          vm.charts[index].series[0].update({data: asset.currency.history});
+        }
       });
 
       _.each(vm.myStorage, function(asset, index) {
@@ -673,5 +727,47 @@
       vm.myCoins -= 600;
     }
 
+    function buyAddon(addon, addonTree, index) {
+      if(addon.owned || !addon.available) { return false; }
+      ngDialog.openConfirm({
+        template: 'app/routes/room/dialogs/buyaddon.html',
+        controller: ['addon', 'coins', function(addon, coins) {
+
+          var vm = this;
+
+          vm.addon = addon;
+          vm.coins = coins;
+
+        }],
+        controllerAs: 'buyAddonCtrl',
+        resolve: {
+          addon: function() { return addon; },
+          coins: function() { return vm.myCoins; }
+        }
+      })
+      .then(function(response) {
+        if(!response || !response.buyAddon) { return false; }
+
+        addon.owned = true;
+        if(addonTree.addons[index+1]) {
+          addonTree.addons[index+1].available = true;
+        }
+
+        switch (addonTree.addonType) {
+          case 1:
+            vm.wallet.transaction_fee_decrease += response.addon.effect;
+            break;
+          case 2:
+            vm.wallet.security_increase += response.addon.effect;
+            break;
+          case 3:
+            _.findWhere(vm.myStorage, {assetType: response.addon.animalType}).canUse = true;
+            break;
+        }
+      })
+      .catch(function(error) {
+        $log.log(error);
+      });
+    }
   }
 })();

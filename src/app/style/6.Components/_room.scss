@@ -64,6 +64,20 @@ $c-room-head-icon-size: 26px;
   .c-window {
     width: 100%;
 
+    .c-window__header {
+      color: $titleColor;
+      font-family: 'Dalton Maag headline bold';
+      font-size: 1.55em;
+      padding: 6px 0 6px 16px;
+    }
+
+    .c-window__subheader {
+      font-family: 'Dalton Maag text light';
+      font-size: 0.8em;
+      margin: 16px 0 16px 16px;
+      color: lighten($black, 25);
+    }
+
     .c-window__actions {
       background-color: $primaryColor;
       display: flex;

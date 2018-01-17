@@ -4,6 +4,10 @@ $c-icon-size: 26px;
   width: $c-icon-size;
   height: $c-icon-size;
 
+  &--rounded {
+    border-radius: 50%;
+  }
+
   &--small {
     width: $c-icon-size * 0.7;
     height: $c-icon-size * 0.7;
@@ -17,6 +21,11 @@ $c-icon-size: 26px;
   &--big {
     width: $c-icon-size * 2.2;
     height: $c-icon-size * 2.2;
+  }
+
+  &--bigger {
+    width: $c-icon-size * 3;
+    height: $c-icon-size * 3;
   }
 
   &--large {
