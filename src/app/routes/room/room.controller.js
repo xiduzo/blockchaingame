@@ -287,7 +287,7 @@
             spacing: [0, 0, 5, 0]
           },
 
-          yAxis: { visible: true },
+          yAxis: { visible: false },
           xAxis: { visible: false },
           legend: { enabled: false },
           credits: { enabled: false },
@@ -300,7 +300,7 @@
           series: [
             {
               name: animal.assetLink.currency.name,
-              data: history,
+              data: _.last(history, 20),
               color: Highcharts.Color('#000000').setOpacity(0.2).get(),
             }
           ]
