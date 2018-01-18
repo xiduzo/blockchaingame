@@ -1,4 +1,4 @@
-<section class="c-dialog__container">
+<!-- <section class="c-dialog__container">
   <div class="c-dialog__content">
     waiting for other users
 
@@ -8,5 +8,49 @@
   <div class="c-dialog__buttons">
     <button class="o-button o-button--error ripple" ng-click="confirm({closedByButton: true})">Quit room</button>
     <button ng-if="waitForUsersCtrl.createdRoom" class="o-button o-button--success ripple" ng-click="confirm()" ng-disabled="waitForUsersCtrl.room.users.length < waitForUsersCtrl.roomMembersNeededToPlay">Start game</button>
+  </div>
+</section> -->
+<section class="c-dialog__container">
+  <div class="c-dialog__content c-dialog__content--vault">
+    <div class="c-dialog__icon">
+      <img class="c-icon--huge" ng-src="assets/images/queen.png" alt="">
+    </div>
+    <h1 class="title title--turquoise">
+      Waiting for other players...
+    </h1>
+    <div class="o-progress__container">
+      <div class="o-progress__bar">
+        <div class="o-progress__bar--inner" ng-style="{
+          width: (waitForUsersCtrl.room.users.length * 100 / waitForUsersCtrl.room.players) + '%'
+        }"></div>
+      </div>
+      <div class="o-progress__count">
+        {{ waitForUsersCtrl.room.users.length }} / {{ waitForUsersCtrl.room.players }}
+      </div>
+    </div>
+    <div class="c-info-blocks">
+      <div class="c-info-block">
+        <strong>{{ waitForUsersCtrl.room.name }}</strong>
+      </div>
+    </div>
+    <div class="c-info-blocks">
+      <div class="c-info-block">
+        {{ waitForUsersCtrl.room.time }} minutes
+      </div>
+      <div class="c-info-block">
+        {{ waitForUsersCtrl.room.players }} players
+      </div>
+    </div>
+  </div>
+
+  <div class="c-dialog__buttons">
+
+    <!-- <button class="o-button o-button--turquoise ripple" ng-click="confirm()">
+      Start
+    </button> -->
+    <button ng-if="waitForUsersCtrl.createdRoom" class="o-button o-button--success ripple" ng-click="confirm()" ng-disabled="waitForUsersCtrl.room.users.length < waitForUsersCtrl.room.players">
+      <i class="material-icons">trending_flat</i>
+      Start game
+    </button>
   </div>
 </section>

@@ -1,16 +1,14 @@
 <section class="c-dialog__container">
-  <div class="c-dialog__content c-dialog__content--vault">
+  <div class="c-dialog__content">
     <div class="c-dialog__icon">
       <img class="c-icon--huge" ng-src="assets/images/{{ introduceAnimalCtrl.animal.assetLink.merchant }}" alt="">
     </div>
     <h1 class="title">
       A new merchant arrived!
     </h1>
-    <p class="text">
-      A new merchant has arrived to the market! This merchant will sell <strong>{{ introduceAnimalCtrl.animal.assetLink.plural }}</strong> and <strong>{{ introduceAnimalCtrl.animal.assetLink.currency.plural }}</strong>.
+    <p class="text" ng-bind-html="introduceAnimalCtrl.animal.assetLink.merchantText">
     </p>
-    <p class="text">
-      Be sure to check out the market and trade in this new goods!
+    <p class="text warning" ng-bind-html="introduceAnimalCtrl.animal.assetLink.merchantWarning">
     </p>
   </div>
 

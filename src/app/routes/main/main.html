@@ -176,7 +176,7 @@
           Game time
         </h2>
         <ul class="options">
-          <li ng-class="{'active': main.roomTime == time }" ng-repeat="time in [15, 30, 45, 60]" ng-click="main.roomTime = time">
+          <li ng-class="{'active': main.roomTime == time }" ng-repeat="time in [10, 15, 30, 45, 60]" ng-click="main.roomTime = time">
             {{ time }}m
           </li>
         </ul>
@@ -184,7 +184,7 @@
           Players
         </h2>
         <ul class="options">
-          <li ng-class="{'active': main.roomPlayers == players }" ng-repeat="players in [2, 3, 4, 5]" ng-click="main.roomPlayers = players">
+          <li ng-class="{'active': main.roomPlayers == players }" ng-repeat="players in [1, 2, 3, 4, 5]" ng-click="main.roomPlayers = players">
             {{ players }}
           </li>
         </ul>
@@ -217,6 +217,7 @@
         <ul class="options options--column">
           <li ng-class="{'active': main.selectedRoom._id.$oid == room._id.$oid }" ng-repeat="room in main.rooms" ng-click="main.selectedRoom = room">
             {{ room.name }}
+            <div class="o-button o-button--error" style="margin: 0 0.5em;" ng-if="main.user.isSuperUser" ng-click="main.removeRoom(room)">Delete room</div>
           </li>
         </ul>
       </div>

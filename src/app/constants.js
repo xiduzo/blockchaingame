@@ -11,7 +11,7 @@
     .constant('API_KEY', 'BC6Nv1iEK_ZTzlp6IvIxF7jHRMEMREzz')
     .constant('SOCKETHOST', 'floating-meadow-66461.herokuapp.com/')
     .constant('ROOM_MEMBERS_NEEDED_TO_PLAY', 1)
-    .constant('PIN_NUMBERS_TO_ENTER', 6)
+    .constant('PIN_NUMBERS_TO_ENTER', 4)
     .constant('BASE_WALLET', {
       transaction_fee: 50,
       transaction_fee_decrease: 0,
@@ -154,6 +154,8 @@
             "image_clean": "sheep_clean.png",
             "active": false,
             "merchant": "merchant_sheep.png",
+            "merchantText": "The merchant now sells and buys <strong>sheep</strong> that can produce wool.",
+            "merchantWarning": "Animals give you products every certain amount of time in random quantities.",
             "currencyProduction": { "min": 2, "max": 5},
             "currency": {
               "image": "wool.png",
@@ -179,6 +181,8 @@
             "image_clean": "cow_clean.png",
             "active": false,
             "merchant": "merchant_cow.png",
+            "merchantText": "Now you can buy and sell <strong>cows</strong> and <strong>milk</strong> from the new merchant!",
+            "merchantWarning": "Milk prices are less stable than wool",
             "currencyProduction": { "min": 1, "max": 4},
             "currency": {
               "image": "milk.png",
@@ -204,6 +208,8 @@
             "image_clean": "pig_clean.png",
             "active": false,
             "merchant": "merchant_pig.png",
+            "merchantText": "Now you can buy and sell <strong>pigs</strong> and <strong>bacon</strong> from the new merchant!",
+            "merchantWarning": "Bacon prices are the least stable",
             "currencyProduction": { "min": 0, "max": 3},
             "currency": {
               "image": "bacon.png",

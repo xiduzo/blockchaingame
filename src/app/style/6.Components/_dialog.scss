@@ -25,11 +25,34 @@
           margin: 0 auto .5em auto;
         }
 
+        .c-info-blocks {
+          display: flex;
+          .c-info-block {
+            flex-grow: 1;
+            background: lighten($black, 90);
+            margin: 0.5em 0.5em;
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            color: $titleColor;
+          }
+        }
+
         .title {
           color: $titleColor;
           font-family: 'Dalton Maag headline light';
           text-align: center;
           font-size: 1.5em;
+
+          &--turquoise {
+            color: $turquoise;
+          }
+        }
+
+        .subtitle {
+          font-size: 1.75em;
+          text-align: center;
+          margin: 1.5em 0;
         }
 
         .text {
@@ -37,6 +60,33 @@
           text-align: center;
           color: lighten($black, 15);
           margin: 1em 0;
+
+          &.warning {
+            font-size: 0.7em;
+            padding: 8px;
+            border: 1px solid $accentColor;
+            border-radius: 6px;
+          }
+
+          &.dialog {
+            background: #F3F3F3;
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: -0.25em;
+
+            &:before {
+              content: '';
+              height: 34px;
+              width: 29px;
+              position: absolute;
+              background-image: url('../assets/images/tail_grey.png');
+              background-size: contain;
+              background-repeat: no-repeat;
+              background-position: center;
+              margin-top: -2em;
+              margin-left: 3em;
+            }
+          }
         }
 
         input {
@@ -74,6 +124,8 @@
       background: none;
       font-size: 1.75em;
       color: lighten($black, 35);
+
+      &:focus { outline: none; }
     }
 
   }
@@ -167,10 +219,6 @@
     margin: 0.5em 0;
     text-align: center;
   }
-}
-
-.c-dialog__content--vault {
-
 }
 
 .small {

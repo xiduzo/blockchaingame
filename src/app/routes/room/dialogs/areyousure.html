@@ -1,0 +1,39 @@
+<!-- <section class="c-dialog__container">
+  <div class="c-dialog__content">
+    waiting for other users
+
+    {{ waitForUsersCtrl.room.users.length }} / {{ waitForUsersCtrl.roomMembersNeededToPlay }}
+  </div>
+
+  <div class="c-dialog__buttons">
+    <button class="o-button o-button--error ripple" ng-click="confirm({closedByButton: true})">Quit room</button>
+    <button ng-if="waitForUsersCtrl.createdRoom" class="o-button o-button--success ripple" ng-click="confirm()" ng-disabled="waitForUsersCtrl.room.users.length < waitForUsersCtrl.roomMembersNeededToPlay">Start game</button>
+  </div>
+</section> -->
+<section class="c-dialog__container">
+  <div class="c-dialog__content c-dialog__content--vault">
+    <div class="c-dialog__icon">
+      <img class="c-icon--huge" ng-src="assets/images/grandma.png" alt="">
+    </div>
+    <h1 class="title">
+      Hey, {{ areYouSureCtrl.user.name }}!
+    </h1>
+    <h2 class="subtitle">
+      Are you sure you want to leave this Kingdom?
+    </h2>
+    <p class="text">
+      You will be taken back to the main screen
+    </p>
+  </div>
+
+  <div class="c-dialog__buttons">
+    <button class="o-button o-button--error ripple" ng-click="closeThisDialog()">
+      <i class="material-icons">clear</i>
+      No, I'll wait
+    </button>
+    <button class="o-button o-button--success ripple" ng-click="confirm()">
+      <i class="material-icons">done</i>
+      Yes, I'm out
+    </button>
+  </div>
+</section>

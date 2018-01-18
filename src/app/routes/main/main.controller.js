@@ -48,41 +48,13 @@
         isSuperUser: vm.newUserName.toLowerCase() == 'xiduzo' ? true : false
       }).then(function(response) {
         vm.waitingForData = false;
-        // localStorageService.set('user', response);
+        localStorageService.set('user', response);
         Global.setUser(response);
         vm.user = response;
         vm.screen = 'intro_1';
         vm.roomHeaderTitle = "Get ready"
       });
     }
-    // function newUser() {
-    //   ngDialog.open({
-    //     template: 'app/routes/main/dialogs/register.html',
-    //     className: 'c-dialog',
-    //     controller: ['$scope', function($scope) {
-    //     }],
-    //     controllerAs: 'registerCtrl',
-    //     preCloseCallback: function(response) {
-    //       if(!response.name) {
-    //         toastr.error("Please fill in an username");
-    //         newUser();
-    //       } else {
-    //         Users.api.post({
-    //           name: response.name,
-    //           isSuperUser: response.name == 'xiduzo' ? true : false
-    //         }).then(function(response) {
-    //           localStorageService.set('user', response);
-    //           Global.setUser(response);
-    //           vm.user = response;
-    //         });
-    //       }
-    //     }
-    //   });
-    // }
-    //
-    // if(!vm.user._id) {
-    //   newUser();
-    // }
 
     // Broadcasts
     $scope.$on('addRoom', function(event, response) {

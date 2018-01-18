@@ -1,0 +1,43 @@
+<section class="c-dialog__container" ng-if="introduceRobbersCtrl.screen == 'guard'">
+  <div class="c-dialog__content">
+    <div class="c-dialog__icon">
+      <img class="c-icon--huge" ng-src="assets/images/guard.png" alt="">
+    </div>
+    <h1 class="title">
+      Security warning
+    </h1>
+    <p class="text">
+      Bandits have been spotted in town! They attack storages and <strong>steal everything in them!</strong>
+    </p>
+    <p class="text warning">
+      You might get attacked anytime. <strong>Upgrade your storage security ASAP!</strong>
+    </p>
+  </div>
+
+  <div class="c-dialog__buttons">
+    <button class="o-button o-button--turquoise ripple" ng-click="introduceRobbersCtrl.screen = 'queen'">
+      <i class="material-icons">check</i>
+      GOT IT
+    </button>
+  </div>
+</section>
+<section class="c-dialog__container" ng-if="introduceRobbersCtrl.screen == 'queen'">
+  <div class="c-dialog__content">
+    <div class="c-dialog__icon">
+      <img class="c-icon--huge" ng-src="assets/images/queen.png" alt="">
+    </div>
+    <p class="text dialog">
+      To keep you products safe, I provide you with a vault. When your products are transferred to your vault, they can not be stolen by bandits.
+    </p>
+    <p class="text warning">
+      <strong>You can not</strong> sell/buy products through your vault, but only through your storage.
+    </p>
+  </div>
+
+  <div class="c-dialog__buttons">
+    <button class="o-button o-button--turquoise ripple" ng-click="confirm()">
+      <i class="material-icons">check</i>
+      GOT IT
+    </button>
+  </div>
+</section>

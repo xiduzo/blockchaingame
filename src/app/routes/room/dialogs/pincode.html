@@ -23,7 +23,7 @@
       <i class="material-icons">undo</i>
       Undo
     </button>
-    <button class="o-button o-button--success ripple" ng-click="confirm({pincode: enterVaultCtrl.enteredPin})" ng-disabled="enterVaultCtrl.enteredPin.length < 6">
+    <button class="o-button o-button--success ripple" ng-click="confirm({pincode: enterVaultCtrl.enteredPin})" ng-disabled="enterVaultCtrl.enteredPin.length < enterVaultCtrl.pinNumbersAvailable">
       <i class="material-icons">security</i>
       Enter
     </button>

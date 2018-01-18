@@ -19,7 +19,6 @@
     BASE_RECOURCES,
     BASE_WALLET,
     PIN_NUMBERS,
-    ROOM_MEMBERS_NEEDED_TO_PLAY,
     CARDS,
     PIN_NUMBERS_TO_ENTER,
     ADDONS
@@ -46,11 +45,13 @@
     vm.stopAllTimers = false;
     vm.charts = [];
 
-    vm.timeThisRound = 60 * 2;
+    vm.timeThisRound = 0;
     vm.currentTick = 0;
     vm.updateCurrenciesTick = 0;
+    vm.updateRobbersTick = 0;
 
     vm.enteredVault = false;
+    vm.myPincode = '';
 
     vm.addonsAvailable = true;
     vm.vaultAvailable = false;
@@ -102,11 +103,13 @@
     $scope.$on("roomStarted", function(event, response) {
       if(response.data.room == $stateParams.roomId) {
         vm.room.settings = response.data.roomSettings;
+        console.log(vm.room.settings);
         ngDialog.closeAll();
         vm.myCoins = 10000;
         drawChart(_.first(vm.myBarn));
         countDownTimer();
         updateCurrenciesTimer();
+        introduceAnimal(false);
       }
     });
 
@@ -155,6 +158,9 @@
             introduceAnimal(3);
             _.findWhere(vm.addons, {addonType: 3}).addons[1].available = true;
             break;
+          case vm.room.settings.introduce_robbbers:
+            introduceRobbers();
+            break;
         }
 
         if(vm.timeThisRound > 0) {
@@ -178,22 +184,20 @@
     function waitForUsers() {
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/waitforusers.html',
-        showClose: false,
         closeByDocument: false,
-        className: 'c-dialog c-dialog--no-close-button',
+        className: 'c-dialog',
         controller: ['room', 'createdRoom', function(room, createdRoom) {
 
           var vm = this;
 
           vm.room = room;
-          vm.roomMembersNeededToPlay = ROOM_MEMBERS_NEEDED_TO_PLAY;
           vm.createdRoom = createdRoom;
 
         }],
         controllerAs: 'waitForUsersCtrl',
         resolve: {
           room: function() { return vm.room; },
-          createdRoom: function() { return _.first(vm.room.users)._id.$oid == vm.user._id.$oid ? true : false; }
+          createdRoom: function() { return _.first(vm.room.users)._id.$oid == vm.user._id.$oid ? true : false; },
         }
       })
       .then(function(response) {
@@ -221,14 +225,40 @@
             introduce_sheep: Math.round((Math.round(Math.random() * 5 + 5) / 100) * vm.timeThisRound),
             introduce_cows: Math.round((Math.round(Math.random() * 10 + 15) / 100) * vm.timeThisRound),
             introduce_pig: Math.round((Math.round(Math.random() * 20 + 40) / 100) * vm.timeThisRound),
+            introduce_robbbers: Math.round((Math.round(Math.random() * 0 + 1) / 100) * vm.timeThisRound),
             currency_update_ticks: _.map(_.range(vm.timeThisRound), function() {
               return Math.round(Math.random() * 3 + 5);
+            }),
+            robbers_attempt_ticks: _.map(_.range(vm.timeThisRound), function() {
+              return Math.round(Math.random() * 60 + 60);
             })
           }
         });
       })
       .catch(function(error) {
-        $log.error(error);
+        ngDialog.openConfirm({
+          template: 'app/routes/room/dialogs/areyousure.html',
+          closeByDocument: false,
+          className: 'c-dialog',
+          controller: ['user', function(user) {
+
+            var vm = this;
+
+            vm.user = user;
+
+          }],
+          controllerAs: 'areYouSureCtrl',
+          resolve: {
+            user: function() { return vm.user; }
+          }
+        })
+        .then(function(response) {
+          vm.stopAllTimers;
+          $state.go('home');
+        })
+        .catch(function(error) {
+          waitForUsers();
+        });
       });
     }
 
@@ -312,7 +342,16 @@
 
     function introduceAnimal(animal) {
       ngDialog.closeAll();
-      animal = _.findWhere(vm.myBarn, {assetType: animal});
+      if(animal) {
+        animal = _.findWhere(vm.myBarn, {assetType: animal});
+        animal.activate = true;
+      } else {
+        animal = angular.copy(_.findWhere(vm.myBarn, {assetType: 1}));
+        animal.activate = false;
+        animal.assetLink.merchant = "merchant.png";
+        animal.assetLink.merchantText = "There is a new merchant in town who sells and buys <strong>wool</strong>.";
+        animal.assetLink.merchantWarning = "Keep an eye on the wool prices as they change over time";
+      }
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/merchant.html',
         closeByDocument: false,
@@ -328,21 +367,47 @@
         }
       })
       .then(function() {
-        vm.animalsAvailable = true;
-        activeAnimal(animal);
+        if(animal.activate) {
+          vm.animalsAvailable = true;
+          activeAnimal(animal);
+        }
       })
       .catch(function() {
-        vm.animalsAvailable = true;
-        activeAnimal(animal);
+        if(animal.activate) {
+          vm.animalsAvailable = true;
+          activeAnimal(animal);
+        }
       });
     }
 
+    function introduceRobbers() {
+      ngDialog.closeAll();
+      ngDialog.openConfirm({
+        template: 'app/routes/room/dialogs/robbers.html',
+        closeByDocument: false,
+        showClose: false,
+        className: 'c-dialog c-dialog--no-close-button',
+        controller: ['$scope', function($scope) {
+
+          var vm = this;
+
+          vm.screen = 'guard';
+        }],
+        controllerAs: 'introduceRobbersCtrl'
+      })
+      .then(function() {
+        vm.vaultAvailable = true;
+      })
+      .catch(function() {
+      });
+    }
     /*--------------------------
       Serices
     --------------------------*/
     Rooms.api.one($stateParams.roomId).get()
     .then(function(response) {
       vm.room = response;
+      vm.timeThisRound = 60 * response.time;
 
       // Only add yourself when not in the room
       // Prevents duplicate users
