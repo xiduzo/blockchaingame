@@ -180,8 +180,17 @@
       }, 1000 * (vm.room.settings.currency_update_ticks[vm.updateCurrenciesTick] > vm.timeThisRound ? vm.timeThisRound : vm.room.settings.currency_update_ticks[vm.updateCurrenciesTick]));
     }
 
-    // Wait to start game for users
+    function robbersAttemptTimer() {
+      if(vm.stopAllTimers) { return; }
+      $timeout(function() {
+        vm.updateRobbersTick++;
+        robbersAttempt();
+        robbersAttemptTimer();
+      }, 1000 * vm.room.settings.robbers_attempt_ticks[vm.updateRobbersTick]);
+    }
+
     function waitForUsers() {
+      ngDialog.closeAll();
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/waitforusers.html',
         closeByDocument: false,
@@ -230,7 +239,7 @@
               return Math.round(Math.random() * 3 + 5);
             }),
             robbers_attempt_ticks: _.map(_.range(vm.timeThisRound), function() {
-              return Math.round(Math.random() * 60 + 60);
+              return Math.round(Math.random() * 5 + 5);
             })
           }
         });
@@ -396,11 +405,24 @@
         controllerAs: 'introduceRobbersCtrl'
       })
       .then(function() {
+        vm.addons[1].addons[0].available = true;
+        robbersAttemptTimer();
         vm.vaultAvailable = true;
       })
       .catch(function() {
+        vm.addons[1].addons[0].available = true;
+        robbersAttemptTimer();
+        vm.vaultAvailable = true;
       });
     }
+
+    function robbersAttempt() {
+      var robberyPower = Math.round(Math.random() * 90);
+      if(robberyPower > vm.wallet.security + vm.wallet.security_increase) {
+        console.log("robery successfull");
+      }
+    }
+
     /*--------------------------
       Serices
     --------------------------*/
@@ -432,6 +454,7 @@
       Methods declarations
     --------------------------*/
     function buyAnimal(animal) {
+      ngDialog.closeAll();
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/buyanimal.html',
         controller: ['animal', 'coins', 'storage', function(animal, coins, storage) {
@@ -485,6 +508,7 @@
     }
 
     function sellAnimal(animal) {
+      ngDialog.closeAll();
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/sellanimal.html',
         controller: ['animal', 'animalInBarn', function(animal, animalInBarn) {
@@ -534,6 +558,7 @@
     }
 
     function buyProduct(product) {
+      ngDialog.closeAll();
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/buyproduct.html',
         controller: ['product', 'coins', 'canUse', function(product, coins, canUse) {
@@ -585,6 +610,7 @@
     }
 
     function sellProduct(product) {
+      ngDialog.closeAll();
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/sellproduct.html',
         controller: ['product', 'productInStorage', function(product, productInStorage) {
@@ -634,6 +660,7 @@
     }
 
     function generatePinCode() {
+      ngDialog.closeAll();
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/pincode.html',
         className: 'c-dialog c-dialog--black',
@@ -689,6 +716,7 @@
     }
 
     function enterVault() {
+      ngDialog.closeAll();
       vm.enteredVault = false;
       if(vm.myPincode.length === 0) { return generatePinCode(); }
 
@@ -784,6 +812,7 @@
     }
 
     function buyAddon(addon, addonTree, index) {
+      ngDialog.closeAll();
       if(addon.owned || !addon.available) { return false; }
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/buyaddon.html',
@@ -805,7 +834,11 @@
         if(!response || !response.buyAddon) { return false; }
 
         addon.owned = true;
-        if(addonTree.addons[index+1] && !addonTree.addonType == 3) {
+        vm.oldCoins = vm.coins;
+        vm.coins -= addon.buyFor;
+
+        console.log(addonTree.addons[index+1], addonTree.addonType);
+        if(addonTree.addons[index+1] && addonTree.addonType != 3) {
           addonTree.addons[index+1].available = true;
         }
 

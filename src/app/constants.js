@@ -15,7 +15,7 @@
     .constant('BASE_WALLET', {
       transaction_fee: 50,
       transaction_fee_decrease: 0,
-      security: 10,
+      security: 50,
       security_increase: 0
     })
     .constant('PIN_NUMBERS', [
@@ -67,16 +67,8 @@
         "addonType": 2,
         "addons": [
           {
-            "effect": 1,
-            "image": "eye.png",
-            "text": "Increase security rating by 1",
-            "owned": false,
-            "available": false,
-            "buyFor": 500
-          },
-          {
             "effect": 5,
-            "image": "guard.png",
+            "image": "eye.png",
             "text": "Increase security rating by 5",
             "owned": false,
             "available": false,
@@ -84,8 +76,16 @@
           },
           {
             "effect": 10,
-            "image": "grandma.png",
+            "image": "guard.png",
             "text": "Increase security rating by 10",
+            "owned": false,
+            "available": false,
+            "buyFor": 500
+          },
+          {
+            "effect": 15,
+            "image": "grandma.png",
+            "text": "Increase security rating by 15",
             "owned": false,
             "available": false,
             "buyFor": 500
