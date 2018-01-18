@@ -221,7 +221,7 @@
             introduce_cows: Math.round((Math.round(Math.random() * 10 + 15) / 100) * vm.timeThisRound),
             introduce_pig: Math.round((Math.round(Math.random() * 20 + 40) / 100) * vm.timeThisRound),
             currency_update_ticks: _.map(_.range(vm.timeThisRound), function(num) {
-              return Math.round(Math.random() * 5 + 5);
+              return Math.round(Math.random() * 3 + 5);
             })
           }
         });
