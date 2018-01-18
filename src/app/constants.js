@@ -230,14 +230,14 @@
         return {
           ASSETS: ASSETS,
           STORAGE: [
-            { "assetType": 1, "currencyType": 1, "amount": 50, "oldAmount": 50, "active": true, "canUse": true, "currencyLink": _.findWhere(ASSETS, {assetType: 1}).currency },
+            { "assetType": 1, "currencyType": 1, "amount": 0, "oldAmount": 0, "active": true, "canUse": true, "currencyLink": _.findWhere(ASSETS, {assetType: 1}).currency },
             { "assetType": 2, "currencyType": 2, "amount": 0, "oldAmount": 0, "active": false, "canUse": false, "currencyLink": _.findWhere(ASSETS, {assetType: 2}).currency },
             { "assetType": 3, "currencyType": 3, "amount": 0, "oldAmount": 0, "active": false, "canUse": false, "currencyLink": _.findWhere(ASSETS, {assetType: 3}).currency }
           ],
           VAULT: [
-            { "assetType": 1, "currencyType": 1, "amount": 0, "oldAmount": 0, "active": true, "currencyLink": _.findWhere(ASSETS, {assetType: 1}).currency },
-            { "assetType": 2, "currencyType": 2, "amount": 0, "oldAmount": 0, "active": false, "currencyLink": _.findWhere(ASSETS, {assetType: 2}).currency },
-            { "assetType": 3, "currencyType": 3, "amount": 0, "oldAmount": 0, "active": false, "currencyLink": _.findWhere(ASSETS, {assetType: 3}).currency }
+            { "assetType": 1, "currencyType": 1, "amount": 0, "oldAmount": 0, "active": true, "canUse": true, "currencyLink": _.findWhere(ASSETS, {assetType: 1}).currency },
+            { "assetType": 2, "currencyType": 2, "amount": 0, "oldAmount": 0, "active": false, "canUse": false, "currencyLink": _.findWhere(ASSETS, {assetType: 2}).currency },
+            { "assetType": 3, "currencyType": 3, "amount": 0, "oldAmount": 0, "active": false, "canUse": false, "currencyLink": _.findWhere(ASSETS, {assetType: 3}).currency }
           ],
           BARN: [
             { "assetType": 1, "amount": 0, "oldAmount": 0, "active": false, "assetLink": _.findWhere(ASSETS, {assetType: 1}) },

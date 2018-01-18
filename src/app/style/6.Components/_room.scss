@@ -71,6 +71,42 @@ $c-room-head-icon-size: 26px;
       padding: 6px 0 6px 16px;
     }
 
+    .c-window__stats-header {
+      color: $white;
+      display: flex;
+      justify-content: space-between;
+      height: 40px;
+      font-size: 0.8em;
+      align-items: center;
+
+      .title {
+        font-size: 1.4em;
+        font-family: 'Dalton Maag headline bold';
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 8px;
+
+        .material-icons {
+          margin: 0 8px;
+        }
+      }
+
+      .c-window__stats {
+        display: flex;
+        align-items: center;
+        padding: 0 0 0 8px;
+        flex-grow: 1;
+        .c-window__stat {
+          list-style: none;
+          display: flex;
+          &:not(:last-of-type) { margin-right: 0.5em; }
+
+          img { z-index: 0; }
+        }
+      }
+    }
+
     .c-window__subheader {
       font-family: 'Dalton Maag text light';
       font-size: 0.8em;

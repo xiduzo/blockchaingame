@@ -36,6 +36,7 @@
     vm.enterVault = enterVault;
     vm.buyOrSelectCard = buyOrSelectCard;
     vm.buyAddon = buyAddon;
+    vm.transferProducts = transferProducts;
 
     /*--------------------------
       Variables
@@ -303,6 +304,7 @@
       _.findWhere(vm.assets, {assetType: animal.assetType}).currency.active = true;
       _.findWhere(vm.myBarn, {assetType: animal.assetType}).active = true;
       _.findWhere(vm.myStorage, {assetType: animal.assetType}).active = true;
+      _.findWhere(vm.myVault, {assetType: animal.assetType}).active = true;
 
       // Fix the charts on resize
       redrawCharts();
@@ -417,7 +419,12 @@
     }
 
     function robbersAttempt() {
-      var robberyPower = Math.round(Math.random() * 90);
+      var robberyPower = Math.round(
+        (Math.random() > 0.5 ? (Math.random() * 30) : (Math.random() * 10)) +
+        (Math.random() > 0.3 ? (Math.random() * 40) : (Math.random() * 20)) +
+        (Math.random() > 0.1 ? (Math.random() * 50) : (Math.random() * 30))
+      );
+      console.log(robberyPower);
       if(robberyPower > vm.wallet.security + vm.wallet.security_increase) {
         console.log("robery successfull");
       }
@@ -858,5 +865,48 @@
         $log.log(error);
       });
     }
+
+    function transferProducts(from, to) {
+      ngDialog.openConfirm({
+        template: 'app/routes/room/dialogs/transfer.html',
+        controller: ['from', 'to', 'transactionFee', function(from, to, transactionFee) {
+
+          var vm = this;
+
+          // Methods
+          vm.changeAmount = changeAmount;
+          vm.parseAmount = parseAmount;
+
+          // Variables
+          vm.from = from;
+          vm.to = to;
+          vm.transactionFee = transactionFee;
+          console.log(vm.from, vm.to);
+          vm.transferAmount = 0;
+
+          // Method declarations
+          function parseAmount() {
+            parseInt(vm.transferAmount, 10);
+          }
+
+          function changeAmount(increment) {
+            if(increment) { vm.transferAmount++; }
+            if(!increment && vm.transferAmount > 0) { vm.transferAmount--; }
+          }
+
+        }],
+        controllerAs: 'transferProductsCtrl',
+        resolve: {
+          from: function() { return from; },
+          to: function() { return to; },
+          transactionFee: function() { return vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);}
+        }
+      })
+      .then(function(response) {
+
+      })
+      .catch(function(error) { $log.log(error); });
+    }
+
   }
 })();

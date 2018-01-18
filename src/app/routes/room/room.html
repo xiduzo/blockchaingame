@@ -162,16 +162,16 @@
     </section>
 
     <section class="u-hidden c-window c-window--storage" ng-tab-body="extra-classes">
-      <div class="c-storage__header">
-        <ul class="c-storage__stats">
-          <li class="c-storage__stat">
+      <div class="c-window__stats-header">
+        <ul class="c-window__stats">
+          <li class="c-window__stat">
             <span class="c-amount-indicator c-amount-indicator--primary c-amount-indicator--full">
               fee: {{ roomCtrl.wallet.transaction_fee * ((100 - roomCtrl.wallet.transaction_fee_decrease)/100) }}
               <span class="small">&#162;</span>
               <span ng-if="roomCtrl.wallet.transaction_fee_decrease > 0">(-{{roomCtrl.wallet.transaction_fee_decrease}}%)</span>
             </span>
           </li>
-          <li class="c-storage__stat">
+          <li class="c-window__stat">
             <img class="c-icon c-icon--rounded" ng-src="assets/images/guard_clean.png" alt="guard">
             <span class="c-amount-indicator c-amount-indicator--primary">
               {{ roomCtrl.wallet.security }}
@@ -198,7 +198,7 @@
         </li>
       </ul>
       <div class="c-window__actions">
-        <button class="o-button o-button--accent ripple" ng-if="roomCtrl.vaultAvailable">
+        <button class="o-button o-button--accent ripple" ng-if="roomCtrl.vaultAvailable" ng-click="roomCtrl.transferProducts(roomCtrl.myStorage, roomCtrl.myVault)">
           <i class="material-icons">compare_arrows</i>
           Transfer
         </button>
@@ -262,23 +262,25 @@
     </section>
 
     <section class="u-hidden c-window c-window--vault" ng-tab-body="extra-classes" ng-if="roomCtrl.vaultAvailable">
-      <div class="c-vault__header">
-        <h1 class="title">
+      <div class="c-window__stats-header">
+        <span class="title">
           <i class="material-icons">security</i>
           Vault
-        </h1>
-        <ul class="c-vault__stats">
-          <li class="c-vault__stat">
+        </span>
+        <ul class="c-window__stats">
+          <li class="c-window__stat">
             <span class="c-amount-indicator c-amount-indicator--primary c-amount-indicator--full">
-              fee: 99
+              fee: {{ roomCtrl.wallet.transaction_fee * ((100 - roomCtrl.wallet.transaction_fee_decrease)/100) }}
+              <span class="small">&#162;</span>
+              <span ng-if="roomCtrl.wallet.transaction_fee_decrease > 0">(-{{roomCtrl.wallet.transaction_fee_decrease}}%)</span>
             </span>
           </li>
         </ul>
       </div>
       <ul class="c-big-list c-big-list--dark">
-        <li class="c-big-list__item" ng-repeat="item in roomCtrl.myStorage" ng-if="item.active && roomCtrl.enteredVault">
+        <li class="c-big-list__item" ng-repeat="item in roomCtrl.myStorage" ng-if="item.active && roomCtrl.enteredVault" ng-disabled="!item.canUse">
           <div class="c-big-list__icon">
-            <img class="c-icon c-icon--large" ng-src="assets/images/{{item.currencyLink.image}}" alt="{{item.currencyLink.name}}">
+            <img class="c-icon c-icon--large" ng-src="assets/images/{{item.currencyLink.image_clean}}" alt="{{item.currencyLink.name}}">
           </div>
           <div class="c-big-lig__metadata">
             <h1 class="metadata__title">
@@ -294,7 +296,7 @@
         </li>
       </ul>
       <div class="c-window__actions">
-        <button class="o-button o-button--accent ripple" ng-if="roomCtrl.vaultAvailable && roomCtrl.enteredVault">
+        <button class="o-button o-button--accent ripple" ng-if="roomCtrl.vaultAvailable && roomCtrl.enteredVault" ng-click="roomCtrl.transferProducts(roomCtrl.myVault, roomCtrl.myStorage)">
           <i class="material-icons">compare_arrows</i>
           Transfer
         </button>
