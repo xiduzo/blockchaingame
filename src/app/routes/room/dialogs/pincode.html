@@ -1,11 +1,11 @@
 <section class="c-dialog__container">
+  <h1 class="c-dialog__title">
+    {{ enterVaultCtrl.title }}
+  </h1>
   <div class="c-dialog__content c-dialog__content--vault">
-    <h1 class="title">
-      {{ enterVaultCtrl.title }}
-    </h1>
       <ol class="c-vault__pincode">
         <li class="c-vault__pincode__number" ng-model="enterVaultCtrl.enteredPin[x]" ng-repeat="x in enterVaultCtrl.pinNumbersAvailable">
-          <img ng-src="assets/images/{{enterVaultCtrl.enteredPin[x].image }}" alt="{{enterVaultCtrl.enteredPin[x].verbose }}">
+          <img ng-if="enterVaultCtrl.enteredPin[x].verbose" ng-src="assets/images/{{enterVaultCtrl.enteredPin[x].image }}" alt="{{ enterVaultCtrl.enteredPin[x].verbose }}">
         </li>
       </ol>
 

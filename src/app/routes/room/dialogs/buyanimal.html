@@ -1,13 +1,21 @@
 <section class="c-dialog__container">
+  <h1 class="c-dialog__title">
+    Buy {{ buyAnimalCtrl.animal.plural }}
+  </h1>
   <div class="c-dialog__content c-dialog__content--market">
-    <div class="animal__icon">
+    <div class="c-dialog__close">
+      <button ng-click="closeThisDialog()" class="c-dialog__close__button">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+    <div class="c-dialog__icon">
       <img class="c-icon--large" ng-src="assets/images/{{ buyAnimalCtrl.animal.image }}" alt="">
     </div>
     <h1 class="title">
-      Buy {{ buyAnimalCtrl.animal.plural }}
+      {{ buyAnimalCtrl.animal.plural }}
     </h1>
     <h2 class="price">
-      {{ buyAnimalCtrl.animal.buyFor | number : 2 }} <span class="small">&#162;</span>
+      {{ buyAnimalCtrl.animal.buyFor }} <span class="small">&#162;</span>
       <span class="per">/ each</span>
     </h2>
     <div class="amount">

@@ -395,7 +395,7 @@
         template: 'app/routes/room/dialogs/robbers.html',
         closeByDocument: false,
         showClose: false,
-        className: 'c-dialog c-dialog--no-close-button',
+        className: 'c-dialog',
         controller: ['$scope', function($scope) {
 
           var vm = this;

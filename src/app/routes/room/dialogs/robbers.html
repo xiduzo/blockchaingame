@@ -1,5 +1,13 @@
 <section class="c-dialog__container" ng-if="introduceRobbersCtrl.screen == 'guard'">
+  <h1 class="c-dialog__title">
+    Attention!
+  </h1>
   <div class="c-dialog__content">
+    <div class="c-dialog__close">
+      <button ng-click="closeThisDialog()" class="c-dialog__close__button" ng-disabled="true">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
     <div class="c-dialog__icon">
       <img class="c-icon--huge" ng-src="assets/images/guard.png" alt="">
     </div>
@@ -22,7 +30,15 @@
   </div>
 </section>
 <section class="c-dialog__container" ng-if="introduceRobbersCtrl.screen == 'queen'">
+  <h1 class="c-dialog__title">
+    Message from queen
+  </h1>
   <div class="c-dialog__content">
+    <div class="c-dialog__close">
+      <button ng-click="closeThisDialog()" class="c-dialog__close__button">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
     <div class="c-dialog__icon">
       <img class="c-icon--huge" ng-src="assets/images/queen.png" alt="">
     </div>

@@ -7,22 +7,55 @@
   .ngdialog-content {
     width: 80vw;
     margin: 0 auto;
-    border-radius: 15px 15px 0 0;
     display: flex;
     flex-direction: column-reverse;
     align-items: flex-end;
     z-index: 5;
 
+    .c-dialog__title {
+      color: $white;
+      text-align: center;
+      text-transform: uppercase;
+      font-size: 1.25em;
+    }
+
     .c-dialog__container {
       width: 100%;
 
       .c-dialog__content {
-        margin: -16px 16px 0 16px;
+        background: $white;
+        border-radius: 16px 16px 0 0;
+        padding: 8px 32px 16px 32px;
+
+        &--vault {
+          background: lighten($black, 15);
+        }
+
+        .c-dialog__close {
+          font-size: 1.7em;
+          display: flex;
+          justify-content: flex-end;
+          font-family: 'Dalton Maag text light';
+
+          .c-dialog__close__button {
+            color: lighten($black, 50);
+            background: none;
+            outline: none;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: -16px;
+            &:focus { outline: 0; }
+            &[ng-disabled] { opacity: 0; }
+          }
+
+        }
 
         .c-dialog__icon {
           display: flex;
           justify-content: center;
-          margin: 0 auto .5em auto;
+          margin: 0 auto .75em auto;
         }
 
         .c-info-blocks {
@@ -30,11 +63,15 @@
           .c-info-block {
             flex-grow: 1;
             background: lighten($black, 90);
-            margin: 0.5em 0.5em;
+            margin: 0.5em 0;
             border-radius: 6px;
             padding: 8px;
             text-align: center;
             color: $titleColor;
+
+            &:not(:first-of-type) {
+              margin-left: 0.5em;
+            }
           }
         }
 
@@ -108,24 +145,13 @@
         }
       }
       .c-dialog__buttons {
-        margin-top: 16px;
+        background: $white;
         display: flex;
 
         .o-button {
           flex-grow: 1;
         }
       }
-    }
-
-    .ngdialog-close {
-      margin: 8px 8px 0 0;
-      width: 30px;
-      border: none;
-      background: none;
-      font-size: 1.75em;
-      color: lighten($black, 35);
-
-      &:focus { outline: none; }
     }
 
   }
@@ -149,30 +175,14 @@
     }
   }
 
-  &--no-close-button {
-    .ngdialog-content {
-      .c-dialog__container {
-        .c-dialog__content {
-          margin: 16px 16px 0 16px;
-        }
-      }
-    }
-  }
 }
 
 .c-dialog__content--market {
-  .product__icon,
-  .animal__icon {
-    display: flex;
-    justify-content: center;
-    margin: 0 auto .5em auto;
-  }
 
   .price {
     font-family: 'Dalton Maag headline bold';
     text-align: center;
-    font-size: 3em;
-    margin: 0.45em !important;
+    font-size: 2.5em;
 
     .per {
       display: block;

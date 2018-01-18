@@ -1,10 +1,18 @@
 <section class="c-dialog__container">
+  <h1 class="c-dialog__title">
+    Buy {{ buyProductCtrl.product.name }}
+  </h1>
   <div class="c-dialog__content c-dialog__content--market">
-    <div class="product__icon">
+    <div class="c-dialog__close">
+      <button ng-click="closeThisDialog()" class="c-dialog__close__button">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+    <div class="c-dialog__icon">
       <img class="c-icon--large" ng-src="assets/images/{{ buyProductCtrl.product.image }}" alt="">
     </div>
     <h1 class="title">
-      Buy {{ buyProductCtrl.product.name }}
+      {{ buyProductCtrl.product.name }}
     </h1>
     <h2 class="price">
       {{ buyProductCtrl.product.buyFor | number : 2 }} <span class="small">&#162;</span>
