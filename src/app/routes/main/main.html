@@ -1,8 +1,243 @@
 <section class="c-home">
-  <h1 ng-if="main.user.name">
-    Welcome back <br> {{ main.user.name }}
-  </h1>
-  <ul class="c-big-list">
+  <div class="c-home__container" ng-init="main.screen = main.user.name ? 'main' : 'welcome'">
+    <section class="c-home__header">
+      <img src="assets/images/grandma_clean.png" alt="">
+      <h1>
+        {{ main.roomHeaderTitle }}, <span>{{ main.user.name || 'stranger' }}!</span>
+      </h1>
+    </section>
+    <section class="c-home__content" ng-if="main.screen == 'welcome'">
+      <div class="content__inner">
+        <h1 class="title">
+          What happened?
+        </h1>
+        <div class="icon">
+          <img class="c-icon--huge" src="assets/images/queen.png" alt="">
+        </div>
+        <p class="text">
+          Our Kingdom's Master of Coin and official tranders have angerd our queen with their rising rates.
+        </p>
+        <p class="text">
+          <strong>
+            Our queen decided to invest in a group of decentralized farmers to select her new Master of Coin through a fair competition.
+          </strong>
+        </p>
+        <p class="text">
+          <strong class="question">
+            Do you want to compete?
+          </strong>
+        </p>
+      </div>
+      <div class="action-buttons">
+        <button class="o-button o-button--turquoise ripple" ng-click="main.screen = 'name'; main.roomHeaderTitle = 'That\'s great'; main.currentStep = main.currentStep+1;">
+          <i class="material-icons">stars</i>
+          YES!
+        </button>
+      </div>
+    </section>
+    <section class="c-home__content" ng-if="main.screen == 'name'">
+      <div class="content__inner">
+        <h1 class="title">
+          What is next?
+        </h1>
+        <div class="icon">
+          <img class="c-icon--huge" src="assets/images/queen.png" alt="">
+        </div>
+        <div class="dialog">
+          I will grant you a bag of gold and give a change to be my new Master of Coin.
+        </div>
+        <h2 class="subtitle">
+          Now, tell me your name.
+        </h2>
+        <input class="underline" ng-model="main.newUserName">
+      </div>
+      <div class="action-buttons">
+        <button class="o-button o-button--turquoise ripple" ng-click="main.createUser(); main.currentStep = main.currentStep+1;" ng-disabled="!main.newUserName || main.newUserName.length < 5 || vm.waintingForData">
+          <i class="material-icons">trending_flat</i>
+          NEXT
+        </button>
+      </div>
+    </section>
+    <section class="c-home__content" ng-if="main.screen == 'intro_1'">
+      <div class="content__inner">
+        <h1 class="title">
+          How to play?
+        </h1>
+        <h2 class="subtitle">
+          Storage
+        </h2>
+        <p class="text">
+          Storage is your main tab and it is wherer your products are kept.
+        </p>
+      </div>
+      <img class="example-image" src="assets/images/storage_menu.png" alt="">
+      <div class="content__inner">
+        <p class="text">
+          In your storage, you can see the amount of your products and how much they are worth at that time.
+        </p>
+        <img class="example-image" src="assets/images/storage_woolimage.png" alt="">
+      </div>
+      <div class="action-buttons">
+        <button class="o-button o-button--turquoise ripple" ng-click="main.screen = 'intro_2'; main.currentStep = main.currentStep+1;">
+          <i class="material-icons">trending_flat</i>
+          NEXT
+        </button>
+      </div>
+    </section>
+    <section class="c-home__content" ng-if="main.screen == 'intro_2'">
+      <div class="content__inner">
+        <h1 class="title">
+          How to play?
+        </h1>
+        <h2 class="subtitle">
+          Market
+        </h2>
+        <p class="text">
+          Market is where you can buy and sell products.
+        </p>
+      </div>
+      <img class="example-image" src="assets/images/market_menu.png" alt="">
+      <div class="content__inner">
+        <p class="text">
+          Swipe left to sell the product and swipe right to buy the product.
+        </p>
+        <img class="example-image" src="assets/images/market_woolimage.png" alt="">
+      </div>
+      <div class="action-buttons">
+        <button class="o-button o-button--turquoise ripple" ng-click="main.screen = 'intro_3'; main.currentStep = main.currentStep+1;">
+          <i class="material-icons">trending_flat</i>
+          NEXT
+        </button>
+      </div>
+    </section>
+    <section class="c-home__content" ng-if="main.screen == 'intro_3'">
+      <div class="content__inner">
+        <h1 class="title">
+          How to play?
+        </h1>
+        <h2 class="subtitle">
+          Add-ons
+        </h2>
+        <p class="text">
+          To be able to store new products in your storage you need to upgrade your storage by buying addons.
+        </p>
+      </div>
+      <img class="example-image" src="assets/images/addons_menu.png" alt="">
+      <div class="content__inner">
+        <p class="text">
+          With add-ons your storage can support more product types; be more secure and require less transaction fee.
+        </p>
+        <img class="example-image" src="assets/images/addons_icons.png" alt="">
+      </div>
+      <div class="action-buttons">
+        <button class="o-button o-button--turquoise ripple" ng-click="main.screen = 'goal'; main.currentStep = main.currentStep+1;">
+          <i class="material-icons">trending_flat</i>
+          NEXT
+        </button>
+      </div>
+    </section>
+    <section class="c-home__content" ng-if="main.screen == 'goal'">
+      <div class="content__inner">
+        <h1 class="title">
+          How to play?
+        </h1>
+        <h2 class="subtitle">
+          Your goal
+        </h2>
+        <p class="text">
+          To become the Master of Coin, you need to have the most amount of coins among all the players when the timer hits zero.
+        </p>
+        <p class="text">
+          You have to buy and sell products at the right time and strategize wisely to maximize your earnings.
+        </p>
+        <p class="text">
+          <strong>
+            You will receive this bag of gold from our queen to get you started
+          </strong>
+        </p>
+        <div class="gold">
+          <img src="assets/images/money_clean.png" alt="">
+          10.000&#162;
+        </div>
+      </div>
+      <div class="action-buttons">
+        <button class="o-button o-button--turquoise ripple" ng-click="main.screen = 'main'; main.showSteps = false;">
+          <i class="material-icons">thumb_up</i>
+          LET'S DO THIS!
+        </button>
+      </div>
+    </section>
+    <section class="c-home__content" ng-if="main.screen == 'main'">
+      <div class="content__inner">
+        <h1 class="title">
+          Create a game
+        </h1>
+        <h2 class="subtitle">
+          Game time
+        </h2>
+        <ul class="options">
+          <li ng-class="{'active': main.roomTime == time }" ng-repeat="time in [15, 30, 45, 60]" ng-click="main.roomTime = time">
+            {{ time }}m
+          </li>
+        </ul>
+        <h2 class="subtitle">
+          Players
+        </h2>
+        <ul class="options">
+          <li ng-class="{'active': main.roomPlayers == players }" ng-repeat="players in [2, 3, 4, 5]" ng-click="main.roomPlayers = players">
+            {{ players }}
+          </li>
+        </ul>
+        <input type="text" placeholder="Name of your kingdom" ng-model="main.roomName">
+      </div>
+      <div class="action-buttons">
+        <button class="o-button o-button--turquoise ripple" ng-disabled="!main.roomTime || !main.roomPlayers || !main.roomName" ng-click="main.newRoom()">
+          <i class="material-icons">trending_flat</i>
+          Create
+        </button>
+      </div>
+      <h1 class="title">
+        Join a game
+      </h1>
+      <div class="action-buttons">
+        <button class="o-button o-button--turquoise ripple" ng-click="main.screen = 'join'">
+          <i class="material-icons">trending_flat</i>
+          Join
+        </button>
+      </div>
+    </section>
+    <section class="c-home__content" ng-if="main.screen == 'join'" ng-init="main.selectedRoom = null">
+      <div class="content__inner">
+        <h1 class="title">
+          Join a game
+        </h1>
+        <h2 class="subtitle">
+          Choose a kingdom to join
+        </h2>
+        <ul class="options options--column">
+          <li ng-class="{'active': main.selectedRoom._id.$oid == room._id.$oid }" ng-repeat="room in main.rooms" ng-click="main.selectedRoom = room">
+            {{ room.name }}
+          </li>
+        </ul>
+      </div>
+      <div class="action-buttons">
+        <button class="o-button o-button--accent ripple" ng-click="main.screen = 'main'">
+          <i class="material-icons">reply</i>
+          Back
+        </button>
+        <button class="o-button o-button--turquoise ripple" ui-sref="room({roomId: main.selectedRoom._id.$oid})" ng-disabled="!main.selectedRoom">
+          <i class="material-icons">trending_flat</i>
+          Join
+        </button>
+      </div>
+    </section>
+
+    <ul class="steps" ng-if="main.showSteps">
+      <li ng-repeat="step in [0,1,2,3,4,5]" ng-class="{'active': main.currentStep >= step}">
+      </li>
+    </ul>
+  </div>
+  <!-- <ul class="c-big-list">
     <li ng-if="main.fetchingRooms">
       <div class="centered">
         Getting rooms...
@@ -30,5 +265,5 @@
   <div class="new-room" ng-if="main.user.isSuperUser">
     <input type="text" ng-model="main.roomName">
     <button class="o-button o-button--success" ng-click="main.newRoom(main.roomName)" ng-disabled="main.roomName.length < 5">Create room</button>
-  </div>
+  </div> -->
 </section>

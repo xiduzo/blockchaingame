@@ -46,7 +46,7 @@
     vm.stopAllTimers = false;
     vm.charts = [];
 
-    vm.timeThisRound = 60 * 10;
+    vm.timeThisRound = 60 * 2;
     vm.currentTick = 0;
     vm.updateCurrenciesTick = 0;
 
@@ -101,7 +101,6 @@
 
     $scope.$on("roomStarted", function(event, response) {
       if(response.data.room == $stateParams.roomId) {
-        console.log(response.data.roomSettings);
         vm.room.settings = response.data.roomSettings;
         ngDialog.closeAll();
         vm.myCoins = 10000;
@@ -109,7 +108,7 @@
         countDownTimer();
         updateCurrenciesTimer();
       }
-    })
+    });
 
     /*--------------------------
       Extra logic
@@ -150,9 +149,11 @@
             break;
           case vm.room.settings.introduce_cows:
             introduceAnimal(2);
+            _.findWhere(vm.addons, {addonType: 3}).addons[0].available = true;
             break;
           case vm.room.settings.introduce_pig:
             introduceAnimal(3);
+            _.findWhere(vm.addons, {addonType: 3}).addons[1].available = true;
             break;
         }
 
@@ -220,7 +221,7 @@
             introduce_sheep: Math.round((Math.round(Math.random() * 5 + 5) / 100) * vm.timeThisRound),
             introduce_cows: Math.round((Math.round(Math.random() * 10 + 15) / 100) * vm.timeThisRound),
             introduce_pig: Math.round((Math.round(Math.random() * 20 + 40) / 100) * vm.timeThisRound),
-            currency_update_ticks: _.map(_.range(vm.timeThisRound), function(num) {
+            currency_update_ticks: _.map(_.range(vm.timeThisRound), function() {
               return Math.round(Math.random() * 3 + 5);
             })
           }
@@ -301,7 +302,7 @@
             {
               name: animal.assetLink.currency.name,
               data: _.last(history, 20),
-              color: Highcharts.Color('#000000').setOpacity(0.2).get(),
+              color: Highcharts.Color('#000000').setOpacity(0.2).get()
             }
           ]
         });
@@ -739,7 +740,7 @@
         if(!response || !response.buyAddon) { return false; }
 
         addon.owned = true;
-        if(addonTree.addons[index+1]) {
+        if(addonTree.addons[index+1] && !addonTree.addonType == 3) {
           addonTree.addons[index+1].available = true;
         }
 

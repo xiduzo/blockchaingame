@@ -58,7 +58,7 @@
             "owned": false,
             "available": false,
             "buyFor": 500
-          },
+          }
         ]
       },
       {
@@ -89,7 +89,7 @@
             "owned": false,
             "available": false,
             "buyFor": 500
-          },
+          }
         ]
       },
       {

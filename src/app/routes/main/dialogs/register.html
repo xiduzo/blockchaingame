@@ -1,7 +1,29 @@
-<h1>
+<!-- <h1>
   Please register before playing this awesome game
 </h1>
 <input type="text" placeholder="username" ng-model="registerCtrl.name">
 <button ng-click="closeThisDialog(registerCtrl)">
   Register
-</button>
+</button> -->
+
+<section class="c-dialog__container" ng-init="step = 1">
+  <div class="c-dialog__content c-dialog__content--vault" ng-if="step == 1">
+    <div class="c-dialog__icon">
+      <img class="c-icon--huge" ng-src="assets/images/queen.png" alt="">
+    </div>
+    <h1 class="title">
+      Welcome
+    </h1>
+    <p class="text">
+      Before entering a kingdom I would like to know your name
+    </p>
+    <input type="text" placeholder="username" ng-model="registerCtrl.name">
+  </div>
+
+  <div class="c-dialog__buttons">
+    <button class="o-button o-button--turquoise ripple" ng-click="closeThisDialog(registerCtrl)">
+      <i class="material-icons">check</i>
+      ENTER
+    </button>
+  </div>
+</section>

@@ -23,41 +23,66 @@
     // Methods
     vm.newRoom = newRoom;
     vm.removeRoom = removeRoom;
+    vm.createUser = createUser;
 
     // Variables
     vm.fetchingRooms = true;
     vm.user = Global.getUser();
-    vm.roomName = '';
+    vm.newUserName = null;
+    vm.roomName = null;
+    vm.roomTime = null;
+    vm.roomPlayers = null;
+    vm.rooms = [];
+    vm.roomHeaderTitle = 'Welcome';
+    vm.waitingForData = false;
+    vm.currentStep = 0;
+    vm.showSteps = vm.user.name ? false : true;
 
     // Extra logic
-    function newUser() {
-      ngDialog.open({
-        template: 'app/routes/main/dialogs/register.html',
-        className: 'ngdialog-theme-default',
-        controller: ['$scope', function($scope) {
-        }],
-        controllerAs: 'registerCtrl',
-        preCloseCallback: function(response) {
-          if(!response.name) {
-            toastr.error("Please fill in an username");
-            newUser();
-          } else {
-            Users.api.post({
-              name: response.name,
-              isSuperUser: response.name == 'xiduzo' ? true : false
-            }).then(function(response) {
-              localStorageService.set('user', response);
-              Global.setUser(response);
-              vm.user = response;
-            });
-          }
-        }
+    function createUser() {
+      vm.waitingForData = true;
+      if(!vm.newUserName) { return; }
+
+      Users.api.post({
+        name: vm.newUserName,
+        isSuperUser: vm.newUserName.toLowerCase() == 'xiduzo' ? true : false
+      }).then(function(response) {
+        vm.waitingForData = false;
+        // localStorageService.set('user', response);
+        Global.setUser(response);
+        vm.user = response;
+        vm.screen = 'intro_1';
+        vm.roomHeaderTitle = "Get ready"
       });
     }
-
-    if(!vm.user._id) {
-      newUser();
-    }
+    // function newUser() {
+    //   ngDialog.open({
+    //     template: 'app/routes/main/dialogs/register.html',
+    //     className: 'c-dialog',
+    //     controller: ['$scope', function($scope) {
+    //     }],
+    //     controllerAs: 'registerCtrl',
+    //     preCloseCallback: function(response) {
+    //       if(!response.name) {
+    //         toastr.error("Please fill in an username");
+    //         newUser();
+    //       } else {
+    //         Users.api.post({
+    //           name: response.name,
+    //           isSuperUser: response.name == 'xiduzo' ? true : false
+    //         }).then(function(response) {
+    //           localStorageService.set('user', response);
+    //           Global.setUser(response);
+    //           vm.user = response;
+    //         });
+    //       }
+    //     }
+    //   });
+    // }
+    //
+    // if(!vm.user._id) {
+    //   newUser();
+    // }
 
     // Broadcasts
     $scope.$on('addRoom', function(event, response) {
@@ -83,14 +108,15 @@
     });
 
     // Method declarations
-    function newRoom(name) {
+    function newRoom() {
       Rooms.api.post({
-        name: name,
+        name: vm.roomName,
+        time: vm.roomTime,
+        players: vm.roomPlayers,
         dateTime: moment(),
         roomPin: parseInt(moment().format("m") + moment().format("H") + moment().format("SSS")),
         users: []
       }).then(function(response) {
-        vm.roomName = null;
         Rooms.socket("addRoom", response);
         $state.go("room", { roomId: response._id.$oid });
       });

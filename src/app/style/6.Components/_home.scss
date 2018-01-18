@@ -1,52 +1,203 @@
 .c-home {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100vh;
+  background: $white;
+  .c-home__container {
+    width: 88vw;
+    margin: auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
-  .centered,
-  h1 {
-    text-align: center;
-  }
-
-  .c-big-list {
-    overflow-y: scroll;
-    .c-big-list__item {
-      height: 100px;
-      max-height: 100px;
-      min-height: 100px;
+    .c-home__header {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 16px 0 0 0;
-      text-align: center;
-      margin: 16px;
-      background: $white;
-      box-shadow: 0 3px 5px -1px rgba(0,0,0,.2),
-                  0 6px 10px 0 rgba(0,0,0,.14),
-                  0 1px 18px 0 rgba(0,0,0,.12);
-
+      justify-content: center;
+      align-items: flex-end;
+      text-transform: uppercase;
+      img {
+        height: 75px;
+        margin-right: 1em;
+      }
       h1 {
-        margin: 0;
-        font-family: 'Dalton Maag headline light';
-        text-transform: capitalize;
+        font-family: 'Dalton Maag text light';
+        font-weight: 100;
+        font-size: 1.5em;
+        span {
+          display: block;
+          font-weight: bold;
+        }
+      }
+    }
+
+    .c-home__content {
+      background: lighten($black, 90);
+      border-radius: 50px 50px 0 0;
+      box-shadow: 0 3px 5px -1px rgba(0,0,0,.02),
+                  0 6px 10px 0 rgba(0,0,0,.04),
+                  0 1px 18px 0 rgba(0,0,0,.02);
+
+      .content__inner {
+        padding: 0 32px 8px 32px;
       }
 
-      .room__actions {
-        display: flex;
+      .example-image {
+        max-width: 100%;
+        margin-bottom: 0.25em;
+      }
 
+      .title {
+        text-align: center;
+        color: $titleColor;
+        text-transform: uppercase;
+        font-size: 1.6em;
+      }
+
+      .subtitle {
+        font-size: 1.2em;
+        margin: 0.5em 0;
+      }
+
+      .icon {
+        display: flex;
+        justify-content: center;
+      }
+
+      .text {
+        font-family: 'Dalton Maag text light';
+        margin: 0.5em 0;
+        // text-align: center;
+
+        strong {
+          &.question {
+            color: $turquoise;
+            font-family: 'Dalton Maag headline bold';
+            font-size: 1.1em;
+          }
+        }
+      }
+
+      .gold {
+        font-size: 2.5em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: $titleColor;
+        font-family: 'Dalton Maag headline bold';
+        img {
+          width: 80px;
+          margin-right: 0.5em;
+        }
+      }
+
+      .dialog {
+        font-family: 'Dalton Maag text light';
+        background: $white;
+        padding: 16px;
+        border-radius: 6px;
+        margin-top: 0.5em;
+
+        &:before {
+          content: '';
+          height: 34px;
+          width: 29px;
+          position: absolute;
+          background-image: url('../assets/images/tail.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+          margin-top: -3em;
+          margin-left: 3em;
+        }
+      }
+
+      .options {
+        display: flex;
+        padding: 0;
+        justify-content: space-between;
+        width: 100%;
+
+        &--column {
+          flex-direction: column;
+
+          li {
+            width: 100%;
+            margin: 0.5em 0 !important;
+          }
+        }
+
+        li {
+          list-style: none;
+          flex: 1;
+          background: $white;
+          padding: 16px 8px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 6px;
+          transition: all 150ms;
+
+          &:not(:first-of-type) {
+            margin-left: 16px;
+          }
+
+          &:focus { outline: none; }
+
+          &.active {
+            background: $titleColor;
+            color: $white;
+          }
+        }
+      }
+
+      input {
+        background: $white;
+        border: 0;
+        width: 100%;
+        padding: 16px 0;
+        font-size: 1.2em;
+        border-radius: 6px;
+        text-align: center;
+        margin: 1em 0;
+
+        &.underline {
+          background: none;
+          border-bottom: 2px solid lighten($black, 80);
+          border-radius: 0;
+          font-family: 'Dalton Maag headline bold';
+          font-size: 2em;
+          margin: 0 0 1em 0;
+          padding: 0;
+          &:focus { border-bottom: 2px solid $turquoise; }
+        }
+      }
+
+      .action-buttons {
+        display: flex;
         .o-button {
           flex-grow: 1;
         }
       }
     }
-  }
 
-  .new-room {
-    display: flex;
-    height: 45px;
-    min-height: 45px;
+    .steps {
+      display: flex;
+      justify-content: center;
+      padding: 0;
 
-    input{ flex-grow: 1; }
+      li {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        list-style: none;
+        background: lighten($black, 80);
+
+        &.active {
+          background: $turquoise;
+        }
+
+        &:not(:first-of-type) {
+          margin-left: 0.75em;
+        }
+      }
+    }
   }
 }

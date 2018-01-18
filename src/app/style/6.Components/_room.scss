@@ -94,6 +94,7 @@ $c-room-head-icon-size: 26px;
   padding: 0;
   display: flex;
   height: 75px;
+  min-height: 75px;
 
   .window__tab {
     display: flex;

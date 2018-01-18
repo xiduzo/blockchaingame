@@ -39,6 +39,19 @@
           margin: 1em 0;
         }
 
+        input {
+          width: 100%;
+          border: none;
+          font-size: 1.5em;
+          border-bottom: 1px solid lighten($black, 40);
+          transition: all 350ms;
+
+          &:focus {
+            border-bottom: 1px solid $turquoise;
+            outline: none;
+          }
+        }
+
         h1,
         h2 {
           margin: 0;
