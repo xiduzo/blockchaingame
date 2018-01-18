@@ -27,34 +27,33 @@
 
     var vm = this;
 
-    // Methods
-    vm.kickUser = kickUser;
+    /*--------------------------
+      Methods
+    --------------------------*/
     vm.sellAnimal = sellAnimal;
     vm.buyAnimal = buyAnimal;
     vm.sellProduct = sellProduct;
     vm.buyProduct = buyProduct;
     vm.enterVault = enterVault;
-    vm.shufflePinNumbers = shufflePinNumbers;
-    vm.makeEmptyArray = makeEmptyArray;
     vm.buyOrSelectCard = buyOrSelectCard;
     vm.buyAddon = buyAddon;
 
-    // Variables
+    /*--------------------------
+      Variables
+    --------------------------*/
     vm.user = Global.getUser();
     vm.room = undefined;
-    vm.addonsAvailable = true;
     vm.stopAllTimers = false;
     vm.charts = [];
 
     vm.timeThisRound = 60 * 10;
     vm.currentTick = 0;
     vm.updateCurrenciesTick = 0;
-    vm.timesToUpdateMarket = angular.copy(vm.timeThisRound);
 
-    vm.vaultAvailable = false;
     vm.enteredVault = false;
-    vm.myPincode = '';
 
+    vm.addonsAvailable = true;
+    vm.vaultAvailable = false;
     vm.cardsAvailable = false;
     vm.animalsAvailable = false;
 
@@ -71,7 +70,9 @@
     vm.cards = [_.first(_.shuffle(CARDS)), undefined, undefined];
     vm.highlightedCard = {};
 
-    // Broadcasts
+    /*--------------------------
+      Broadcasts
+    --------------------------*/
     $scope.$on('roomJoin', function(event, response) {
       if(response.data.room == $stateParams.roomId) {
 
@@ -100,15 +101,19 @@
 
     $scope.$on("roomStarted", function(event, response) {
       if(response.data.room == $stateParams.roomId) {
+        console.log(response.data.roomSettings);
         vm.room.settings = response.data.roomSettings;
         ngDialog.closeAll();
         vm.myCoins = 10000;
+        drawChart(_.first(vm.myBarn));
         countDownTimer();
         updateCurrenciesTimer();
       }
     })
 
-    // Extra logic
+    /*--------------------------
+      Extra logic
+    --------------------------*/
     Rooms.socket("roomJoin", {
       "user": vm.user,
       "room": $stateParams.roomId
@@ -117,7 +122,7 @@
     $scope.$on("$destroy", function() {
       vm.stopAllTimers = true;
       // Remove the room when the player is the last on in the room
-      if(vm.room.users.length === 1) {
+      if(vm.room && vm.room.users.length === 1) {
         Rooms.api.one(vm.room._id.$oid).remove().then(function() {
           Rooms.socket("roomDelete", {
             "room": $stateParams.roomId
@@ -193,17 +198,17 @@
       .then(function(response) {
         if(response && response.closedByButton) { return $state.go('home'); }
 
-        var wool = generateRandomStockMarket(vm.timesToUpdateMarket, 20, 10, 100,
+        var wool = generateRandomStockMarket(angular.copy(vm.timeThisRound), 20, 10, 100,
                     [{ length: 7, variance: 50, noise: 1, trend: 0},
                      { length: 365, variance: 30, noise: 2, trend: 5},
                      { length: 700, variance: 2, noise: 0, trend: 50}]);
 
-        var milk = generateRandomStockMarket(vm.timesToUpdateMarket, 80, 40, 400,
+        var milk = generateRandomStockMarket(angular.copy(vm.timeThisRound), 80, 40, 400,
                     [{ length: 7, variance: 90, noise: 2, trend: 0},
                      { length: 365, variance: 60, noise: 3, trend: 0},
                      { length: 700, variance: 4, noise: 0, trend: 100}]);
 
-        var bacon = generateRandomStockMarket(vm.timesToUpdateMarket, 320, 160, 1600,
+        var bacon = generateRandomStockMarket(angular.copy(vm.timeThisRound), 320, 160, 1600,
                     [{ length: 7, variance: 170, noise: 4, trend: 0},
                      { length: 365, variance: 110, noise: 6, trend: 0},
                      { length: 700, variance: 8, noise: 0, trend: 200}]);
@@ -216,7 +221,7 @@
             introduce_cows: Math.round((Math.round(Math.random() * 10 + 15) / 100) * vm.timeThisRound),
             introduce_pig: Math.round((Math.round(Math.random() * 20 + 40) / 100) * vm.timeThisRound),
             currency_update_ticks: _.map(_.range(vm.timeThisRound), function(num) {
-              return Math.round(Math.random() * 10 + 10);
+              return Math.round(Math.random() * 5 + 5);
             })
           }
         });
@@ -253,22 +258,56 @@
       return result;
     }
 
-    // Services
-    Rooms.api.one($stateParams.roomId).get().then(function(response) {
-      vm.room = response;
+    function activeAnimal(animal) {
+      _.findWhere(vm.assets, {assetType: animal.assetType}).active = true;
+      _.findWhere(vm.assets, {assetType: animal.assetType}).currency.active = true;
+      _.findWhere(vm.myBarn, {assetType: animal.assetType}).active = true;
+      _.findWhere(vm.myStorage, {assetType: animal.assetType}).active = true;
 
-      // Only add yourself when not in the room
-      // Prevents duplicate users
-      if(!_.find(vm.room.users, function(user) {
-        return user._id.$oid == vm.user._id.$oid;
-      })) {
-        vm.room.users.push(vm.user);
-        vm.room.put();
-      }
+      // Fix the charts on resize
+      redrawCharts();
+    }
 
-      waitForUsers();
+    function redrawCharts() {
+      $timeout(function() {
+        _.each(vm.myBarn, function(animal) {
+          if(animal.active) { drawChart(animal); }
+        });
+      }, 100);
+    }
 
-    });
+    function drawChart(animal) {
+      var history = _.findWhere(vm.assets, {assetType: animal.assetType }).currency.history;
+      $timeout(function() {
+        var chart = Highcharts.chart('graph--'+animal.assetLink.currency.name, {
+          title: { text: '' },
+          chart: {
+            type: "spline",
+            backgroundColor: Highcharts.Color('#000000').setOpacity(0).get(),
+            spacing: [0, 0, 5, 0]
+          },
+
+          yAxis: { visible: true },
+          xAxis: { visible: false },
+          legend: { enabled: false },
+          credits: { enabled: false },
+
+          plotOptions: {
+            series: { animation: false },
+            spline: { marker: { radius: 0 } }
+          },
+
+          series: [
+            {
+              name: animal.assetLink.currency.name,
+              data: history,
+              color: Highcharts.Color('#000000').setOpacity(0.2).get(),
+            }
+          ]
+        });
+        vm.charts[animal.assetType-1] = chart;
+      }, 100);
+    }
 
     function introduceAnimal(animal) {
       ngDialog.closeAll();
@@ -297,55 +336,35 @@
       });
     }
 
-    function activeAnimal(animal) {
-      _.findWhere(vm.assets, {assetType: animal.assetType}).active = true;
-      _.findWhere(vm.assets, {assetType: animal.assetType}).currency.active = true;
-      _.findWhere(vm.myBarn, {assetType: animal.assetType}).active = true;
-      _.findWhere(vm.myStorage, {assetType: animal.assetType}).active = true;
+    /*--------------------------
+      Serices
+    --------------------------*/
+    Rooms.api.one($stateParams.roomId).get()
+    .then(function(response) {
+      vm.room = response;
 
-      $timeout(function() {
-        var chart = Highcharts.chart('graph--'+animal.assetLink.currency.name, {
-          title: { text: '' },
-          chart: {
-            type: "spline",
-            backgroundColor: Highcharts.Color('#222222').setOpacity(0).get()
-          },
+      // Only add yourself when not in the room
+      // Prevents duplicate users
+      if(!_.find(vm.room.users, function(user) {
+        return user._id.$oid == vm.user._id.$oid;
+      })) {
+        vm.room.users.push(vm.user);
+        vm.room.put();
+      }
 
-          yAxis: { visible: false },
-          xAxis: { visible: false },
-          legend: { enabled: false },
-          credits: { enabled: false },
+      waitForUsers();
 
-          plotOptions: {
-            spline: {
-              marker: {
-                radius: 0
-              }
-            }
-          },
+    })
+    .catch(function(error) {
+      if(error.status === 404) {
+        toastr.error("Can not find room");
+        return $state.go('home');
+      }
+    });
 
-          series: [
-            {
-              name: animal.assetLink.currency.name,
-              data: _.findWhere(vm.assets, {assetType: animal.assetType }).currency.history,
-              color: "#E5E5E5",
-            }
-          ]
-        });
-        vm.charts.push(chart);
-
-        _.each(vm.charts, function(chart) { chart.reflow(); });
-      }, 100);
-    }
-
-    // Method declarations
-    function kickUser(user) {
-      Rooms.socket("roomLeave", {
-        "user": user,
-        "room": $stateParams.roomId
-      });
-    }
-
+    /*--------------------------
+      Methods declarations
+    --------------------------*/
     function buyAnimal(animal) {
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/buyanimal.html',
@@ -353,23 +372,24 @@
 
           var vm = this;
 
+          // Methods
           vm.changeAmount = changeAmount;
           vm.parseAmount = parseAmount;
 
+          // Variables
           vm.animal = animal;
           vm.coins = coins;
           vm.buyAmount = 0;
           vm.canUse = _.findWhere(storage, { currencyType: animal.currency.currencyType}).canUse;
 
+          // Method declarations
           function parseAmount() {
             parseInt(vm.buyAmount, 10);
           }
 
           function changeAmount(increment) {
             if(increment) { vm.buyAmount++; }
-            if(!increment && vm.buyAmount > 0) {
-              vm.buyAmount--;
-            }
+            if(!increment && vm.buyAmount > 0) { vm.buyAmount--; }
           }
 
         }],
@@ -385,7 +405,7 @@
 
         if(vm.myCoins < response.amountToBuy * animal.buyFor) { return; }
 
-        response.amountToBuy = parseInt(response.amountToBuy);
+        response.amountToBuy = parseInt(response.amountToBuy); // Just to be sure
 
         // Update game
         _.findWhere(vm.myBarn, { assetType: animal.assetType }).oldAmount = _.findWhere(vm.myBarn, { assetType: animal.assetType }).amount;
@@ -393,9 +413,8 @@
         vm.oldCoins = vm.myCoins
         vm.myCoins -= response.amountToBuy * animal.buyFor;
       })
-      .catch(function(error) {
-        $log.log(error);
-      });
+      .catch(function(error) { $log.log(error); });
+
       vm.assets = angular.copy(vm.assets); // Have to do this stupid reset because the swipe lib is ratarded
     }
 
@@ -406,22 +425,21 @@
 
           var vm = this;
 
+          // Methods
           vm.changeAmount = changeAmount;
           vm.parseAmount = parseAmount;
 
+          // Variables
           vm.animal = animal;
           vm.animalInBarn = animalInBarn;
           vm.sellAmount = 0;
 
-          function parseAmount() {
-            parseInt(vm.sellAmount, 10);
-          }
+          // Method declarations
+          function parseAmount() { parseInt(vm.sellAmount, 10); }
 
           function changeAmount(increment) {
             if(increment) { vm.sellAmount++; }
-            if(!increment && vm.sellAmount > 0) {
-              vm.sellAmount--;
-            }
+            if(!increment && vm.sellAmount > 0) { vm.sellAmount--; }
           }
 
         }],
@@ -436,7 +454,7 @@
 
         if(response.amountToSell > _.findWhere(vm.myBarn, { assetType: animal.assetType }).amount) { return; }
 
-        response.amountToSell = parseInt(response.amountToSell);
+        response.amountToSell = parseInt(response.amountToSell); // Just to be sure
 
         // Update the game
         _.findWhere(vm.myBarn, { assetType: animal.assetType }).oldAmount = _.findWhere(vm.myBarn, { assetType: animal.assetType }).amount;
@@ -444,9 +462,8 @@
         vm.oldCoins = vm.myCoins
         vm.myCoins += response.amountToSell * (animal.buyFor * (1 - animal.sellForPercentage));
       })
-      .catch(function(error) {
-        $log.log(error);
-      });
+      .catch(function(error) { $log.log(error); });
+
       vm.assets = angular.copy(vm.assets); // Have to do this stupid reset because the swipe lib is ratarded
     }
 
@@ -457,23 +474,22 @@
 
           var vm = this;
 
+          // Methods
           vm.changeAmount = changeAmount;
           vm.parseAmount = parseAmount;
 
+          // Variables
           vm.product = product;
           vm.coins = coins;
           vm.buyAmount = 0;
           vm.canUse = canUse;
 
-          function parseAmount() {
-            parseInt(vm.buyAmount, 10);
-          }
+          // Method declarations
+          function parseAmount() { parseInt(vm.buyAmount, 10); }
 
           function changeAmount(increment) {
             if(increment) { vm.buyAmount++; }
-            if(!increment && vm.buyAmount > 0) {
-              vm.buyAmount--;
-            }
+            if(!increment && vm.buyAmount > 0) { vm.buyAmount--; }
           }
 
         }],
@@ -489,7 +505,7 @@
 
         if(vm.myCoins < response.amountToBuy * product.buyFor) { return; }
 
-        response.amountToBuy = parseInt(response.amountToBuy);
+        response.amountToBuy = parseInt(response.amountToBuy); // Just to be sure
 
         // Update game
         _.findWhere(vm.myStorage, { currencyType: product.currencyType }).oldAmount = _.findWhere(vm.myStorage, { currencyType: product.currencyType }).amount;
@@ -497,10 +513,9 @@
         vm.oldCoins = vm.myCoins
         vm.myCoins -= response.amountToBuy * product.buyFor;
       })
-      .catch(function(error) {
-        $log.log(error);
-      });
+      .catch(function(error) { $log.log(error); });
       vm.assets = angular.copy(vm.assets); // Have to do this stupid reset because the swipe lib is ratarded
+      redrawCharts();
     }
 
     function sellProduct(product) {
@@ -510,22 +525,21 @@
 
           var vm = this;
 
+          // Methods
           vm.changeAmount = changeAmount;
           vm.parseAmount = parseAmount;
 
+          // Variables
           vm.product = product;
           vm.productInStorage = productInStorage;
           vm.sellAmount = 0;
 
-          function parseAmount() {
-            parseInt(vm.sellAmount, 10);
-          }
+          // Method declarations
+          function parseAmount() { parseInt(vm.sellAmount, 10); }
 
           function changeAmount(increment) {
             if(increment) { vm.sellAmount++; }
-            if(!increment && vm.sellAmount > 0) {
-              vm.sellAmount--;
-            }
+            if(!increment && vm.sellAmount > 0) { vm.sellAmount--; }
           }
 
         }],
@@ -540,7 +554,7 @@
 
         if(response.amountToSell > _.findWhere(vm.myStorage, { currencyType: product.currencyType }).amount) { return; }
 
-        response.amountToSell = parseInt(response.amountToSell);
+        response.amountToSell = parseInt(response.amountToSell); // Just to be sure
 
         // Update the game
         _.findWhere(vm.myStorage, { currencyType: product.currencyType }).oldAmount = _.findWhere(vm.myStorage, { currencyType: product.currencyType }).amount;
@@ -548,10 +562,9 @@
         vm.oldCoins = vm.myCoins
         vm.myCoins += response.amountToSell * (product.buyFor * (1 - product.sellForPercentage));
       })
-      .catch(function(error) {
-        $log.log(error);
-      });
+      .catch(function(error) { $log.log(error); });
       vm.assets = angular.copy(vm.assets); // Have to do this stupid reset because the swipe lib is ratarded
+      redrawCharts();
     }
 
     function generatePinCode() {
@@ -562,16 +575,17 @@
 
           var vm = this;
 
+          // Methods
           vm.undoPinNumber = undoPinNumber;
           vm.addPinNumber = addPinNumber;
           vm.pinNumbersAvailable = _.range(PIN_NUMBERS_TO_ENTER);
 
+          // Variables
           vm.pinNumbers = [];
           vm.title = "Create a pincode";
           vm.enteredPin = [];
 
-          generatePinNumbers();
-
+          // Extra logic
           function generatePinNumbers() {
             vm.pinNumbers = [];
             _.each([1,2,3], function() {
@@ -579,6 +593,9 @@
             });
           }
 
+          generatePinNumbers();
+
+          // Method declarations
           function undoPinNumber() {
             if(vm.enteredPin.length === 0) { return; }
 
@@ -602,9 +619,7 @@
         });
         vm.enterVault();
       })
-      .catch(function(error) {
-        $log.log(error);
-      });
+      .catch(function(error) { $log.log(error); });
     }
 
     function enterVault() {
@@ -618,13 +633,14 @@
 
           var vm = this;
 
+          // Methods
           vm.undoPinNumber = undoPinNumber;
           vm.addPinNumber = addPinNumber;
           vm.pinNumbersAvailable = _.range(PIN_NUMBERS_TO_ENTER);
 
+          // Variables
           vm.pinNumbers = pinNumbers;
           vm.title = "Vault pin";
-
           vm.enteredPin = [];
 
           function undoPinNumber() {
@@ -658,41 +674,25 @@
 
         vm.enteredVault = true;
       })
-      .catch(function(error) {
-        $log.log(error);
-      });
-      // if(vm.enteredPin.length < 5) {
-      //   return vm.guardText = "I need a pincombination of 5 items before I can check your code."
-      // }
-      //
-      // var pincode = "";
-      // var myPinCode = "005522";
-      //
-      // _.each(vm.enteredPin, function(pinnumber) {
-      //   pincode += pinnumber.number;
-      // });
-      //
-      // if(pincode !== myPinCode) {
-      //   return vm.guardText = "You shall not pass!";
-      // }
-      //
-      // vm.guardText = "Goodday, " + vm.user.name + ", glad to see you back";
-      // vm.enteredVault = true;
+      .catch(function(error) { $log.log(error); });
     }
 
     function updateCurrencies() {
+      // Update the assets
       _.each(vm.assets, function(asset, index) {
-        asset.currency.previousBuyFor = asset.currency.buyFor;
-        asset.currency.buyFor = vm.room.settings.markets[asset.currency.currencyType-1][vm.currentTick];
-        asset.currency.history.push(asset.currency.buyFor);
+        if(asset.currency.active) {
+          asset.currency.previousBuyFor = asset.currency.buyFor;
+          asset.currency.buyFor = vm.room.settings.markets[asset.currency.currencyType-1][asset.currency.history.length-1];
+          asset.currency.history.push(asset.currency.buyFor);
 
-        if(asset.currency.active && vm.charts[index]) {
-          vm.charts[index].series[0].update({data: asset.currency.history});
+          // Also update your storage
+          vm.myStorage[index].currencyLink = asset.currency;
+
+          // Update the charts
+          if(vm.charts[index]) { drawChart(vm.myBarn[index]); }
         }
-      });
 
-      _.each(vm.myStorage, function(asset, index) {
-        asset.currencyLink = vm.assets[index].currency;
+
       });
     }
 
@@ -704,16 +704,6 @@
         currency.oldAmount = currency.amount;
         currency.amount += vm.myBarn[index].amount * (vm.myBarn[index].assetLink.currencyProduction.max * Math.random() + vm.myBarn[index].assetLink.currencyProduction.min);
       });
-    }
-
-    function shufflePinNumbers() {
-      vm.guardText = "I need a passcode before I can let you into this vault";
-      vm.enteredPin = [];
-      vm.availablePinNumbers = _.shuffle(PIN_NUMBERS);
-    }
-
-    function makeEmptyArray(length) {
-      return _.range(length);
     }
 
     function buyOrSelectCard(card, index) {

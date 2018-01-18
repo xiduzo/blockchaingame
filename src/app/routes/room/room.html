@@ -12,10 +12,10 @@
     <ul class="room__assets">
       <li class="room__asset">
         <img class="c-icon" src="assets/images/money_clean.png" alt="money">
-        <span class="c-amount-indicator c-amount-indicator--secondary" count-to="{{roomCtrl.myCoins}}" value="{{roomCtrl.oldCoins}}" duration="2" decimals="1"></span>
+        <span class="c-amount-indicator c-amount-indicator--secondary" count-to="{{roomCtrl.myCoins}}" value="{{roomCtrl.oldCoins}}" duration="2" decimals="2"></span>
       </li>
       <li class="room__asset" ng-repeat="animal in roomCtrl.myBarn" ng-if="animal.active">
-        <img class="c-icon" src="assets/images/{{animal.assetLink.image_clean}}" alt="{{animal.assetLink.name}}">
+        <img class="c-icon" ng-src="assets/images/{{animal.assetLink.image_clean}}" alt="{{animal.assetLink.name}}">
         <span class="c-amount-indicator c-amount-indicator--secondary" count-to="{{animal.amount}}" value="{{animal.oldAmount}}" duration="2"></span>
       </li>
     </ul>
@@ -47,12 +47,12 @@
               {{ addonTree.name }}
             </h1>
             <div class="o-card__icon">
-              <img src="assets/images/{{addonTree.image}}" alt="">
+              <img ng-src="assets/images/{{addonTree.image}}" alt="">
             </div>
           </div>
           <section class="addons">
             <div class="addon" ng-repeat="addon in addonTree.addons" ng-click="roomCtrl.buyAddon(addon, addonTree, $index)" ng-disabled="!addon.available">
-              <img class="c-icon--bigger" src="assets/images/{{addon.image}}" alt="">
+              <img class="c-icon--bigger" ng-src="assets/images/{{addon.image}}" alt="">
               <div class="cost" ng-if="!addon.owned">
                 {{ addon.buyFor }}
               </div>
@@ -78,7 +78,6 @@
           <ul class="c-big-list">
             <li class="c-big-list__item swipable" ng-repeat="animal in roomCtrl.assets"
               ng-if="animal.currency.active"
-              ng-init="showGraph = false"
               ng-swipe-item
               on-left="roomCtrl.sellProduct(animal.currency)"
               on-right="roomCtrl.buyProduct(animal.currency)"
@@ -86,7 +85,7 @@
               right-template="app/routes/room/partials/sell.html"
               threshold="0.2">
               <div class="c-big-list__icon">
-                <img class="c-icon--large" src="assets/images/{{animal.currency.image}}" alt="{{animal.currency.name}}">
+                <img class="c-icon--large" ng-src="assets/images/{{animal.currency.image}}" alt="{{animal.currency.name}}">
               </div>
               <div class="c-big-lig__metadata">
                 <h1 class="metadata__title">
@@ -125,7 +124,7 @@
               right-template="app/routes/room/partials/sell.html"
               threshold="0.2">
               <div class="c-big-list__icon">
-                <img class="c-icon--large" src="assets/images/{{animal.image}}" alt="{{animal.name}}">
+                <img class="c-icon--large" ng-src="assets/images/{{animal.image}}" alt="{{animal.name}}">
               </div>
               <div class="c-big-lig__metadata">
                 <h1 class="metadata__title">
@@ -173,7 +172,7 @@
             </span>
           </li>
           <li class="c-storage__stat">
-            <img class="c-icon c-icon--rounded" src="assets/images/guard_clean.png" alt="guard">
+            <img class="c-icon c-icon--rounded" ng-src="assets/images/guard_clean.png" alt="guard">
             <span class="c-amount-indicator c-amount-indicator--primary">
               {{ roomCtrl.wallet.security }}
             </span
@@ -183,7 +182,7 @@
       <ul class="c-big-list">
         <li class="c-big-list__item" ng-repeat="item in roomCtrl.myStorage" ng-if="item.active" ng-disabled="!item.canUse">
           <div class="c-big-list__icon">
-            <img class="c-icon c-icon--large" src="assets/images/{{item.currencyLink.image_clean}}" alt="{{item.currencyLink.name}}">
+            <img class="c-icon c-icon--large" ng-src="assets/images/{{item.currencyLink.image_clean}}" alt="{{item.currencyLink.name}}">
           </div>
           <div class="c-big-lig__metadata">
             <h1 class="metadata__title">
@@ -221,7 +220,7 @@
             {{ card.verbose || "Buy card" }}
           </h1>
           <div class="o-card__icon">
-            <img ng-if="card.image" src="assets/images/{{card.image}}" alt="">
+            <img ng-if="card.image" ng-src="assets/images/{{card.image}}" alt="">
             <img ng-if="!card.image" src="assets/images/money.png" alt="">
           </div>
           <div class="o-card__effect">
@@ -243,7 +242,7 @@
             {{ roomCtrl.highlightedCard.verbose || "card" }}
           </h1>
           <div class="o-card__icon">
-            <img ng-if="roomCtrl.highlightedCard.image" src="assets/images/{{roomCtrl.highlightedCard.image}}" alt="">
+            <img ng-if="roomCtrl.highlightedCard.image" ng-src="assets/images/{{roomCtrl.highlightedCard.image}}" alt="">
             <img ng-if="!roomCtrl.highlightedCard.image" src="assets/images/money.png" alt="">
           </div>
           <div class="o-card__effect">
@@ -279,7 +278,7 @@
       <ul class="c-big-list c-big-list--dark">
         <li class="c-big-list__item" ng-repeat="item in roomCtrl.myStorage" ng-if="item.active && roomCtrl.enteredVault">
           <div class="c-big-list__icon">
-            <img class="c-icon c-icon--large" src="assets/images/{{item.currencyLink.image}}" alt="{{item.currencyLink.name}}">
+            <img class="c-icon c-icon--large" ng-src="assets/images/{{item.currencyLink.image}}" alt="{{item.currencyLink.name}}">
           </div>
           <div class="c-big-lig__metadata">
             <h1 class="metadata__title">

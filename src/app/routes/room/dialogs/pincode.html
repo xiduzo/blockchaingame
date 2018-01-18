@@ -5,14 +5,14 @@
     </h1>
       <ol class="c-vault__pincode">
         <li class="c-vault__pincode__number" ng-model="enterVaultCtrl.enteredPin[x]" ng-repeat="x in enterVaultCtrl.pinNumbersAvailable">
-          <img src="assets/images/{{enterVaultCtrl.enteredPin[x].image }}" alt="{{enterVaultCtrl.enteredPin[x].verbose }}">
+          <img ng-src="assets/images/{{enterVaultCtrl.enteredPin[x].image }}" alt="{{enterVaultCtrl.enteredPin[x].verbose }}">
         </li>
       </ol>
 
       <ul class="c-vault__pinnumbers">
         <li ng-click="enterVaultCtrl.addPinNumber(pin)" class="c-vault__pinnumber" ng-repeat="pin in enterVaultCtrl.pinNumbers track by $index">
           <div class="ripple">
-            <img class="c-icon c-icon--big" src="assets/images/{{pin.image}}" alt="{{pin.verbose}}">
+            <img class="c-icon c-icon--big" ng-src="assets/images/{{pin.image}}" alt="{{pin.verbose}}">
           </div>
         </li>
       </ul>

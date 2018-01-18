@@ -1,14 +1,14 @@
 <section class="c-dialog__container">
   <div class="c-dialog__content c-dialog__content--market">
     <div class="product__icon">
-      <img class="c-icon--large" src="assets/images/{{ sellProductCtrl.product.image }}" alt="">
+      <img class="c-icon--large" ng-src="assets/images/{{ sellProductCtrl.product.image }}" alt="">
     </div>
     <h1 class="title">
       Sell {{ sellProductCtrl.product.name }}
     </h1>
     <h2 class="price">
       {{ sellProductCtrl.product.buyFor * (1-sellProductCtrl.product.sellForPercentage) | number : 2 }} <span class="small">&#162;</span>
-      <span class="per">/ { buyProductCtrl.product.measure }}</span>
+      <span class="per">/ {{ buyProductCtrl.product.measure }}</span>
     </h2>
     <div class="amount">
       <button class="o-button amount__minus ripple" ng-click="sellProductCtrl.changeAmount(false)">-</button>

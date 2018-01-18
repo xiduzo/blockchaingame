@@ -67,10 +67,18 @@
     position: absolute;
     right: 0;
     bottom: 0;
-    height: 50% !important;
+    height: 45% !important;
+    min-height: 45% !important;
+
+    &#graph--Wool,
+    &#graph--Milk,
+    &#graph--Bacon {
+      height: 45% !important;
+      min-height: 45% !important;
+    }
 
     .highcharts-container {
-      height: 100% !important;
+      // height: 100% !important;
     }
   }
 }

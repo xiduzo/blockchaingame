@@ -7,7 +7,6 @@
     .constant('malarkey', malarkey)
     .constant('moment', moment)
 
-
     .constant('API_URL', 'https://api.mlab.com/api/1/databases/blockchainz/collections/')
     .constant('API_KEY', 'BC6Nv1iEK_ZTzlp6IvIxF7jHRMEMREzz')
     .constant('SOCKETHOST', 'floating-meadow-66461.herokuapp.com/')
@@ -72,7 +71,7 @@
             "image": "eye.png",
             "text": "Increase security rating by 1",
             "owned": false,
-            "available": true,
+            "available": false,
             "buyFor": 500
           },
           {
@@ -103,7 +102,7 @@
             "image": "cow.png",
             "text": "Build a cow sheld to buy and sell milk",
             "owned": false,
-            "available": true,
+            "available": false,
             "buyFor": 500
           },
           {
