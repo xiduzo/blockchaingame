@@ -245,13 +245,13 @@
             markets: [wool, milk, bacon],
             introduce_sheep: Math.round((Math.round(Math.random() * 5 + 5) / 100) * vm.timeThisRound),
             introduce_cows: Math.round((Math.round(Math.random() * 10 + 15) / 100) * vm.timeThisRound),
-            introduce_pig: Math.round((Math.round(Math.random() * 20 + 40) / 100) * vm.timeThisRound),
-            introduce_robbbers: Math.round((Math.round(Math.random() * 0 + 1) / 100) * vm.timeThisRound),
+            introduce_pig: Math.round((Math.round(Math.random() * 20 + 30) / 100) * vm.timeThisRound),
+            introduce_robbbers: Math.round((Math.round(Math.random() * 40 + 20) / 100) * vm.timeThisRound),
             currency_update_ticks: _.map(_.range(vm.timeThisRound), function() {
               return Math.round(Math.random() * 3 + 5);
             }),
             robbers_attempt_ticks: _.map(_.range(vm.timeThisRound), function() {
-              return Math.round(Math.random() * 5 + 5);
+              return Math.round(Math.random() * 60 + 60);
             })
           }
         });
@@ -435,9 +435,22 @@
         (Math.random() > 0.3 ? (Math.random() * 40) : (Math.random() * 20)) +
         (Math.random() > 0.1 ? (Math.random() * 50) : (Math.random() * 30))
       );
-      console.log(robberyPower);
+
       if(robberyPower > vm.wallet.security + vm.wallet.security_increase) {
-        console.log("robery successfull");
+        ngDialog.closeAll();
+        _.each(vm.myStorage, function(product) {
+          product.oldAmount = product.amount;
+          product.amount = 0;
+        });
+        ngDialog.openConfirm({
+          template: 'app/routes/room/dialogs/bandits.html'
+        })
+        .then(function() {
+
+        })
+        .catch(function() {
+
+        });
       }
     }
 
@@ -535,7 +548,7 @@
       ngDialog.closeAll();
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/buyanimal.html',
-        controller: ['animal', 'coins', 'storage', function(animal, coins, storage) {
+        controller: ['animal', 'coins', 'storage', 'transactionFee', function(animal, coins, storage, transactionFee) {
 
           var vm = this;
 
@@ -548,6 +561,7 @@
           vm.coins = coins;
           vm.buyAmount = 0;
           vm.canUse = _.findWhere(storage, { currencyType: animal.currency.currencyType}).canUse;
+          vm.transactionFee = transactionFee;
 
           // Method declarations
           function parseAmount() {
@@ -564,7 +578,8 @@
         resolve: {
           animal: function() { return animal; },
           coins: function() { return vm.myCoins; },
-          storage: function() { return vm.myStorage; }
+          storage: function() { return vm.myStorage; },
+          transactionFee: function() { return vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);}
         }
       })
       .then(function(response) {
@@ -579,6 +594,7 @@
         _.findWhere(vm.myBarn, { assetType: animal.assetType }).amount += response.amountToBuy;
         vm.oldCoins = vm.myCoins
         vm.myCoins -= response.amountToBuy * animal.buyFor;
+        vm.myCoins -= vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);
       })
       .catch(function(error) { $log.log(error); });
 
@@ -589,7 +605,7 @@
       ngDialog.closeAll();
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/sellanimal.html',
-        controller: ['animal', 'animalInBarn', function(animal, animalInBarn) {
+        controller: ['animal', 'animalInBarn', 'transactionFee', function(animal, animalInBarn, transactionFee) {
 
           var vm = this;
 
@@ -601,6 +617,7 @@
           vm.animal = animal;
           vm.animalInBarn = animalInBarn;
           vm.sellAmount = 0;
+          vm.transactionFee = transactionFee;
 
           // Method declarations
           function parseAmount() { parseInt(vm.sellAmount, 10); }
@@ -614,7 +631,8 @@
         controllerAs: 'sellAnimalCtrl',
         resolve: {
           animal: function() { return animal; },
-          animalInBarn: function() { return _.findWhere(vm.myBarn, { assetType: animal.assetType }); }
+          animalInBarn: function() { return _.findWhere(vm.myBarn, { assetType: animal.assetType }); },
+          transactionFee: function() { return vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);}
         }
       })
       .then(function(response) {
@@ -629,6 +647,7 @@
         _.findWhere(vm.myBarn, { assetType: animal.assetType }).amount -= response.amountToSell;
         vm.oldCoins = vm.myCoins
         vm.myCoins += response.amountToSell * (animal.buyFor * (1 - animal.sellForPercentage));
+        vm.myCoins -= vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);
       })
       .catch(function(error) { $log.log(error); });
 
@@ -639,7 +658,7 @@
       ngDialog.closeAll();
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/buyproduct.html',
-        controller: ['product', 'coins', 'canUse', function(product, coins, canUse) {
+        controller: ['product', 'coins', 'canUse', 'transactionFee', function(product, coins, canUse, transactionFee) {
 
           var vm = this;
 
@@ -652,6 +671,7 @@
           vm.coins = coins;
           vm.buyAmount = 0;
           vm.canUse = canUse;
+          vm.transactionFee = transactionFee;
 
           // Method declarations
           function parseAmount() { parseInt(vm.buyAmount, 10); }
@@ -666,7 +686,8 @@
         resolve: {
           product: function() { return product; },
           coins: function() { return vm.myCoins; },
-          canUse: function() { return _.findWhere(vm.myStorage, { currencyType: product.currencyType }).canUse; }
+          canUse: function() { return _.findWhere(vm.myStorage, { currencyType: product.currencyType }).canUse; },
+          transactionFee: function() { return vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);}
         }
       })
       .then(function(response) {
@@ -681,6 +702,7 @@
         _.findWhere(vm.myStorage, { currencyType: product.currencyType }).amount += response.amountToBuy;
         vm.oldCoins = vm.myCoins
         vm.myCoins -= response.amountToBuy * product.buyFor;
+        vm.myCoins -= vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);
       })
       .catch(function(error) { $log.log(error); });
       vm.assets = angular.copy(vm.assets); // Have to do this stupid reset because the swipe lib is ratarded
@@ -691,7 +713,7 @@
       ngDialog.closeAll();
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/sellproduct.html',
-        controller: ['product', 'productInStorage', function(product, productInStorage) {
+        controller: ['product', 'productInStorage', 'transactionFee', function(product, productInStorage, transactionFee) {
 
           var vm = this;
 
@@ -703,6 +725,7 @@
           vm.product = product;
           vm.productInStorage = productInStorage;
           vm.sellAmount = 0;
+          vm.transactionFee = transactionFee;
 
           // Method declarations
           function parseAmount() { parseInt(vm.sellAmount, 10); }
@@ -716,7 +739,8 @@
         controllerAs: 'sellProductCtrl',
         resolve: {
           product: function() { return product; },
-          productInStorage: function() { return _.findWhere(vm.myStorage, { currencyType: product.currencyType }); }
+          productInStorage: function() { return _.findWhere(vm.myStorage, { currencyType: product.currencyType }); },
+          transactionFee: function() { return vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);}
         }
       })
       .then(function(response) {
@@ -731,6 +755,7 @@
         _.findWhere(vm.myStorage, { currencyType: product.currencyType }).amount -= response.amountToSell;
         vm.oldCoins = vm.myCoins
         vm.myCoins += response.amountToSell * (product.buyFor * (1 - product.sellForPercentage));
+        vm.myCoins -= vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);
       })
       .catch(function(error) { $log.log(error); });
       vm.assets = angular.copy(vm.assets); // Have to do this stupid reset because the swipe lib is ratarded
@@ -956,7 +981,6 @@
           vm.toName = toName;
           vm.to = to;
           vm.transactionFee = transactionFee;
-          console.log(vm.from, vm.to);
           vm.transferAmount = 0;
           vm.selectedProduct = _.first(vm.from);
 
@@ -999,7 +1023,9 @@
         }
       })
       .then(function(response) {
-        console.log(response);
+
+        vm.oldCoins = vm.myCoins;
+        vm.myCoins -= vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);
 
         if(fromName == 'storage') {
           _.findWhere(vm.myVault, { currencyType: response.product.currencyType }).oldAmount = _.findWhere(vm.myVault, { currencyType: response.product.currencyType }).amount;

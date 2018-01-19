@@ -29,7 +29,7 @@
       </span>
     </div>
     <div class="transaction_fee">
-      + transaction fee: 123,54 c
+      + transaction fee: {{sellAnimalCtrl.transactionFee}}&#162;
     </div>
   </div>
 
@@ -37,7 +37,7 @@
     <!-- <button class="o-button o-button--error ripple" ng-click="closeThisDialog()">Cancel</button> -->
     <button class="o-button o-button--accent ripple" ng-click="confirm({amountToSell: sellAnimalCtrl.sellAmount})" ng-disabled="sellAnimalCtrl.sellAmount > sellAnimalCtrl.animalInBarn.amount">
       <i class="material-icons">offline_pin</i>
-      Sell ({{ (sellAnimalCtrl.sellAmount * (sellAnimalCtrl.animal.buyFor * (1-sellAnimalCtrl.animal.sellForPercentage)) || 0) | number : 2 }}<span class="small">&#162;</span>)
+      Sell ({{ (sellAnimalCtrl.transactionFee + sellAnimalCtrl.sellAmount * (sellAnimalCtrl.animal.buyFor * (1-sellAnimalCtrl.animal.sellForPercentage)) || 0) | number : 2 }}<span class="small">&#162;</span>)
     </button>
   </div>
 </section>

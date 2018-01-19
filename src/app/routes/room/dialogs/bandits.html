@@ -1,6 +1,6 @@
 <section class="c-dialog__container">
   <h1 class="c-dialog__title">
-    Are you sure?
+    You've been robbed!
   </h1>
   <div class="c-dialog__content">
     <div class="c-dialog__close">
@@ -9,27 +9,20 @@
       </button>
     </div>
     <div class="c-dialog__icon">
-      <img class="c-icon--huge" ng-src="assets/images/grandma.png" alt="">
+      <img class="c-icon--huge" ng-src="assets/images/guard.png" alt="">
     </div>
     <h1 class="title">
-      Hey, {{ areYouSureCtrl.user.name }}!
+      Bandits looted every product in your storage!
     </h1>
-    <h2 class="subtitle">
-      Are you sure you want to leave this Kingdom?
+    <h2 class="text">
+      Upgrade your storage security to prevent bandits from looting your storage again!
     </h2>
-    <p class="text">
-      You will be taken back to the main screen
-    </p>
   </div>
 
   <div class="c-dialog__buttons">
-    <button class="o-button o-button--error ripple" ng-click="closeThisDialog()">
-      <i class="material-icons">clear</i>
-      No, I'll wait
-    </button>
     <button class="o-button o-button--success ripple" ng-click="confirm()">
-      <i class="material-icons">done</i>
-      Yes, I'm out
+      <i class="material-icons">check</i>
+      Got it
     </button>
   </div>
 </section>
