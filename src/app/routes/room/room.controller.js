@@ -42,7 +42,6 @@
       Variables
     --------------------------*/
     vm.user = Global.getUser();
-    vm.user.$oid = vm.user._id.$oid;
     vm.user.coins = 0;
     vm.room = undefined;
     vm.stopAllTimers = false;
@@ -112,6 +111,7 @@
         console.log(vm.room.settings);
         ngDialog.closeAll();
         vm.myCoins = 10000;
+        vm.user.coins = 10000;
         drawChart(_.first(vm.myBarn));
         countDownTimer();
         updateCurrenciesTimer();
@@ -222,7 +222,31 @@
         }
       })
       .then(function(response) {
-        if(response && response.closedByButton) { return $state.go('home'); }
+        if(response && response.closedByButton) {
+          ngDialog.openConfirm({
+            template: 'app/routes/room/dialogs/areyousure.html',
+            closeByDocument: false,
+            className: 'c-dialog',
+            controller: ['user', function(user) {
+
+              var vm = this;
+
+              vm.user = user;
+
+            }],
+            controllerAs: 'areYouSureCtrl',
+            resolve: {
+              user: function() { return vm.user; }
+            }
+          })
+          .then(function(response) {
+            vm.stopAllTimers;
+            $state.go('home');
+          })
+          .catch(function(error) {
+            waitForUsers();
+          });
+        }
 
         var wool = generateRandomStockMarket(angular.copy(vm.timeThisRound), 20, 10, 100,
                     [{ length: 7, variance: 50, noise: 1, trend: 0},
@@ -257,29 +281,6 @@
         });
       })
       .catch(function(error) {
-        ngDialog.openConfirm({
-          template: 'app/routes/room/dialogs/areyousure.html',
-          closeByDocument: false,
-          className: 'c-dialog',
-          controller: ['user', function(user) {
-
-            var vm = this;
-
-            vm.user = user;
-
-          }],
-          controllerAs: 'areYouSureCtrl',
-          resolve: {
-            user: function() { return vm.user; }
-          }
-        })
-        .then(function(response) {
-          vm.stopAllTimers;
-          $state.go('home');
-        })
-        .catch(function(error) {
-          waitForUsers();
-        });
       });
     }
 
@@ -476,7 +477,6 @@
 
           $scope.$on("postScore", function(event, response) {
             if(response.data.room == $stateParams.roomId) {
-              _.findWhere(vm.room.users, {$oid: response.data.user.$oid}).coins = response.data.coins;
               checkRank();
             }
           });
@@ -519,6 +519,7 @@
     Rooms.api.one($stateParams.roomId).get()
     .then(function(response) {
       vm.room = response;
+      console.log(response);
       vm.timeThisRound = 60 * response.time;
 
       // Only add yourself when not in the room
@@ -595,6 +596,7 @@
         vm.oldCoins = vm.myCoins
         vm.myCoins -= response.amountToBuy * animal.buyFor;
         vm.myCoins -= vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);
+        vm.user.coins = vm.myCoins;
       })
       .catch(function(error) { $log.log(error); });
 
@@ -648,6 +650,7 @@
         vm.oldCoins = vm.myCoins
         vm.myCoins += response.amountToSell * (animal.buyFor * (1 - animal.sellForPercentage));
         vm.myCoins -= vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);
+        vm.user.coins = vm.myCoins;
       })
       .catch(function(error) { $log.log(error); });
 
@@ -703,6 +706,7 @@
         vm.oldCoins = vm.myCoins
         vm.myCoins -= response.amountToBuy * product.buyFor;
         vm.myCoins -= vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);
+        vm.user.coins = vm.myCoins;
       })
       .catch(function(error) { $log.log(error); });
       vm.assets = angular.copy(vm.assets); // Have to do this stupid reset because the swipe lib is ratarded
@@ -756,6 +760,7 @@
         vm.oldCoins = vm.myCoins
         vm.myCoins += response.amountToSell * (product.buyFor * (1 - product.sellForPercentage));
         vm.myCoins -= vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);
+        vm.user.coins = vm.myCoins;
       })
       .catch(function(error) { $log.log(error); });
       vm.assets = angular.copy(vm.assets); // Have to do this stupid reset because the swipe lib is ratarded
@@ -912,6 +917,7 @@
 
       vm.oldCoins = vm.myCoins;
       vm.myCoins -= 600;
+      vm.user.coins = vm.myCoins;
     }
 
     function buyAddon(addon, addonTree, index) {
@@ -1026,6 +1032,7 @@
 
         vm.oldCoins = vm.myCoins;
         vm.myCoins -= vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);
+        vm.user.coins = vm.myCoins;
 
         if(fromName == 'storage') {
           _.findWhere(vm.myVault, { currencyType: response.product.currencyType }).oldAmount = _.findWhere(vm.myVault, { currencyType: response.product.currencyType }).amount;
