@@ -1,0 +1,41 @@
+<section class="c-dialog__container">
+  <h1 class="c-dialog__title">
+    Time is up!
+  </h1>
+  <div class="c-dialog__content">
+    <div class="c-dialog__close">
+      <button ng-click="closeThisDialog()" class="c-dialog__close__button">
+        <i class="material-icons">close</i>
+      </button>
+    </div>
+    <h1 class="big__title">
+      Leaderboard
+    </h1>
+    <div class="c-dialog__icon">
+      <img class="c-icon--huge" ng-src="assets/images/coin.png" alt="">
+    </div>
+    <h1 class="title">
+      You finished {{ endGameCtrl.rank }}{{ endGameCtrl.rankSuffix }}
+    </h1>
+    <ul class="ranking">
+      <li class="rank" ng-repeat="user in endGameCtrl.room.users | orderBy : coins" ng-class="{
+        'self': user.$oid == endGameCtrl.user.$oid
+      }">
+        <strong>
+          {{ user.name }}
+        </strong>
+        <span>
+          {{ user.coins | number : 2 }} &#162;
+        </span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="c-dialog__buttons">
+
+    <button class="o-button o-button--error ripple" ng-click="closeThisDialog()">
+      <i class="material-icons">trending_flat</i>
+      LEAVE
+    </button>
+  </div>
+</section>

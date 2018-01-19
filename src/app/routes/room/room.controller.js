@@ -42,6 +42,8 @@
       Variables
     --------------------------*/
     vm.user = Global.getUser();
+    vm.user.$oid = vm.user._id.$oid;
+    vm.user.coins = 0;
     vm.room = undefined;
     vm.stopAllTimers = false;
     vm.charts = [];
@@ -79,6 +81,9 @@
       if(response.data.room == $stateParams.roomId) {
 
         if(response.data.user._id.$oid != vm.user._id.$oid) {
+          // This is handy for later underscore findWheres
+          response.data.user.$oid = response.data.user._id.$oid;
+
           // Only add yourself when not in the room
           // Prevents duplicate users
           if(!_.find(vm.room.users, function(user) {
@@ -114,6 +119,11 @@
       }
     });
 
+    $scope.$on("postScore", function(event, response) {
+      if(response.data.room == $stateParams.roomId) {
+        _.findWhere(vm.room.users, {$oid: response.data.user.$oid}).coins = response.data.coins;
+      }
+    });
     /*--------------------------
       Extra logic
     --------------------------*/
@@ -168,6 +178,7 @@
           countDownTimer();
         } else {
           vm.stopAllTimers = true;
+          endGame();
         }
       }, 1000);
     }
@@ -430,6 +441,65 @@
       }
     }
 
+    function endGame() {
+      ngDialog.closeAll();
+
+      Rooms.socket("postScore", {
+        "user": vm.user,
+        "room": $stateParams.roomId,
+        "coins": vm.myCoins
+      });
+
+      ngDialog.openConfirm({
+        template: 'app/routes/room/dialogs/endgame.html',
+        controller: ['$scope', 'room', 'user', function($scope, room, user) {
+          var vm = this;
+
+          // Varibles
+          vm.room = room;
+          vm.user = user;
+          vm.rank = 1;
+          vm.rankSuffix = '';
+
+          $scope.$on("postScore", function(event, response) {
+            if(response.data.room == $stateParams.roomId) {
+              _.findWhere(vm.room.users, {$oid: response.data.user.$oid}).coins = response.data.coins;
+              checkRank();
+            }
+          });
+
+          function checkRank() {
+            vm.rank = _.indexOf(vm.room.users, vm.user) + 1;
+            switch (vm.rank) {
+              case 1:
+                vm.rankSuffix = 'st';
+                break;
+              case 2:
+                vm.rankSuffix = 'nd';
+                break;
+              case 3:
+              case 4:
+              case 5:
+                vm.rankSuffix = 'th';
+                break;
+            }
+          }
+
+          checkRank();
+
+        }],
+        controllerAs: 'endGameCtrl',
+        resolve: {
+          room: function() { return vm.room; },
+          user: function() { return vm.user; }
+        }
+      })
+      .then(function() {
+      })
+      .catch(function() {
+        $state.go('home');
+      });
+    }
     /*--------------------------
       Serices
     --------------------------*/
@@ -443,6 +513,7 @@
       if(!_.find(vm.room.users, function(user) {
         return user._id.$oid == vm.user._id.$oid;
       })) {
+        vm.user.coins = 0;
         vm.room.users.push(vm.user);
         vm.room.put();
       }
@@ -866,23 +937,28 @@
       });
     }
 
-    function transferProducts(from, to) {
+    function transferProducts(from, to, fromName, toName) {
       ngDialog.openConfirm({
         template: 'app/routes/room/dialogs/transfer.html',
-        controller: ['from', 'to', 'transactionFee', function(from, to, transactionFee) {
+        controller: ['from', 'to', 'transactionFee', 'fromName', 'toName', function(from, to, transactionFee, fromName, toName) {
 
           var vm = this;
 
           // Methods
           vm.changeAmount = changeAmount;
           vm.parseAmount = parseAmount;
+          vm.nextProduct = nextProduct;
+          vm.previousProduct = previousProduct;
 
           // Variables
           vm.from = from;
+          vm.fromName = fromName;
+          vm.toName = toName;
           vm.to = to;
           vm.transactionFee = transactionFee;
           console.log(vm.from, vm.to);
           vm.transferAmount = 0;
+          vm.selectedProduct = _.first(vm.from);
 
           // Method declarations
           function parseAmount() {
@@ -894,16 +970,50 @@
             if(!increment && vm.transferAmount > 0) { vm.transferAmount--; }
           }
 
+          function nextProduct(index) {
+            vm.transferAmount = 0;
+            if(vm.from[index+1]) {
+              vm.selectedProduct = vm.from[index+1];
+            } else {
+              vm.selectedProduct = _.first(vm.from);
+            }
+          }
+
+          function previousProduct(index) {
+            vm.transferAmount = 0;
+            if(vm.from[index-1]) {
+              vm.selectedProduct = vm.from[index+1];
+            } else {
+              vm.selectedProduct = _.last(vm.from);
+            }
+          }
+
         }],
         controllerAs: 'transferProductsCtrl',
         resolve: {
           from: function() { return from; },
+          fromName: function() { return fromName; },
           to: function() { return to; },
+          toName: function() { return toName; },
           transactionFee: function() { return vm.wallet.transaction_fee * ((100-vm.wallet.transaction_fee_decrease)/100);}
         }
       })
       .then(function(response) {
+        console.log(response);
 
+        if(fromName == 'storage') {
+          _.findWhere(vm.myVault, { currencyType: response.product.currencyType }).oldAmount = _.findWhere(vm.myVault, { currencyType: response.product.currencyType }).amount;
+          _.findWhere(vm.myVault, { currencyType: response.product.currencyType }).amount += response.amountToTransfer;
+
+          _.findWhere(vm.myStorage, { currencyType: response.product.currencyType }).oldAmount = _.findWhere(vm.myStorage, { currencyType: response.product.currencyType }).amount;
+          _.findWhere(vm.myStorage, { currencyType: response.product.currencyType }).amount -= response.amountToTransfer;
+        } else {
+          _.findWhere(vm.myVault, { currencyType: response.product.currencyType }).oldAmount = _.findWhere(vm.myVault, { currencyType: response.product.currencyType }).amount;
+          _.findWhere(vm.myVault, { currencyType: response.product.currencyType }).amount -= response.amountToTransfer;
+
+          _.findWhere(vm.myStorage, { currencyType: response.product.currencyType }).oldAmount = _.findWhere(vm.myStorage, { currencyType: response.product.currencyType }).amount;
+          _.findWhere(vm.myStorage, { currencyType: response.product.currencyType }).amount += response.amountToTransfer;
+        }
       })
       .catch(function(error) { $log.log(error); });
     }

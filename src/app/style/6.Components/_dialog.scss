@@ -75,6 +75,11 @@
           }
         }
 
+        .big__title {
+          text-align: center;
+          margin: 0 0 0.75em 0;
+        }
+
         .title {
           color: $titleColor;
           font-family: 'Dalton Maag headline light';
@@ -122,6 +127,25 @@
               background-position: center;
               margin-top: -2em;
               margin-left: 3em;
+            }
+          }
+        }
+
+        .ranking {
+          padding: 0;
+          .rank {
+            list-style: none;
+            background: lighten($black, 90);
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+
+            &.self {
+              color: $turquoise;
+            }
+
+            &:nth-of-type(even) {
+              background: lighten($black, 94);
             }
           }
         }
@@ -177,6 +201,7 @@
 
 }
 
+.c-dialog__content--transfer,
 .c-dialog__content--market {
 
   .price {

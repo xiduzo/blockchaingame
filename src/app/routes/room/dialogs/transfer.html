@@ -2,33 +2,37 @@
   <h1 class="c-dialog__title">
     Transfer products
   </h1>
-  <div class="c-dialog__content c-dialog__content--market">
+  <div class="c-dialog__content c-dialog__content--transfer">
     <div class="c-dialog__close">
       <button ng-click="closeThisDialog()" class="c-dialog__close__button">
         <i class="material-icons">close</i>
       </button>
     </div>
     <h1 class="big__title">
-      To
+      To {{ transferProductsCtrl.toName }}
     </h1>
-    <div class="c-dialog__icon">
-      <img class="c-icon--large" ng-src="assets/images/{{ buyProductCtrl.product.image }}" alt="">
-    </div>
-    <h2 class="title">
-      {{ buyProductCtrl.product.name }}
-    </h2>
+    <secion class="c-transfer__product__container" ng-repeat="product in transferProductsCtrl.from" ng-if="product.currencyType == transferProductsCtrl.selectedProduct.currencyType">
+      <i class="material-icons" ng-click="transferProductsCtrl.previousProduct($index)">navigate_before</i>
+      <div class="c-transfer__product">
+        <h3 class="product__name">
+          {{ product.currencyLink.name }}
+        </h3>
+        <img class="c-icon--large" src="assets/images/{{product.currencyLink.image}}" alt="">
+        <div class="products__left">
+          <strong>In {{ transferProductsCtrl.fromName}}:</strong> {{ product.amount | number : 1 }}{{ product.currencyLink.measure }}
+        </div>
+      </div>
+      <i class="material-icons" ng-click="transferProductsCtrl.nextProduct($index)">navigate_next</i>
+    </secion>
     <div class="amount">
       <button class="o-button amount__minus ripple" ng-click="transferProductsCtrl.changeAmount(false)">-</button>
       <input class="amount__number" type="number" name="" value="1" ng-model="transferProductsCtrl.transferAmount" ng-change="transferProductsCtrl.parseAmount()">
       <button class="o-button amount__plus ripple" ng-click="transferProductsCtrl.changeAmount(true)">+</button>
     </div>
     <div class="warnings">
-      <!-- <span ng-if="buyProductCtrl.coins < (buyProductCtrl.buyAmount * buyProductCtrl.product.buyFor || 0)">
-        You do not have enough coins
+      <span ng-if="transferProductsCtrl.transferAmount > transferProductsCtrl.selectedProduct.amount">
+        You do not have enough {{ transferProductsCtrl.selectedProduct.currencyLink.name }}
       </span>
-      <span ng-if="!buyProductCtrl.canUse">
-        Your storage does not support this product untill you upgrade your storage
-      </span> -->
     </div>
     <div class="transaction_fee">
       transaction fee: {{ transferProductsCtrl.transactionFee }}&#162;
@@ -36,7 +40,7 @@
   </div>
 
   <div class="c-dialog__buttons">
-    <button class="o-button o-button--accent ripple" ng-click="confirm({amountToTransfer: transferProductsCtrl.transferAmount})" ng-disabled="!buyProductCtrl.canUse || buyProductCtrl.coins < (buyProductCtrl.buyAmount * buyProductCtrl.product.buyFor || 0)">
+    <button class="o-button o-button--accent ripple" ng-click="confirm({amountToTransfer: transferProductsCtrl.transferAmount, product: transferProductsCtrl.selectedProduct})" ng-disabled="transferProductsCtrl.transferAmount > transferProductsCtrl.selectedProduct.amount">
       <i class="material-icons">offline_pin</i>
       Transfer ({{ transferProductsCtrl.transactionFee }}<span class="small">&#162;</span>)
     </button>

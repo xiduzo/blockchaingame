@@ -198,7 +198,7 @@
         </li>
       </ul>
       <div class="c-window__actions">
-        <button class="o-button o-button--accent ripple" ng-if="roomCtrl.vaultAvailable" ng-click="roomCtrl.transferProducts(roomCtrl.myStorage, roomCtrl.myVault)">
+        <button class="o-button o-button--accent ripple" ng-if="roomCtrl.vaultAvailable" ng-click="roomCtrl.transferProducts(roomCtrl.myStorage, roomCtrl.myVault, 'storage', 'vault')">
           <i class="material-icons">compare_arrows</i>
           Transfer
         </button>
@@ -278,7 +278,7 @@
         </ul>
       </div>
       <ul class="c-big-list c-big-list--dark">
-        <li class="c-big-list__item" ng-repeat="item in roomCtrl.myStorage" ng-if="item.active && roomCtrl.enteredVault" ng-disabled="!item.canUse">
+        <li class="c-big-list__item" ng-repeat="item in roomCtrl.myVault" ng-if="item.active && roomCtrl.enteredVault" ng-disabled="!item.canUse">
           <div class="c-big-list__icon">
             <img class="c-icon c-icon--large" ng-src="assets/images/{{item.currencyLink.image_clean}}" alt="{{item.currencyLink.name}}">
           </div>
@@ -296,7 +296,7 @@
         </li>
       </ul>
       <div class="c-window__actions">
-        <button class="o-button o-button--accent ripple" ng-if="roomCtrl.vaultAvailable && roomCtrl.enteredVault" ng-click="roomCtrl.transferProducts(roomCtrl.myVault, roomCtrl.myStorage)">
+        <button class="o-button o-button--accent ripple" ng-if="roomCtrl.vaultAvailable && roomCtrl.enteredVault" ng-click="roomCtrl.transferProducts(roomCtrl.myVault, roomCtrl.myStorage, 'vault', 'storage')">
           <i class="material-icons">compare_arrows</i>
           Transfer
         </button>
